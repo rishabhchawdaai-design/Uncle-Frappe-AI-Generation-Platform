@@ -1,0 +1,88 @@
+{
+  "integrations": [
+    {
+      "provider": "test_provider",
+      "schema_type": "json_schema",
+      "status": "integrated",
+      "started_at": "2026-07-17T18:41:34.826637",
+      "adapter": {
+        "provider": "test_provider",
+        "schema_type": "json_schema",
+        "endpoints": [
+          {
+            "name": "generate",
+            "type": "string"
+          }
+        ],
+        "auth": {
+          "type": "api_key"
+        },
+        "compiled_at": "2026-07-17T18:41:34.826650",
+        "version": 1
+      },
+      "completed_at": "2026-07-17T18:41:34.826656"
+    },
+    {
+      "provider": "test_provider",
+      "schema_type": "json_schema",
+      "status": "integrated",
+      "started_at": "2026-07-17T18:44:59.430034",
+      "adapter": {
+        "provider": "test_provider",
+        "schema_type": "json_schema",
+        "endpoints": [
+          {
+            "name": "generate",
+            "type": "string"
+          }
+        ],
+        "auth": {
+          "type": "api_key"
+        },
+        "compiled_at": "2026-07-17T18:44:59.430050",
+        "version": 1
+      },
+      "completed_at": "2026-07-17T18:44:59.430057"
+    },
+    {
+      "provider": "test_provider",
+      "schema_type": "json_schema",
+      "status": "integrated",
+      "started_at": "2026-07-17T18:46:55.941447",
+      "adapter": {
+        "provider": "test_provider",
+        "schema_type": "json_schema",
+        "endpoints": [
+          {
+            "name": "generate",
+            "type": "string"
+          }
+        ],
+        "auth": {
+          "type": "api_key"
+        },
+        "compiled_at": "2026-07-17T18:46:55.941461",
+        "version": 1
+      },
+      "completed_at": "2026-07-17T18:46:55.941467"
+    }
+  ],
+  "adapter_cache": {
+    "test_provider": {
+      "provider": "test_provider",
+      "schema_type": "json_schema",
+      "endpoints": [
+        {
+          "name": "generate",
+          "type": "string"
+        }
+      ],
+      "auth": {
+        "type": "api_key"
+      },
+      "compiled_at": "2026-07-17T18:46:55.941461",
+      "version": 1
+    }
+  },
+  "updated_at": "2026-07-17T18:46:55.942080"
+}

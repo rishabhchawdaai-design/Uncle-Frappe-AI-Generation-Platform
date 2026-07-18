@@ -1,0 +1,38 @@
+[
+  {
+    "name": "my_comfyui",
+    "url": "http://localhost:8188",
+    "type": "",
+    "auth_type": "api_key",
+    "auth_env_var": "",
+    "has_auth": false,
+    "supported_tasks": [],
+    "models": [],
+    "healthy": true,
+    "timeout_secs": 300.0
+  },
+  {
+    "name": "test_remote",
+    "url": "http://localhost:8188",
+    "type": "",
+    "auth_type": "api_key",
+    "auth_env_var": "",
+    "has_auth": false,
+    "supported_tasks": [],
+    "models": [],
+    "healthy": true,
+    "timeout_secs": 300.0
+  },
+  {
+    "name": "mcp_remote",
+    "url": "http://localhost:8188",
+    "type": "api",
+    "auth_type": "api_key",
+    "auth_env_var": "",
+    "has_auth": false,
+    "supported_tasks": [],
+    "models": [],
+    "healthy": true,
+    "timeout_secs": 300.0
+  }
+]

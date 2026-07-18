@@ -1,0 +1,139 @@
+{
+  "endpoints": [
+    {
+      "name": "pollinations",
+      "url": "https://image.pollinations.ai/prompt",
+      "type": "rest_api",
+      "auth": "none",
+      "tasks": [
+        "text_to_image"
+      ]
+    },
+    {
+      "name": "huggingface_inference",
+      "url": "https://api-inference.huggingface.co",
+      "type": "rest_api",
+      "auth": "api_key",
+      "tasks": [
+        "text_to_image"
+      ]
+    },
+    {
+      "name": "siliconflow",
+      "url": "https://api.siliconflow.cn/v1",
+      "type": "openai_compatible",
+      "auth": "api_key",
+      "tasks": [
+        "text_to_image"
+      ]
+    },
+    {
+      "name": "together",
+      "url": "https://api.together.xyz/v1",
+      "type": "openai_compatible",
+      "auth": "api_key",
+      "tasks": [
+        "text_to_image"
+      ]
+    },
+    {
+      "name": "stability",
+      "url": "https://api.stability.ai/v2beta",
+      "type": "rest_api",
+      "auth": "api_key",
+      "tasks": [
+        "text_to_image",
+        "img2img",
+        "inpainting",
+        "upscale"
+      ]
+    },
+    {
+      "name": "replicate",
+      "url": "https://api.replicate.com/v1",
+      "type": "rest_api",
+      "auth": "api_key",
+      "tasks": [
+        "text_to_image",
+        "text_to_video",
+        "image_to_video"
+      ]
+    },
+    {
+      "name": "fal",
+      "url": "https://fal.run",
+      "type": "rest_api",
+      "auth": "api_key",
+      "tasks": [
+        "text_to_image",
+        "img2img"
+      ]
+    },
+    {
+      "name": "craiyon",
+      "url": "https://api.craiyon.com/v3",
+      "type": "rest_api",
+      "auth": "none",
+      "tasks": [
+        "text_to_image"
+      ]
+    },
+    {
+      "name": "replicate_video",
+      "url": "https://api.replicate.com/v1",
+      "type": "rest_api",
+      "auth": "api_key",
+      "tasks": [
+        "text_to_video"
+      ]
+    },
+    {
+      "name": "deepseek",
+      "url": "https://api.deepseek.com/v1",
+      "type": "openai_compatible",
+      "auth": "api_key",
+      "tasks": [
+        "text_to_speech"
+      ]
+    },
+    {
+      "name": "groq",
+      "url": "https://api.groq.com/openai/v1",
+      "type": "openai_compatible",
+      "auth": "api_key",
+      "tasks": [
+        "text_to_speech"
+      ]
+    },
+    {
+      "name": "openrouter",
+      "url": "https://openrouter.ai/api/v1",
+      "type": "openai_compatible",
+      "auth": "api_key",
+      "tasks": [
+        "text_to_image"
+      ]
+    },
+    {
+      "name": "black_forest_labs",
+      "url": "https://black-forest-labs-flux-1-schnell.hf.space",
+      "type": "hf_space",
+      "auth": "none",
+      "tasks": [
+        "text_to_image"
+      ]
+    },
+    {
+      "name": "test_ep",
+      "url": "http://test.com",
+      "type": "rest_api",
+      "auth": "api_key",
+      "tasks": [
+        "text_to_image"
+      ],
+      "discovered_at": "2026-07-17T18:46:55.911252"
+    }
+  ],
+  "history": [],
+  "updated_at": "2026-07-17T18:46:55.912425"
+}

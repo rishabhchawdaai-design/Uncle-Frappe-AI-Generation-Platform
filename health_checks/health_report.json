@@ -1,0 +1,122 @@
+{
+  "firecrawl": {
+    "tier": 1,
+    "status": "needs_api_key",
+    "needs": "API key (FIRECRAWL_API_KEY)",
+    "docker": true
+  },
+  "crawl4ai": {
+    "tier": 1,
+    "status": "available",
+    "needs": "pip install crawl4ai + browsers",
+    "docker": true
+  },
+  "browser_use": {
+    "tier": 2,
+    "status": "available",
+    "needs": "pip install browser-use + browser",
+    "docker": false
+  },
+  "agentreach": {
+    "tier": 2,
+    "status": "available",
+    "needs": "pip install agentreach",
+    "docker": false
+  },
+  "playwright_mcp": {
+    "tier": 1,
+    "status": "available",
+    "needs": "pip install playwright + browsers",
+    "docker": true
+  },
+  "puppeteer_mcp": {
+    "tier": 1,
+    "status": "available",
+    "needs": "pip install pyppeteer",
+    "docker": true
+  },
+  "brightdata_mcp": {
+    "tier": 1,
+    "status": "needs_api_key",
+    "needs": "API key (BRIGHT_DATA_API_KEY)",
+    "docker": false
+  },
+  "jina_reader": {
+    "tier": 1,
+    "status": "available",
+    "needs": "API key (JINA_API_KEY) or free tier",
+    "docker": false
+  },
+  "tavily": {
+    "tier": 2,
+    "status": "available",
+    "needs": "API key (TAVILY_API_KEY)",
+    "docker": false
+  },
+  "exa": {
+    "tier": 2,
+    "status": "available",
+    "needs": "API key (EXA_API_KEY)",
+    "docker": false
+  },
+  "serpapi": {
+    "tier": 2,
+    "status": "available",
+    "needs": "API key (SERPAPI_KEY)",
+    "docker": false
+  },
+  "searxng": {
+    "tier": 3,
+    "status": "available",
+    "needs": "Docker service on port 8080",
+    "docker": true
+  },
+  "apify": {
+    "tier": 2,
+    "status": "available",
+    "needs": "API key (APIFY_TOKEN)",
+    "docker": true
+  },
+  "scrapy": {
+    "tier": 3,
+    "status": "available",
+    "needs": "pip install scrapy",
+    "docker": false
+  },
+  "selenium": {
+    "tier": 2,
+    "status": "available",
+    "needs": "Docker grid or chromedriver",
+    "docker": true
+  },
+  "trafilatura": {
+    "tier": 3,
+    "status": "available",
+    "needs": "pip install trafilatura",
+    "docker": false
+  },
+  "newspaper3k": {
+    "tier": 3,
+    "status": "available",
+    "needs": "pip install newspaper3k",
+    "docker": false
+  },
+  "readability": {
+    "tier": 3,
+    "status": "available",
+    "needs": "pip install readability-lxml",
+    "docker": false
+  },
+  "requests_html": {
+    "tier": 3,
+    "status": "available",
+    "needs": "pip install requests-html",
+    "docker": false
+  },
+  "bs4": {
+    "tier": 3,
+    "status": "available",
+    "needs": "pip install beautifulsoup4",
+    "docker": false
+  }
+}

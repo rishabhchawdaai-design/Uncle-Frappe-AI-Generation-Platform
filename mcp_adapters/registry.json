@@ -1,0 +1,50 @@
+{
+  "mcp_servers": {
+    "brightdata_mcp": {
+      "name": "Bright Data MCP",
+      "command": "npx",
+      "args": ["-y", "@brightdata/mcp-server"],
+      "env": {
+        "BRIGHT_DATA_API_KEY": "${BRIGHT_DATA_API_KEY}"
+      },
+      "tools": ["web_unlocker", "serp_api", "scraping_browser", "datacenter_proxies", "web_crawler"],
+      "description": "Bright Data's MCP server for web data collection with proxy support"
+    },
+    "playwright_mcp": {
+      "name": "Playwright MCP",
+      "command": "npx",
+      "args": ["-y", "@anthropic-ai/mcp-server-playwright"],
+      "env": {},
+      "tools": ["browser_navigate", "browser_screenshot", "browser_click", "browser_fill", "browser_evaluate", "browser_pdf"],
+      "description": "Playwright-based browser automation via MCP"
+    },
+    "puppeteer_mcp": {
+      "name": "Puppeteer MCP",
+      "command": "npx",
+      "args": ["-y", "@anthropic-ai/mcp-server-puppeteer"],
+      "env": {},
+      "tools": ["puppeteer_navigate", "puppeteer_screenshot", "puppeteer_click", "puppeteer_evaluate", "puppeteer_fill"],
+      "description": "Puppeteer-based Chrome automation via MCP"
+    },
+    "firecrawl_mcp": {
+      "name": "Firecrawl MCP",
+      "command": "npx",
+      "args": ["-y", "@mendable/firecrawl-mcp"],
+      "env": {
+        "FIRECRAWL_API_KEY": "${FIRECRAWL_API_KEY}"
+      },
+      "tools": ["firecrawl_scrape", "firecrawl_crawl", "firecrawl_map", "firecrawl_extract", "firecrawl_search"],
+      "description": "Firecrawl MCP server for web scraping and crawling"
+    },
+    "searxng_mcp": {
+      "name": "SearXNG MCP",
+      "command": "npx",
+      "args": ["-y", "searxng-mcp-server"],
+      "env": {
+        "SEARXNG_BASE_URL": "http://localhost:8080"
+      },
+      "tools": ["searxng_search", "searxng_search_json"],
+      "description": "Self-hosted SearXNG metasearch engine MCP server"
+    }
+  }
+}

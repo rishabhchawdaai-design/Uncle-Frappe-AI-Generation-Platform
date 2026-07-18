@@ -1,0 +1,610 @@
+#!/usr/bin/env python3
+"""
+AI Generation CLI — extend main.py with generation commands.
+"""
+import asyncio
+import sys
+import json
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+
+async def cmd_generate(prompt, style="", width=1024, height=1024, provider=""):
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    result = await ai.generate(prompt, style=style, width=width, height=height, provider=provider or None)
+    print(f"\n  Provider:    {result.provider}")
+    print(f"  Status:      {result.status}")
+    print(f"  Latency:     {result.latency_ms}ms")
+    print(f"  Format:      {result.output_format}")
+    if result.output_path:
+        print(f"  Saved to:    {result.output_path}")
+    if result.output_url:
+        print(f"  URL:         {result.output_url}")
+    if result.error:
+        print(f"  Error:       {result.error}")
+    return result
+
+
+async def cmd_video(prompt, duration=4.0, width=1280, height=720):
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    result = await ai.generate_video(prompt, duration_secs=duration, width=width, height=height)
+    print(f"\n  Provider:    {result.provider}")
+    print(f"  Status:      {result.status}")
+    print(f"  Latency:     {result.latency_ms}ms")
+    if result.output_url:
+        print(f"  URL:         {result.output_url}")
+    if result.error:
+        print(f"  Error:       {result.error}")
+    return result
+
+
+async def cmd_enhance(prompt, style="photorealistic"):
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    result = ai.enhance_prompt(prompt, style=style)
+    print(f"\n  Original:  {result.original}")
+    print(f"  Enhanced:  {result.enhanced}")
+    print(f"  Negative:  {result.negative_prompt}")
+    print(f"  Style:     {result.style}")
+    print(f"  Applied:   {', '.join(result.techniques_applied)}")
+    print(f"  Confidence: {result.confidence:.0%}")
+
+
+async def cmd_providers():
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    providers = ai.list_providers()
+    print(f"\n  AI Generation Providers ({len(providers)} total)\n")
+    for p in providers:
+        status_icon = "\u2705" if p["available"] else "\u274c"
+        print(f"  {status_icon} {p['name']:20s}  type={p['type']:8s}  tier={p['tier']:10s}  models={len(p.get('models', []))}")
+
+
+async def cmd_benchmarks(prompt="a beautiful landscape"):
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    print(f"\n  Running benchmarks with prompt: {prompt}\n")
+    from ai_generation.providers.registry import get_registry
+    registry = get_registry()
+    from ai_generation.providers.base import ProviderType
+    results = await ai.benchmark_engine.benchmark_all(registry, prompt, provider_type=ProviderType.IMAGE, runs=1)
+    for name, runs in results.items():
+        for r in runs:
+            status = "\u2705" if r.success else "\u274c"
+            print(f"  {status} {name:20s}  latency={r.latency_ms:.0f}ms  cost=${r.cost_estimate:.4f}  error={r.error or 'none'}")
+    print(f"\n  Rankings:")
+    for s in ai.benchmark_engine.get_rankings():
+        print(f"    {s.provider:20s}  score={s.score:.1f}  success={s.success_rate:.0f}%  latency={s.avg_latency_ms:.0f}ms")
+
+
+async def cmd_providers_list():
+    from ai_generation.research_agent import ResearchAgent
+    ra = ResearchAgent()
+    free = ra.get_free_providers()
+    all_p = ra.get_known_providers()
+    print(f"\n  Known Providers: {len(all_p)} (Free: {len(free)})\n")
+    for d in all_p:
+        icon = "\u2b50" if d["tier"] == "free" else "\ud83d\udcb0" if d["tier"] == "paid" else "\ud83d\udce6"
+        print(f"  {icon} {d['name']:20s}  type={d['provider_type']:8s}  tier={d['tier']:10s}  models={len(d['models'])}")
+
+
+async def cmd_stats():
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    stats = ai.get_stats()
+    print(f"\n  AI Generation Platform Stats\n")
+    print(f"  Providers:  {stats['generation']['provider_summary']['total_providers']} total")
+    print(f"  Templates:  {stats['prompts']['templates_count']}")
+    print(f"  Styles:     {len(stats['prompts']['style_presets'])}")
+    print(f"  Benchmarks: {stats['benchmarks']['total_benchmarks']}")
+    print(f"  Assets:     {stats['assets']['total_assets']}")
+    print(f"  Characters: {stats['characters']['total_characters']}")
+    print(f"  Projects:   {stats['projects']['total_projects']}")
+    print(f"  Edits:      {stats['image_editing']['total_edits']}")
+    print(f"  Videos:     {stats['video_generation']['total_generations']}")
+    print(f"  Plans:      {stats['agent_planner']['total_plans']}")
+
+
+# ── Phase 11 Commands ──
+
+async def cmd_analyze(prompt):
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    analysis = ai.analyze_request(prompt)
+    print(f"\n  Request Analysis\n")
+    print(f"  Request:   {analysis.original_prompt[:80]}")
+    print(f"  Type:      {analysis.request_type.value}")
+    print(f"  Media:     {analysis.media_type.value}")
+    print(f"  Complexity: {analysis.complexity.value}")
+    print(f"  Workflow:  {analysis.suggested_workflow}")
+    print(f"  Est Cost:  ${analysis.estimated_total_cost:.6f}")
+    print(f"  Est Latency: {analysis.estimated_total_latency_ms:.0f}ms")
+    print(f"\n  Recommended Providers:")
+    for p in analysis.recommended_providers:
+        print(f"    {p['provider']:20s}  score={p['score']}  free={p['free']}")
+
+
+async def cmd_edit(operation, input_path, prompt="", mask=""):
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    result = await ai.image_editing.edit(operation, input_path, prompt=prompt, mask_path=mask)
+    print(f"\n  Edit Result\n")
+    print(f"  Operation: {result.operation.value}")
+    print(f"  Provider:  {result.provider}")
+    print(f"  Status:    {result.status.value}")
+    print(f"  Latency:   {result.latency_ms}ms")
+    if result.output_url:
+        print(f"  URL:       {result.output_url}")
+    if result.output_path:
+        print(f"  Saved:     {result.output_path}")
+    if result.error:
+        print(f"  Error:     {result.error}")
+
+
+async def cmd_video_gen(prompt, duration=4.0, image_path=""):
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    if image_path:
+        result = await ai.video_generation.image_to_video(image_path, prompt=prompt, duration_secs=duration)
+    else:
+        result = await ai.video_generation.text_to_video(prompt, duration_secs=duration)
+    print(f"\n  Video Generation Result\n")
+    print(f"  Mode:      {result.mode.value}")
+    print(f"  Provider:  {result.provider}")
+    print(f"  Status:    {result.status}")
+    print(f"  Latency:   {result.latency_ms}ms")
+    if result.output_url:
+        print(f"  URL:       {result.output_url}")
+    if result.error:
+        print(f"  Error:     {result.error}")
+    print(f"\n  Capabilities Report:")
+    caps = ai.video_generation.get_capabilities_report()
+    for c in caps:
+        note = " [NOT AI VIDEO]" if c.get("not_ai_video") else ""
+        print(f"    {c['provider']:20s}  {c['mode']:20s}  supported={c['supported']}{note}")
+
+
+async def cmd_plan(request):
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    plan = ai.plan_request(request)
+    print(f"\n  Agent Plan\n")
+    print(f"  Request:   {plan.request[:80]}")
+    print(f"  Category:  {plan.category}")
+    print(f"  Template:  {plan.workflow_template}")
+    print(f"  Providers: {', '.join(plan.recommended_providers)}")
+    print(f"  Steps:     {len(plan.steps)}")
+    print(f"  Exports:   {', '.join(plan.export_formats)}")
+    print(f"\n  Steps:")
+    for s in plan.steps:
+        dep = f" (depends: {', '.join(s.depends_on)})" if s.depends_on else ""
+        print(f"    [{s.step_id:20s}] {s.name}{dep}")
+    if plan.prompts:
+        print(f"\n  Generated Prompts:")
+        for p in plan.prompts:
+            print(f"    {p['prompt'][:100]}...")
+            if p.get('negative_prompt'):
+                print(f"    Neg: {p['negative_prompt'][:80]}...")
+
+
+async def cmd_character(action, name="", char_id=""):
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    if action == "create" and name:
+        char = ai.create_character(name)
+        print(f"\n  Created character: {char.name} ({char.character_id})")
+    elif action == "list":
+        chars = ai.character_manager.list_characters()
+        print(f"\n  Characters ({len(chars)}):\n")
+        for c in chars:
+            print(f"    {c['character_id']:15s}  {c['name']:20s}  version={c['version']}")
+    elif action == "prompt" and char_id:
+        prompt = ai.character_manager.get_consistency_prompt(char_id)
+        print(f"\n  Consistency Prompt: {prompt}")
+    else:
+        print("  Usage: character [create NAME | list | prompt CHAR_ID]")
+
+
+async def cmd_project(action, name="", proj_id=""):
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    if action == "create" and name:
+        proj = ai.create_project(name)
+        print(f"\n  Created project: {proj.name} ({proj.project_id})")
+    elif action == "list":
+        projects = ai.project_manager.list_projects()
+        print(f"\n  Projects ({len(projects)}):\n")
+        for p in projects:
+            print(f"    {p['project_id']:15s}  {p['name']:20s}  assets={p['assets_count']}")
+    else:
+        print("  Usage: project [create NAME | list]")
+
+
+async def cmd_cinema_dims():
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    dims = ai.get_cinema_dimensions()
+    print(f"\n  Cinema Benchmark Dimensions ({len(dims)}):\n")
+    for d in dims:
+        print(f"    {d['name']:30s}  weight={d['weight']:.1f}  {d['description']}")
+
+
+async def cmd_capabilities():
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    stats = ai.get_capability_matrix()
+    print(f"\n  Capability Matrix\n")
+    print(f"  Total Models:  {stats['total_models']}")
+    print(f"  Providers:     {stats['providers']} ({', '.join(stats['provider_names'])})")
+    print(f"  Image Models:  {stats['image_models']}")
+    print(f"  Video Models:  {stats['video_models']}")
+    print(f"  Editing:       {stats['editing_capable']}")
+    print(f"  Free Tier:     {stats['free_tier_models']}")
+
+
+async def cmd_intel():
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    recs = ai.get_provider_recommendations()
+    print(f"\n  Provider Intelligence Recommendations\n")
+    for r in recs:
+        print(f"    {r['name']:20s}  priority={r['priority']:8s}  score={r['recommendation_score']:.1f}  free={r['free_tier']}")
+
+
+async def cmd_video_caps():
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    report = ai.video_generation.get_capabilities_report()
+    print(f"\n  Video Generation Capabilities\n")
+    for c in report:
+        note = " [NOT AI VIDEO]" if c.get("not_ai_video") else ""
+        print(f"    {c['provider']:20s}  {c['mode']:20s}  supported={c['supported']}{note}")
+        if c.get("notes"):
+            print(f"      Note: {c['notes']}")
+
+
+# ── Phase 13 Commands ──
+
+async def cmd_agent_generate(request):
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    result = await ai.agent_generate(request)
+    print(f"\n  Agent Generate\n")
+    print(f"  Request: {request[:80]}")
+    route = result.get("route", {})
+    exec_result = result.get("execution", {})
+    print(f"  Task Type:   {route.get('task_type', 'unknown')}")
+    print(f"  Confidence:  {route.get('confidence', 0):.0%}")
+    print(f"  Status:      {exec_result.get('status', 'unknown')}")
+    print(f"  Provider:    {exec_result.get('provider', 'none')}")
+    print(f"  Layer:       {exec_result.get('layer', 'none')}")
+    if exec_result.get("output_url"):
+        print(f"  URL:         {exec_result['output_url']}")
+    if exec_result.get("error"):
+        print(f"  Error:       {exec_result['error']}")
+    print(f"\n  Recommended Providers:")
+    for p in route.get("recommended_providers", []):
+        print(f"    {p['provider']:20s}  model={p.get('model_id', 'n/a')[:30]}  free={p.get('free_tier', False)}")
+
+
+async def cmd_endpoints():
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    endpoints = ai.agent_providers()
+    print(f"\n  Remote Execution Endpoints ({len(endpoints)} total)\n")
+    for ep in endpoints:
+        status = "\u2705" if ep.get("healthy", True) else "\u274c"
+        layer = {1: "API", 2: "HF", 3: "Remote", 4: "Browser"}.get(ep.get("layer", 0), "?")
+        print(f"  {status} [{layer:6s}] {ep['name']:20s}  verified={ep.get('verified', False)}  free={ep.get('free_tier', False)}  tasks={len(ep.get('supported_tasks', []))}")
+
+
+async def cmd_health():
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    result = await ai.agent_health_check()
+    print(f"\n  Provider Health Check\n")
+    for name, status in result.items():
+        icon = "\u2705" if status.get("healthy", False) else "\u274c"
+        latency = f"  {status.get('latency_ms', 0):.0f}ms" if status.get("latency_ms") else ""
+        error = f"  {status.get('error', '')}" if status.get("error") else ""
+        print(f"  {icon} {name:25s}{latency}{error}")
+
+
+async def cmd_cap_matrix():
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    matrix = ai.agent_capability_matrix()
+    print(f"\n  Capability Registry\n")
+    print(f"  Total Models: {matrix['total_models']}")
+    print(f"  Providers:    {matrix['providers']}")
+    print(f"  Tasks:        {matrix['total_tasks']}")
+    print(f"  Tasks: {', '.join(matrix['tasks'])}")
+    print(f"\n  Provider Details:")
+    for name, details in matrix.get('provider_details', {}).items():
+        print(f"    {name:20s}  models={details['models']}  free={details['free_tier']}  tasks={len(details['tasks'])}")
+
+
+async def cmd_discover():
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    recs = ai.get_provider_recommendations()
+    print(f"\n  Provider Discovery Recommendations\n")
+    for r in recs:
+        print(f"    {r['name']:20s}  priority={r['priority']:8s}  score={r['recommendation_score']:.1f}  free={r['free_tier']}  status={r['status']}")
+
+
+async def cmd_add_endpoint(name, url):
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    ep = ai.agent_add_remote_endpoint(name, url)
+    print(f"\n  Added remote endpoint: {name}")
+    print(f"  URL: {url}")
+    print(f"  Type: {ep.get('type', 'api')}")
+
+
+async def cmd_classify(request):
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    decision = ai.agent_classify(request)
+    print(f"\n  Task Classification\n")
+    print(f"  Request:   {request[:80]}")
+    print(f"  Task Type: {decision['task_type']}")
+    print(f"  Confidence: {decision['confidence']:.0%}")
+    print(f"  Reasoning: {decision['reasoning']}")
+    if decision.get("alternatives"):
+        print(f"  Alternatives: {', '.join(decision['alternatives'])}")
+    print(f"\n  Recommended Providers:")
+    for p in decision.get("recommended_providers", [])[:5]:
+        print(f"    {p['provider']:20s}  model={p.get('model_id', 'n/a')[:30]}  free={p.get('free_tier', False)}")
+
+
+# ── Phase 14 — AIG-OS Commands ──────────────────────────────────
+
+async def cmd_aigos_status():
+    """Show AIG-OS orchestrator status."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    status = ai.aigos_status()
+    registry = status["registry"]
+    print(f"\n  AIG-OS Status: {'Initialized' if status['initialized'] else 'Not initialized'}")
+    print(f"  Total Agents: {registry['total_agents']}")
+    print(f"  Healthy: {registry['healthy']}")
+    print(f"\n  Agents:")
+    for name, stats in registry.get("agents", {}).items():
+        print(f"    {name:20s}  status={stats['status']:8s}  tasks={stats['total_tasks']}  success={stats['successful']}")
+
+async def cmd_aigos_agents():
+    """List all AIG-OS agents."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    agents = ai.aigos_agents()
+    print(f"\n  AIG-OS Agents ({len(agents)}):")
+    for a in agents:
+        print(f"    {a['agent_name']:20s}  status={a['status']:8s}  tasks={a['total_tasks']}")
+
+async def cmd_aigos_execute(request):
+    """Execute a request through the AIG-OS pipeline."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    result = ai.aigos_execute(request)
+    print(f"\n  AIG-OS Execution Result:")
+    print(f"    Request: {result.get('data', {}).get('request', request)[:60]}")
+    plan = result.get("data", {}).get("plan", {})
+    print(f"    Task Type: {plan.get('task_type', 'unknown')}")
+    print(f"    Steps: {plan.get('total_steps', 0)}")
+    for step in plan.get("steps", []):
+        print(f"      Step {step['step']}: [{step['agent']}] {step['action']} — {step['status']}")
+
+async def cmd_aigos_leaderboard():
+    """Show benchmark leaderboard."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    leaderboard = ai.aigos_benchmark_leaderboard()
+    print(f"\n  Benchmark Leaderboard ({len(leaderboard)} providers):")
+    if not leaderboard:
+        print("    No benchmarks yet. Run 'aigos benchmark' first.")
+    for entry in leaderboard:
+        print(f"    #{entry['rank']} {entry['provider']:20s}  score={entry['score']:.2f}  benchmarks={entry['benchmarks']}")
+
+async def cmd_aigos_knowledge(query, domain=""):
+    """Search the AIG-OS knowledge base."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    result = ai.aigos_knowledge_query(query, domain)
+    total = result.get("total_matches", 0)
+    print(f"\n  Knowledge Search: '{query}' — {total} matches")
+    for dom, entries in result.get("results", {}).items():
+        print(f"    [{dom}]")
+        for key in list(entries.keys())[:5]:
+            print(f"      {key}")
+
+async def cmd_aigos_providers():
+    """List researched providers."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    providers = ai.aigos_providers()
+    print(f"\n  Researched Providers ({len(providers)}):")
+    for p in providers:
+        free = "FREE" if p.get("free_tier") else "PAID"
+        print(f"    {p['name']:25s}  type={p.get('type', 'unknown'):20s}  {free}")
+
+async def cmd_aigos_endpoints():
+    """List discovered endpoints."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    endpoints = ai.aigos_endpoints()
+    print(f"\n  Discovered Endpoints ({len(endpoints)}):")
+    for e in endpoints:
+        auth = e.get("auth", "unknown")
+        print(f"    {e['name']:25s}  type={e.get('type', 'unknown'):20s}  auth={auth}")
+
+async def main():
+    args = sys.argv[1:]
+    if not args or args[0] == "--help":
+        print("""
+  Uncle Frappe AI — Generation CLI
+
+  Usage:
+    python -m ai_generation.cli generate <prompt> [--style STYLE] [--width W] [--height H] [--provider NAME]
+    python -m ai_generation.cli video <prompt> [--duration SECS] [--width W] [--height H]
+    python -m ai_generation.cli enhance <prompt> [--style STYLE]
+    python -m ai_generation.cli providers               List available providers
+    python -m ai_generation.cli benchmarks [prompt]      Run provider benchmarks
+    python -m ai_generation.cli known                    List known providers from research
+    python -m ai_generation.cli stats                    Platform statistics
+
+    Phase 11 — Media Intelligence & Cinematic Production:
+    python -m ai_generation.cli analyze <prompt>         Analyze request & recommend strategy
+    python -m ai_generation.cli edit <op> <file> [prompt]  Image editing operations
+    python -m ai_generation.cli video-gen <prompt>       True AI video generation
+    python -m ai_generation.cli plan <request>           Plan complete media production
+    python -m ai_generation.cli character [create|list|prompt]  Character management
+    python -m ai_generation.cli project [create|list]    Project management
+    python -m ai_generation.cli cinema-dims              Cinema benchmark dimensions
+    python -m ai_generation.cli capabilities             Capability matrix
+    python -m ai_generation.cli intel                    Provider intelligence
+    python -m ai_generation.cli video-caps               Video generation capabilities
+
+    Phase 14 — AIG-OS Autonomous Agents:
+    aigos-status             Show AIG-OS orchestrator status
+    aigos-agents             List all autonomous agents
+    aigos-execute <req>      Execute through AIG-OS pipeline
+    aigos-leaderboard        Show benchmark leaderboard
+    aigos-knowledge <query>  Search knowledge base
+    aigos-providers          List researched providers
+    aigos-endpoints          List discovered endpoints
+
+  Phase 13 — Agent-Native Remote Execution:
+    python -m ai_generation.cli agent-generate <request>  Agent-native generation
+    python -m ai_generation.cli endpoints                 List all execution endpoints
+    python -m ai_generation.cli health-check              Check provider health
+    python -m ai_generation.cli cap-matrix                Capability registry
+    python -m ai_generation.cli discover                  Provider discovery
+    python -m ai_generation.cli add-endpoint <name> <url> Add remote endpoint
+    python -m ai_generation.cli classify <request>        Classify a request
+
+  Styles: photorealistic, cinematic, anime, digital_art, oil_painting, watercolor,
+          3d_render, minimalist, product_photo, food_photo, architectural, portrait
+""")
+    elif args[0] == "generate":
+        prompt = args[1] if len(args) > 1 else "a beautiful sunset"
+        style = ""
+        width, height, provider = 1024, 1024, ""
+        i = 2
+        while i < len(args):
+            if args[i] == "--style" and i + 1 < len(args):
+                style = args[i + 1]; i += 2
+            elif args[i] == "--width" and i + 1 < len(args):
+                width = int(args[i + 1]); i += 2
+            elif args[i] == "--height" and i + 1 < len(args):
+                height = int(args[i + 1]); i += 2
+            elif args[i] == "--provider" and i + 1 < len(args):
+                provider = args[i + 1]; i += 2
+            else:
+                i += 1
+        await cmd_generate(prompt, style=style, width=width, height=height, provider=provider)
+    elif args[0] == "video":
+        prompt = args[1] if len(args) > 1 else "a timelapse of clouds"
+        duration, width, height = 4.0, 1280, 720
+        i = 2
+        while i < len(args):
+            if args[i] == "--duration" and i + 1 < len(args):
+                duration = float(args[i + 1]); i += 2
+            elif args[i] == "--width" and i + 1 < len(args):
+                width = int(args[i + 1]); i += 2
+            elif args[i] == "--height" and i + 1 < len(args):
+                height = int(args[i + 1]); i += 2
+            else:
+                i += 1
+        await cmd_video(prompt, duration=duration, width=width, height=height)
+    elif args[0] == "enhance":
+        prompt = args[1] if len(args) > 1 else "a coffee cup"
+        style = "photorealistic"
+        if "--style" in args:
+            idx = args.index("--style")
+            if idx + 1 < len(args):
+                style = args[idx + 1]
+        await cmd_enhance(prompt, style=style)
+    elif args[0] == "providers":
+        await cmd_providers()
+    elif args[0] == "benchmarks":
+        prompt = args[1] if len(args) > 1 else "a beautiful landscape"
+        await cmd_benchmarks(prompt)
+    elif args[0] == "known":
+        await cmd_providers_list()
+    elif args[0] == "stats":
+        await cmd_stats()
+    elif args[0] == "analyze":
+        prompt = args[1] if len(args) > 1 else "a luxury cafe advertisement"
+        await cmd_analyze(prompt)
+    elif args[0] == "edit":
+        if len(args) < 3:
+            print("  Usage: edit <operation> <input_path> [prompt] [mask_path]")
+            print("  Operations: img2img, inpaint, outpaint, remove_bg, replace_bg, style_transfer, upscale")
+        else:
+            op_map = {
+                "img2img": "img2img", "inpaint": "inpainting", "outpaint": "outpainting",
+                "remove_bg": "background_removal", "replace_bg": "background_replacement",
+                "style_transfer": "style_transfer", "upscale": "upscale",
+            }
+            op = op_map.get(args[1], args[1])
+            await cmd_edit(op, args[2], prompt=args[3] if len(args) > 3 else "", mask=args[4] if len(args) > 4 else "")
+    elif args[0] == "video-gen":
+        prompt = args[1] if len(args) > 1 else "a cinematic scene"
+        image = ""
+        duration = 4.0
+        i = 2
+        while i < len(args):
+            if args[i] == "--image" and i + 1 < len(args):
+                image = args[i + 1]; i += 2
+            elif args[i] == "--duration" and i + 1 < len(args):
+                duration = float(args[i + 1]); i += 2
+            else:
+                i += 1
+        await cmd_video_gen(prompt, duration=duration, image_path=image)
+    elif args[0] == "plan":
+        request = args[1] if len(args) > 1 else "Create a luxury cafe advertisement"
+        await cmd_plan(request)
+    elif args[0] == "character":
+        action = args[1] if len(args) > 1 else "list"
+        name = args[2] if len(args) > 2 else ""
+        char_id = args[2] if len(args) > 2 else ""
+        await cmd_character(action, name=name, char_id=char_id)
+    elif args[0] == "project":
+        action = args[1] if len(args) > 1 else "list"
+        name = args[2] if len(args) > 2 else ""
+        await cmd_project(action, name=name)
+    elif args[0] == "cinema-dims":
+        await cmd_cinema_dims()
+    elif args[0] == "capabilities":
+        await cmd_capabilities()
+    elif args[0] == "intel":
+        await cmd_intel()
+    elif args[0] == "video-caps":
+        await cmd_video_caps()
+    elif args[0] == "agent-generate":
+        request = args[1] if len(args) > 1 else "a beautiful sunset"
+        await cmd_agent_generate(request)
+    elif args[0] == "endpoints":
+        await cmd_endpoints()
+    elif args[0] == "health-check":
+        await cmd_health()
+    elif args[0] == "cap-matrix":
+        await cmd_cap_matrix()
+    elif args[0] == "discover":
+        await cmd_discover()
+    elif args[0] == "add-endpoint":
+        if len(args) < 3:
+            print("  Usage: add-endpoint <name> <url>")
+        else:
+            await cmd_add_endpoint(args[1], args[2])
+    elif args[0] == "classify":
+        request = args[1] if len(args) > 1 else "generate a luxury cafe advertisement"
+        await cmd_classify(request)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

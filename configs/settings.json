@@ -1,0 +1,35 @@
+{
+  "firecrawl": {
+    "api_key": "${FIRECRAWL_API_KEY}"
+  },
+  "brightdata_mcp": {
+    "api_key": "${BRIGHT_DATA_API_KEY}"
+  },
+  "jina_reader": {
+    "api_key": "${JINA_API_KEY}"
+  },
+  "tavily": {
+    "api_key": "${TAVILY_API_KEY}"
+  },
+  "exa": {
+    "api_key": "${EXA_API_KEY}"
+  },
+  "serpapi": {
+    "api_key": "${SERPAPI_KEY}"
+  },
+  "apify": {
+    "api_key": "${APIFY_TOKEN}"
+  },
+  "selenium": {
+    "grid_url": "http://localhost:4444/wd/hub"
+  },
+  "searxng": {
+    "base_url": "http://localhost:8080"
+  },
+  "unified": {
+    "default_content_type": "static",
+    "default_concurrency": 5,
+    "default_timeout": 30,
+    "cache_enabled": true
+  }
+}

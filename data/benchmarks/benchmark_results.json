@@ -1,0 +1,160 @@
+{
+  "results": [
+    {
+      "benchmark_id": "4ade3e2f",
+      "provider": "test",
+      "model": "m1",
+      "category": "realism",
+      "prompt": "test",
+      "quality_score": 0.8,
+      "prompt_adherence": 0.9,
+      "latency_ms": 1000,
+      "success": true,
+      "error": "",
+      "timestamp": "2026-07-17T18:41:35.117279"
+    },
+    {
+      "benchmark_id": "d80d643f",
+      "provider": "a",
+      "model": "m1",
+      "category": "realism",
+      "prompt": "t",
+      "quality_score": 0.9,
+      "prompt_adherence": 0.8,
+      "latency_ms": 500,
+      "success": true,
+      "error": "",
+      "timestamp": "2026-07-17T18:41:35.127785"
+    },
+    {
+      "benchmark_id": "0a959fd6",
+      "provider": "b",
+      "model": "m2",
+      "category": "realism",
+      "prompt": "t",
+      "quality_score": 0.7,
+      "prompt_adherence": 0.6,
+      "latency_ms": 2000,
+      "success": true,
+      "error": "",
+      "timestamp": "2026-07-17T18:41:35.128928"
+    },
+    {
+      "benchmark_id": "90e9ef8a",
+      "provider": "test",
+      "model": "m1",
+      "category": "realism",
+      "prompt": "test",
+      "quality_score": 0.8,
+      "prompt_adherence": 0.9,
+      "latency_ms": 1000,
+      "success": true,
+      "error": "",
+      "timestamp": "2026-07-17T18:45:01.256738"
+    },
+    {
+      "benchmark_id": "c8c295d5",
+      "provider": "a",
+      "model": "m1",
+      "category": "realism",
+      "prompt": "t",
+      "quality_score": 0.9,
+      "prompt_adherence": 0.8,
+      "latency_ms": 500,
+      "success": true,
+      "error": "",
+      "timestamp": "2026-07-17T18:45:01.264262"
+    },
+    {
+      "benchmark_id": "90360008",
+      "provider": "b",
+      "model": "m2",
+      "category": "realism",
+      "prompt": "t",
+      "quality_score": 0.7,
+      "prompt_adherence": 0.6,
+      "latency_ms": 2000,
+      "success": true,
+      "error": "",
+      "timestamp": "2026-07-17T18:45:01.265310"
+    },
+    {
+      "benchmark_id": "35cd2aa4",
+      "provider": "test",
+      "model": "m1",
+      "category": "realism",
+      "prompt": "test",
+      "quality_score": 0.8,
+      "prompt_adherence": 0.9,
+      "latency_ms": 1000,
+      "success": true,
+      "error": "",
+      "timestamp": "2026-07-17T18:46:56.163761"
+    },
+    {
+      "benchmark_id": "5f83b308",
+      "provider": "a",
+      "model": "m1",
+      "category": "realism",
+      "prompt": "t",
+      "quality_score": 0.9,
+      "prompt_adherence": 0.8,
+      "latency_ms": 500,
+      "success": true,
+      "error": "",
+      "timestamp": "2026-07-17T18:46:56.171467"
+    },
+    {
+      "benchmark_id": "66610db0",
+      "provider": "b",
+      "model": "m2",
+      "category": "realism",
+      "prompt": "t",
+      "quality_score": 0.7,
+      "prompt_adherence": 0.6,
+      "latency_ms": 2000,
+      "success": true,
+      "error": "",
+      "timestamp": "2026-07-17T18:46:56.172465"
+    }
+  ],
+  "scores": [
+    {
+      "provider": "test",
+      "total_benchmarks": 3,
+      "avg_quality": 0.8,
+      "avg_prompt_adherence": 0.9,
+      "avg_latency_ms": 1000.0,
+      "success_rate": 1.0,
+      "composite_score": 0.91,
+      "category_scores": {
+        "realism": 0.65
+      }
+    },
+    {
+      "provider": "a",
+      "total_benchmarks": 3,
+      "avg_quality": 0.9,
+      "avg_prompt_adherence": 0.8,
+      "avg_latency_ms": 500.0,
+      "success_rate": 1.0,
+      "composite_score": 0.92,
+      "category_scores": {
+        "realism": 0.69
+      }
+    },
+    {
+      "provider": "b",
+      "total_benchmarks": 3,
+      "avg_quality": 0.7,
+      "avg_prompt_adherence": 0.6,
+      "avg_latency_ms": 2000.0,
+      "success_rate": 1.0,
+      "composite_score": 0.8,
+      "category_scores": {
+        "realism": 0.6
+      }
+    }
+  ],
+  "updated_at": "2026-07-17T18:46:56.172531"
+}

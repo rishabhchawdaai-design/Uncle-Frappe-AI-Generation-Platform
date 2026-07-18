@@ -1,0 +1,58 @@
+name: Research MCP Stack CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+          pip install -r core_platform/requirements.txt
+          pip install pytest pytest-asyncio pytest-cov
+
+      - name: Run unit tests
+        run: |
+          source venv/bin/activate
+          PYTHONPATH=. pytest core_platform/tests/ -v --tb=short
+
+      - name: Run health validation
+        run: |
+          source venv/bin/activate
+          PYTHONPATH=. python -c "
+          import asyncio
+          from platform.validation.health_checker import HealthChecker
+          checker = HealthChecker()
+          report = asyncio.run(checker.check_all())
+          print(f'Health Score: {report.overall_score}%')
+          assert report.overall_score > 0, 'Health check failed'
+          "
+
+      - name: Build Docker image
+        run: |
+          docker build -t research-mcp-stack -f core_platform/deployment/Dockerfile .
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy
+        run: echo "Production deployment step"
