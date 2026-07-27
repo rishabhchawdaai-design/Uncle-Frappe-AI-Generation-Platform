@@ -272,3 +272,39 @@ class EditProvider(Provider):
             prompt,
             **{k: v for k, v in kwargs.items() if k != "input_path"},
         )
+
+
+class AudioProvider(Provider):
+    """Base class for audio generation providers (TTS)."""
+    provider_type: ProviderType = ProviderType.AUDIO
+
+    @abstractmethod
+    async def generate_audio(
+        self,
+        text: str,
+        voice: str = "",
+        model: str = "",
+        **kwargs,
+    ) -> GenerationResult:
+        raise NotImplementedError
+
+    async def generate(self, prompt: str, **kwargs) -> GenerationResult:
+        return await self.generate_audio(prompt, **kwargs)
+
+
+class STTProvider(Provider):
+    """Base class for speech-to-text providers."""
+    provider_type: ProviderType = ProviderType.AUDIO
+
+    @abstractmethod
+    async def transcribe_audio(
+        self,
+        audio_path: str = "",
+        audio_bytes: Optional[bytes] = None,
+        model: str = "",
+        **kwargs,
+    ) -> GenerationResult:
+        raise NotImplementedError
+
+    async def generate(self, prompt: str, **kwargs) -> GenerationResult:
+        return await self.transcribe_audio(**kwargs)
