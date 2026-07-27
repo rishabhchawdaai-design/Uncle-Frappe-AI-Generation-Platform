@@ -310,9 +310,9 @@
 | PLG-05 | Plugin Event System | Plugin Ecosystem Research | VERIFIED |
 | PLG-06 | MCP Tool Registration | Plugin Ecosystem Research | VERIFIED |
 | PLG-07 | Plugin Versioning | Plugin Ecosystem Research | VERIFIED |
-| PLG-08 | Plugin Marketplace | Plugin Ecosystem Research | NOT_STARTED |
-| PLG-09 | Plugin Hot-Reloading | Plugin Ecosystem Research | NOT_STARTED |
-| PLG-10 | Plugin Cryptographic Signing | Plugin Ecosystem Research | NOT_STARTED |
+| PLG-08 | Plugin Marketplace | Plugin Ecosystem Research | VERIFIED |
+| PLG-09 | Plugin Hot-Reloading | Plugin Ecosystem Research | VERIFIED |
+| PLG-10 | Plugin Cryptographic Signing | Plugin Ecosystem Research | VERIFIED |
 
 ### Domain 21: Browser AI
 
@@ -435,7 +435,7 @@
 | Storage & Databases | 8 | 2 | 0 | 0 | 6 | 0 |
 | Networking & Mesh | 6 | 0 | 0 | 0 | 0 | 6 |
 | Observability | 11 | 6 | 0 | 0 | 5 | 0 |
-| Plugin System | 10 | 7 | 0 | 0 | 3 | 0 |
+| Plugin System | 10 | 10 | 0 | 0 | 0 | 0 |
 | Browser AI | 9 | 8 | 0 | 0 | 1 | 0 |
 | Edge AI | 9 | 7 | 0 | 0 | 2 | 0 |
 | Messaging & Events | 7 | 3 | 0 | 0 | 4 | 0 |
@@ -443,7 +443,7 @@
 | Agent Frameworks | 16 | 12 | 0 | 0 | 4 | 0 |
 | Distributed AI | 6 | 0 | 0 | 0 | 6 | 0 |
 | Core Platform | 20 | 20 | 0 | 0 | 0 | 0 |
-| **TOTAL** | **255** | **173** | **1** | **0** | **67** | **6** |
+| **TOTAL** | **255** | **176** | **1** | **0** | **64** | **6** |
 
 ---
 
@@ -454,11 +454,11 @@ Total capabilities:     270
 BLOCKED:                  6  (Networking & Mesh — requires K8s cluster)
 Eligible for completion: 264
 
-VERIFIED:              186
+VERIFIED:              189
 INTEGRATED:              3
 IMPLEMENTED:             2
 
-Verified completion = 205 / 264 = 77.7%
+Verified completion = 208 / 264 = 78.8%
 ```
 
 ---

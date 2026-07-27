@@ -156,6 +156,14 @@ MCP_GENERATION_TOOLS = {
     "edit_3d_model": {"name": "edit_3d_model", "description": "Edit 3D model (transform, clip, reconstruct, export).", "inputSchema": {"type": "object", "properties": {"operation": {"type": "string", "enum": ["transform", "clip", "paint", "morph", "reconstruct", "export", "import"]}, "input_path": {"type": "string"}, "output_path": {"type": "string", "default": ""}}, "required": ["operation", "input_path"]}},
     "get_gaussian_splat_profiles": {"name": "get_gaussian_splat_profiles", "description": "List Gaussian Splatting backends.", "inputSchema": {"type": "object", "properties": {}}},
     "get_mesh_profiles": {"name": "get_mesh_profiles", "description": "List mesh processing operations.", "inputSchema": {"type": "object", "properties": {}}},
+        "search_plugin_marketplace": {"name": "search_plugin_marketplace", "description": "Search plugin marketplace by name, tags, or source.", "inputSchema": {"type": "object", "properties": {"query": {"type": "string", "default": ""}, "tags": {"type": "array", "items": {"type": "string"}}, "source": {"type": "string", "enum": ["local", "github", "pypi", "custom_registry"]}}, "required": []}},
+    "list_plugin_marketplace": {"name": "list_plugin_marketplace", "description": "List all plugins in the marketplace.", "inputSchema": {"type": "object", "properties": {}}},
+    "watch_plugin": {"name": "watch_plugin", "description": "Watch a plugin directory for hot-reloading.", "inputSchema": {"type": "object", "properties": {"plugin_id": {"type": "string"}, "path": {"type": "string"}}, "required": ["plugin_id", "path"]}},
+    "check_plugin_changes": {"name": "check_plugin_changes", "description": "Check for plugin file changes.", "inputSchema": {"type": "object", "properties": {}}},
+    "reload_plugin": {"name": "reload_plugin", "description": "Hot-reload a changed plugin.", "inputSchema": {"type": "object", "properties": {"plugin_id": {"type": "string"}}, "required": ["plugin_id"]}},
+    "sign_plugin": {"name": "sign_plugin", "description": "Sign a plugin with cryptographic hash.", "inputSchema": {"type": "object", "properties": {"plugin_id": {"type": "string"}, "version": {"type": "string"}, "code": {"type": "string"}, "key_id": {"type": "string", "default": "default"}}, "required": ["plugin_id", "version", "code"]}},
+    "verify_plugin_signature": {"name": "verify_plugin_signature", "description": "Verify a plugin's cryptographic signature.", "inputSchema": {"type": "object", "properties": {"plugin_id": {"type": "string"}, "version": {"type": "string"}, "code": {"type": "string"}}, "required": ["plugin_id", "version", "code"]}},
+    "get_plugin_signatures": {"name": "get_plugin_signatures", "description": "List all plugin signatures.", "inputSchema": {"type": "object", "properties": {}}},
     "get_3d_edit_profiles": {"name": "get_3d_edit_profiles", "description": "List 3D editing operations.", "inputSchema": {"type": "object", "properties": {}}},
     "get_search_backend_profiles": {"name": "get_search_backend_profiles", "description": "List available external search backends.", "inputSchema": {"type": "object", "properties": {}}},
     "get_doc_intelligence_profiles": {"name": "get_doc_intelligence_profiles", "description": "List available document intelligence backends.", "inputSchema": {"type": "object", "properties": {}}},
@@ -1064,6 +1072,14 @@ class MCPGenerationTools:
             "edit_3d_model": self._handle_edit_3d_model,
             "get_gaussian_splat_profiles": self._handle_gaussian_splat_profiles,
             "get_mesh_profiles": self._handle_mesh_profiles,
+            "search_plugin_marketplace": self._handle_search_plugin_marketplace,
+            "list_plugin_marketplace": self._handle_list_plugin_marketplace,
+            "watch_plugin": self._handle_watch_plugin,
+            "check_plugin_changes": self._handle_check_plugin_changes,
+            "reload_plugin": self._handle_reload_plugin,
+            "sign_plugin": self._handle_sign_plugin,
+            "verify_plugin_signature": self._handle_verify_plugin_signature,
+            "get_plugin_signatures": self._handle_get_plugin_signatures,
             "get_3d_edit_profiles": self._handle_3d_edit_profiles,
             "get_search_backend_profiles": self._handle_search_backend_profiles,
             "get_doc_intelligence_profiles": self._handle_doc_intelligence_profiles,
@@ -1520,6 +1536,41 @@ class MCPGenerationTools:
     async def _handle_mesh_profiles(self, args):
         return {"profiles": self.sdk.mesh_processing.get_profiles()}
 
+    async def _handle_search_plugin_marketplace(self, args):
+        return {"results": self.sdk.plugin_marketplace.search(
+            query=args.get("query", ""),
+            tags=args.get("tags"),
+        )}
+
+    async def _handle_list_plugin_marketplace(self, args):
+        return {"entries": self.sdk.plugin_marketplace.list_entries(), "stats": self.sdk.plugin_marketplace.get_stats()}
+
+    async def _handle_watch_plugin(self, args):
+        self.sdk.plugin_hot_reloader.watch(args["plugin_id"], args["path"])
+        return {"status": "watching", "plugin_id": args["plugin_id"]}
+
+    async def _handle_check_plugin_changes(self, args):
+        changed = self.sdk.plugin_hot_reloader.check_for_changes()
+        return {"changed": changed}
+
+    async def _handle_reload_plugin(self, args):
+        return await self.sdk.plugin_hot_reloader.reload(args["plugin_id"])
+
+    async def _handle_sign_plugin(self, args):
+        sig = self.sdk.plugin_signer.sign_plugin(
+            args["plugin_id"], args["version"], args["code"],
+            key_id=args.get("key_id", "default"),
+        )
+        return sig.to_dict()
+
+    async def _handle_verify_plugin_signature(self, args):
+        sig = self.sdk.plugin_signer.verify_plugin(
+            args["plugin_id"], args["version"], args["code"],
+        )
+        return sig.to_dict()
+
+    async def _handle_get_plugin_signatures(self, args):
+        return {"signatures": self.sdk.plugin_signer.list_signatures(), "stats": self.sdk.plugin_signer.get_stats()}
     async def _handle_3d_edit_profiles(self, args):
         return {"profiles": self.sdk.edit_3d.get_profiles()}
     async def _handle_search_backend_profiles(self, args):

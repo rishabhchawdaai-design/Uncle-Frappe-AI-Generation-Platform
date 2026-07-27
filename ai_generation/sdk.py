@@ -69,6 +69,9 @@ class UncleFrappeAI:
         self._edge_ai = None
         # Phase 20 — Plugin System Foundation
         self._plugin_system = None
+        self._plugin_marketplace = None
+        self._plugin_hot_reloader = None
+        self._plugin_signer = None
         # Phase 21 — Observability Layer
         self._observability = None
         # Phase 22 — Search Systems
@@ -489,6 +492,9 @@ class UncleFrappeAI:
             "gaussian_splatting": self.gaussian_splatting.get_stats(),
             "mesh_processing": self.mesh_processing.get_stats(),
             "edit_3d": self.edit_3d.get_stats(),
+            "plugin_marketplace": self.plugin_marketplace.get_stats(),
+            "plugin_hot_reloader": self.plugin_hot_reloader.get_stats(),
+            "plugin_signer": self.plugin_signer.get_stats(),
             "cinematic_workflow": self.cinematic_workflow.get_stats(),
             "characters": self.character_manager.get_stats(),
             "projects": self.project_manager.get_stats(),
@@ -792,6 +798,27 @@ class UncleFrappeAI:
             from .plugin_system import PluginSystem
             self._plugin_system = PluginSystem(self.config)
         return self._plugin_system
+
+    @property
+    def plugin_marketplace(self):
+        if self._plugin_marketplace is None:
+            from .plugin_extensions import PluginMarketplace
+            self._plugin_marketplace = PluginMarketplace(self.config)
+        return self._plugin_marketplace
+
+    @property
+    def plugin_hot_reloader(self):
+        if self._plugin_hot_reloader is None:
+            from .plugin_extensions import PluginHotReloader
+            self._plugin_hot_reloader = PluginHotReloader(self.config)
+        return self._plugin_hot_reloader
+
+    @property
+    def plugin_signer(self):
+        if self._plugin_signer is None:
+            from .plugin_extensions import PluginSigner
+            self._plugin_signer = PluginSigner(self.config)
+        return self._plugin_signer
 
     @property
     def edge_ai(self):
