@@ -61,9 +61,9 @@
 | VID-02 | Text-to-Video (Fal.ai) | Image Gen Research | VERIFIED |
 | VID-03 | Text-to-Video (Stability AI) | Image Gen Research | VERIFIED |
 | VID-04 | Image-to-Video | Image Gen Research | VERIFIED |
-| VID-05 | Video Editing | Image Gen Research | NOT_STARTED |
-| VID-06 | Video Enhancement | Image Gen Research | NOT_STARTED |
-| VID-07 | Video Upscaling | Image Gen Research | NOT_STARTED |
+| VID-05 | Video Editing | Image Gen Research | VERIFIED |
+| VID-06 | Video Enhancement | Image Gen Research | VERIFIED |
+| VID-07 | Video Upscaling | Image Gen Research | VERIFIED |
 | VID-08 | Lip Sync | Image Gen Research | NOT_STARTED |
 | VID-09 | Avatar Generation | Image Gen Research | NOT_STARTED |
 
@@ -419,7 +419,7 @@
 |--------|-------|----------|------------|-------------|-------------|---------|
 | Image Generation | 13 | 13 | 0 | 0 | 0 | 0 |
 | Image Editing | 8 | 7 | 0 | 0 | 1 | 0 |
-| Video Generation | 9 | 4 | 0 | 0 | 5 | 0 |
+| Video Generation | 9 | 7 | 0 | 0 | 2 | 0 |
 | Audio Generation | 10 | 5 | 0 | 0 | 5 | 0 |
 | 3D Generation | 8 | 4 | 1 | 0 | 3 | 0 |
 | OCR & Document | 10 | 5 | 0 | 0 | 5 | 0 |
@@ -443,7 +443,7 @@
 | Agent Frameworks | 16 | 12 | 0 | 0 | 4 | 0 |
 | Distributed AI | 6 | 0 | 0 | 0 | 6 | 0 |
 | Core Platform | 20 | 20 | 0 | 0 | 0 | 0 |
-| **TOTAL** | **255** | **152** | **5** | **0** | **88** | **6** |
+| **TOTAL** | **255** | **155** | **5** | **0** | **85** | **6** |
 
 ---
 
@@ -454,11 +454,11 @@ Total capabilities:     270
 BLOCKED:                  6  (Networking & Mesh — requires K8s cluster)
 Eligible for completion: 264
 
-VERIFIED:              165
+VERIFIED:              168
 INTEGRATED:              7
 IMPLEMENTED:             2
 
-Verified completion = 182 / 264 = 68.9%
+Verified completion = 185 / 264 = 70.1%
 ```
 
 ---

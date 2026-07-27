@@ -124,6 +124,15 @@ MCP_GENERATION_TOOLS = {
     "list_edit_operations": {"name": "list_edit_operations", "description": "List all supported image editing operations.", "inputSchema": {"type": "object", "properties": {}}},
     "generate_video_ai": {"name": "generate_video_ai", "description": "Generate true AI video (text-to-video or image-to-video).", "inputSchema": {"type": "object", "properties": {"prompt": {"type": "string"}, "mode": {"type": "string", "default": "text_to_video"}, "image_path": {"type": "string"}, "duration_secs": {"type": "number", "default": 4.0}}, "required": ["prompt"]}},
     "get_video_capabilities": {"name": "get_video_capabilities", "description": "Get video generation capabilities.", "inputSchema": {"type": "object", "properties": {}}},
+    "edit_video": {"name": "edit_video", "description": "Execute a video editing operation (trim, concat, transition, speed, crop, resize, rotate, reverse, stabilize, watermark, audio_extract, audio_replace, subtitle_burn, enhance, frame_interpolation, upscale).", "inputSchema": {"type": "object", "properties": {"operation": {"type": "string", "enum": ["trim", "concat", "transition", "speed", "crop", "resize", "rotate", "reverse", "stabilize", "watermark", "audio_extract", "audio_replace", "subtitle_burn", "enhance", "frame_interpolation", "upscale"]}, "input_path": {"type": "string"}, "input_paths": {"type": "array", "items": {"type": "string"}}, "output_path": {"type": "string", "default": ""}}, "required": ["operation"]}},
+    "trim_video": {"name": "trim_video", "description": "Trim video to start/end timestamps.", "inputSchema": {"type": "object", "properties": {"input_path": {"type": "string"}, "output_path": {"type": "string", "default": ""}, "start": {"type": "number", "default": 0.0}, "end": {"type": "number", "default": 0.0}}, "required": ["input_path"]}},
+    "concat_videos": {"name": "concat_videos", "description": "Concatenate multiple video files sequentially.", "inputSchema": {"type": "object", "properties": {"input_paths": {"type": "array", "items": {"type": "string"}}, "output_path": {"type": "string", "default": ""}}, "required": ["input_paths"]}},
+    "interpolate_video_frames": {"name": "interpolate_video_frames", "description": "Increase FPS using frame interpolation (RIFE/minterpolate).", "inputSchema": {"type": "object", "properties": {"input_path": {"type": "string"}, "output_path": {"type": "string", "default": ""}, "target_fps": {"type": "number", "default": 60.0}}, "required": ["input_path"]}},
+    "upscale_video": {"name": "upscale_video", "description": "Upscale video resolution (2x or 4x) using Lanczos or Real-ESRGAN.", "inputSchema": {"type": "object", "properties": {"input_path": {"type": "string"}, "output_path": {"type": "string", "default": ""}, "scale_factor": {"type": "integer", "default": 2, "enum": [2, 4]}}, "required": ["input_path"]}},
+    "enhance_video": {"name": "enhance_video", "description": "Enhance video quality (denoise, sharpen, color grade).", "inputSchema": {"type": "object", "properties": {"input_path": {"type": "string"}, "output_path": {"type": "string", "default": ""}, "denoise": {"type": "boolean", "default": True}, "sharpen": {"type": "boolean", "default": True}}, "required": ["input_path"]}},
+    "get_video_edit_profiles": {"name": "get_video_edit_profiles", "description": "List all video editing operations and their requirements.", "inputSchema": {"type": "object", "properties": {}}},
+    "probe_video": {"name": "probe_video", "description": "Probe video file metadata (resolution, fps, codec, duration).", "inputSchema": {"type": "object", "properties": {"input_path": {"type": "string"}}, "required": ["input_path"]}},
+
     "create_cinematic_pipeline": {"name": "create_cinematic_pipeline", "description": "Create cinematic production pipeline from template.", "inputSchema": {"type": "object", "properties": {"template": {"type": "string", "enum": ["full_cinematic", "quick_ad", "storyboard_only", "character_design", "post_production"]}}, "required": ["template"]}},
     "list_cinematic_templates": {"name": "list_cinematic_templates", "description": "List cinematic pipeline templates.", "inputSchema": {"type": "object", "properties": {}}},
     "plan_media_production": {"name": "plan_media_production", "description": "Plan complete media production from natural language.", "inputSchema": {"type": "object", "properties": {"request": {"type": "string"}}, "required": ["request"]}},
@@ -994,6 +1003,14 @@ class MCPGenerationTools:
             "list_edit_operations": self._handle_list_edits,
             "generate_video_ai": self._handle_video_ai,
             "get_video_capabilities": self._handle_video_caps,
+            "edit_video": self._handle_edit_video,
+            "trim_video": self._handle_trim_video,
+            "concat_videos": self._handle_concat_videos,
+            "interpolate_video_frames": self._handle_interpolate_frames,
+            "upscale_video": self._handle_upscale_video,
+            "enhance_video": self._handle_enhance_video,
+            "get_video_edit_profiles": self._handle_video_edit_profiles,
+            "probe_video": self._handle_probe_video,
             "create_cinematic_pipeline": self._handle_create_pipeline,
             "list_cinematic_templates": self._handle_list_templates_cinematic,
             "plan_media_production": self._handle_plan,
@@ -1226,6 +1243,58 @@ class MCPGenerationTools:
 
     async def _handle_video_caps(self, args):
         return {"capabilities": self.sdk.video_generation.get_capabilities_report()}
+    async def _handle_edit_video(self, args):
+        from ai_generation.video_editing import VideoEditOperation
+        op_str = args.get("operation", "trim")
+        op = VideoEditOperation(op_str)
+        result = await self.sdk.video_editing.execute(
+            op, input_path=args.get("input_path", ""),
+            input_paths=args.get("input_paths", []),
+            output_path=args.get("output_path", ""),
+            **{k: v for k, v in args.items() if k not in ("operation", "input_path", "input_paths", "output_path")},
+        )
+        return result.to_dict()
+
+    async def _handle_trim_video(self, args):
+        result = await self.sdk.video_editing.trim(
+            args["input_path"], output_path=args.get("output_path", ""),
+            start=args.get("start", 0.0), end=args.get("end", 0.0),
+        )
+        return result.to_dict()
+
+    async def _handle_concat_videos(self, args):
+        result = await self.sdk.video_editing.concat(
+            args["input_paths"], output_path=args.get("output_path", ""),
+        )
+        return result.to_dict()
+
+    async def _handle_interpolate_frames(self, args):
+        result = await self.sdk.video_editing.interpolate_frames(
+            args["input_path"], output_path=args.get("output_path", ""),
+            target_fps=args.get("target_fps", 60.0),
+        )
+        return result.to_dict()
+
+    async def _handle_upscale_video(self, args):
+        result = await self.sdk.video_editing.upscale(
+            args["input_path"], output_path=args.get("output_path", ""),
+            scale_factor=args.get("scale_factor", 2),
+        )
+        return result.to_dict()
+
+    async def _handle_enhance_video(self, args):
+        result = await self.sdk.video_editing.enhance(
+            args["input_path"], output_path=args.get("output_path", ""),
+            denoise=args.get("denoise", True), sharpen=args.get("sharpen", True),
+        )
+        return result.to_dict()
+
+    async def _handle_video_edit_profiles(self, args):
+        return {"profiles": self.sdk.video_editing.get_profiles(), "available": self.sdk.video_editing.get_available_operations()}
+
+    async def _handle_probe_video(self, args):
+        return self.sdk.video_editing.probe(args["input_path"])
+
 
     async def _handle_create_pipeline(self, args):
         pipeline = self.sdk.cinematic_workflow.create_pipeline(

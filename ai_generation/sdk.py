@@ -34,6 +34,7 @@ class UncleFrappeAI:
         self._media_intelligence = None
         self._image_editing = None
         self._video_generation = None
+        self._video_editing = None
         self._cinematic_workflow = None
         self._character_manager = None
         self._project_manager = None
@@ -169,6 +170,13 @@ class UncleFrappeAI:
             from .video_generation import VideoGenerationLayer
             self._video_generation = VideoGenerationLayer(self.config)
         return self._video_generation
+
+    @property
+    def video_editing(self):
+        if self._video_editing is None:
+            from .video_editing import VideoEditingEngine
+            self._video_editing = VideoEditingEngine(self.config)
+        return self._video_editing
 
     @property
     def cinematic_workflow(self):
@@ -443,6 +451,7 @@ class UncleFrappeAI:
             "media_intelligence": {"total_analyses": len(getattr(self.media_intelligence, '_history', []))},
             "image_editing": self.image_editing.get_stats(),
             "video_generation": self.video_generation.get_stats(),
+            "video_editing": self.video_editing.get_stats(),
             "cinematic_workflow": self.cinematic_workflow.get_stats(),
             "characters": self.character_manager.get_stats(),
             "projects": self.project_manager.get_stats(),
@@ -488,6 +497,45 @@ class UncleFrappeAI:
 
     async def image_to_video(self, image_path, prompt="", **kwargs):
         return await self.video_generation.image_to_video(image_path, prompt, **kwargs)
+
+    # ── Video Editing Convenience Methods ──
+
+    async def trim_video(self, input_path, output_path="", start=0.0, end=0.0, **kwargs):
+        return await self.video_editing.trim(input_path, output_path, start=start, end=end, **kwargs)
+
+    async def concat_videos(self, input_paths, output_path="", **kwargs):
+        return await self.video_editing.concat(input_paths, output_path, **kwargs)
+
+    async def transition_videos(self, input_paths, output_path="", duration=1.0, **kwargs):
+        return await self.video_editing.transition(input_paths, output_path, duration=duration, **kwargs)
+
+    async def change_video_speed(self, input_path, output_path="", factor=1.0, **kwargs):
+        return await self.video_editing.speed(input_path, output_path, factor=factor, **kwargs)
+
+    async def interpolate_video_frames(self, input_path, output_path="", target_fps=60.0, **kwargs):
+        return await self.video_editing.interpolate_frames(input_path, output_path, target_fps=target_fps, **kwargs)
+
+    async def upscale_video(self, input_path, output_path="", scale_factor=2, **kwargs):
+        return await self.video_editing.upscale(input_path, output_path, scale_factor=scale_factor, **kwargs)
+
+    async def enhance_video(self, input_path, output_path="", **kwargs):
+        return await self.video_editing.enhance(input_path, output_path, **kwargs)
+
+    async def crop_video(self, input_path, output_path="", x=0, y=0, width=0, height=0, **kwargs):
+        return await self.video_editing.crop(input_path, output_path, x=x, y=y, width=width, height=height, **kwargs)
+
+    async def resize_video(self, input_path, output_path="", width=0, height=0, **kwargs):
+        return await self.video_editing.resize(input_path, output_path, width=width, height=height, **kwargs)
+
+    async def watermark_video(self, input_path, output_path="", text="", position="top_right", **kwargs):
+        return await self.video_editing.watermark(input_path, output_path, text=text, position=position, **kwargs)
+
+    async def extract_video_audio(self, input_path, output_path="", **kwargs):
+        return await self.video_editing.extract_audio(input_path, output_path, **kwargs)
+
+    async def reverse_video(self, input_path, output_path="", **kwargs):
+        from .video_editing import VideoEditOperation
+        return await self.video_editing.execute(VideoEditOperation.REVERSE, input_path=input_path, output_path=output_path, **kwargs)
 
     def create_cinematic_pipeline(self, template="full_cinematic", name="", **kwargs):
         return self.cinematic_workflow.create_pipeline(template=template, name=name, **kwargs)
