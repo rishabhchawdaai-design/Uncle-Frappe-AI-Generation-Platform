@@ -147,13 +147,13 @@
 | EXE-01 | 4-Layer Execution Routing | Execution Strategy Library | VERIFIED |
 | EXE-02 | Single GPU Execution | Execution Strategy Library | VERIFIED |
 | EXE-03 | Streaming Inference | Execution Strategy Library | VERIFIED |
-| EXE-04 | CPU Offload | Execution Strategy Library | NOT_STARTED |
-| EXE-05 | Tensor Parallelism | Execution Strategy Library | NOT_STARTED |
-| EXE-06 | Pipeline Parallelism | Execution Strategy Library | NOT_STARTED |
+| EXE-04 | CPU Offload | Execution Strategy Library | VERIFIED |
+| EXE-05 | Tensor Parallelism | Execution Strategy Library | VERIFIED |
+| EXE-06 | Pipeline Parallelism | Execution Strategy Library | VERIFIED |
 | EXE-07 | Expert Parallelism (MoE) | Execution Strategy Library | NOT_STARTED |
 | EXE-08 | Data Parallelism | Execution Strategy Library | NOT_STARTED |
 | EXE-09 | Sequence/Context Parallelism | Execution Strategy Library | NOT_STARTED |
-| EXE-10 | Disk Offload | Execution Strategy Library | NOT_STARTED |
+| EXE-10 | Disk Offload | Execution Strategy Library | VERIFIED |
 
 ### Domain 10: Fault Tolerance
 
@@ -425,7 +425,7 @@
 | OCR & Document | 10 | 5 | 0 | 0 | 5 | 0 |
 | Search Systems | 11 | 8 | 0 | 0 | 3 | 0 |
 | Routing & Negotiation | 9 | 9 | 0 | 0 | 0 | 0 |
-| Execution Engine | 10 | 3 | 0 | 0 | 7 | 0 |
+| Execution Engine | 10 | 7 | 0 | 0 | 3 | 0 |
 | Fault Tolerance | 10 | 4 | 2 | 0 | 4 | 0 |
 | Benchmarking | 8 | 5 | 0 | 0 | 3 | 0 |
 | Capability Graph | 9 | 3 | 1 | 0 | 5 | 0 |
