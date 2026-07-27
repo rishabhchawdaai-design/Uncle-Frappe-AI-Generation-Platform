@@ -73,6 +73,7 @@ class UncleFrappeAI:
         self._observability = None
         # Phase 22 — Search Systems
         self._search_systems = None
+        self._search_backends = None
         # Phase 23 — OCR & Document Intelligence
         self._ocr_engine = None
         self._document_intelligence = None
@@ -481,6 +482,7 @@ class UncleFrappeAI:
             "music_generation": self.music_generation.get_stats(),
             "audio_enhancement": self.audio_enhancement.get_stats(),
             "document_intelligence": self.document_intelligence.get_stats(),
+            "search_backends": self.search_backends.get_stats(),
             "cinematic_workflow": self.cinematic_workflow.get_stats(),
             "characters": self.character_manager.get_stats(),
             "projects": self.project_manager.get_stats(),
@@ -739,6 +741,13 @@ class UncleFrappeAI:
             from .search_systems import SearchManager
             self._search_systems = SearchManager(self.config)
         return self._search_systems
+
+    @property
+    def search_backends(self):
+        if self._search_backends is None:
+            from .search_backends import SearchBackendManager
+            self._search_backends = SearchBackendManager(self.config)
+        return self._search_backends
 
     @property
     def observability(self):

@@ -145,6 +145,11 @@ MCP_GENERATION_TOOLS = {
         "parse_document": {"name": "parse_document", "description": "Parse document to Markdown (PDF, DOCX, HTML, EPUB, PPTX). Uses Marker, Nougat, or Docling.", "inputSchema": {"type": "object", "properties": {"input_path": {"type": "string"}, "output_path": {"type": "string", "default": ""}, "backend": {"type": "string", "enum": ["auto", "marker", "nougat", "docling", "builtin"], "default": "auto"}}, "required": ["input_path"]}},
     "extract_tables": {"name": "extract_tables", "description": "Extract tables from PDF documents. Uses Camelot or Tabula.", "inputSchema": {"type": "object", "properties": {"input_path": {"type": "string"}, "backend": {"type": "string", "enum": ["auto", "camelot", "tabula", "builtin"], "default": "auto"}, "pages": {"type": "string", "default": "all"}}, "required": ["input_path"]}},
     "analyze_layout": {"name": "analyze_layout", "description": "Analyze document layout (regions, columns, headers). Uses LayoutLMv3, DETR, or Surya.", "inputSchema": {"type": "object", "properties": {"input_path": {"type": "string"}, "backend": {"type": "string", "enum": ["auto", "layoutlmv3", "detr", "surya", "builtin"], "default": "auto"}}, "required": ["input_path"]}},
+        "search_external": {"name": "search_external", "description": "Search using external backends (Meilisearch, OpenSearch, Vector).", "inputSchema": {"type": "object", "properties": {"backend": {"type": "string", "enum": ["meilisearch", "opensearch", "vector", "qdrant", "chroma"]}, "index_name": {"type": "string"}, "query": {"type": "string"}, "limit": {"type": "integer", "default": 20}}, "required": ["backend", "index_name", "query"]}},
+    "vector_search": {"name": "vector_search", "description": "Semantic similarity search using sentence-transformers embeddings.", "inputSchema": {"type": "object", "properties": {"collection": {"type": "string"}, "query": {"type": "string"}, "limit": {"type": "integer", "default": 10}, "model": {"type": "string", "default": ""}}, "required": ["collection", "query"]}},
+    "index_documents_external": {"name": "index_documents_external", "description": "Index documents into an external search backend.", "inputSchema": {"type": "object", "properties": {"backend": {"type": "string", "enum": ["meilisearch", "opensearch", "vector"]}, "collection": {"type": "string"}, "documents": {"type": "array", "items": {"type": "object"}}}, "required": ["backend", "collection", "documents"]}},
+    "check_search_health": {"name": "check_search_health", "description": "Check health of external search backends.", "inputSchema": {"type": "object", "properties": {}}},
+    "get_search_backend_profiles": {"name": "get_search_backend_profiles", "description": "List available external search backends.", "inputSchema": {"type": "object", "properties": {}}},
     "get_doc_intelligence_profiles": {"name": "get_doc_intelligence_profiles", "description": "List available document intelligence backends.", "inputSchema": {"type": "object", "properties": {}}},
     "concat_audio": {"name": "concat_audio", "description": "Concatenate multiple audio files sequentially.", "inputSchema": {"type": "object", "properties": {"input_paths": {"type": "array", "items": {"type": "string"}}, "output_path": {"type": "string", "default": ""}}, "required": ["input_paths"]}},
     "get_music_profiles": {"name": "get_music_profiles", "description": "List available music/SFX generation models.", "inputSchema": {"type": "object", "properties": {}}},
@@ -1040,6 +1045,11 @@ class MCPGenerationTools:
             "parse_document": self._handle_parse_document,
             "extract_tables": self._handle_extract_tables,
             "analyze_layout": self._handle_analyze_layout,
+            "search_external": self._handle_search_external,
+            "vector_search": self._handle_vector_search,
+            "index_documents_external": self._handle_index_documents_external,
+            "check_search_health": self._handle_check_search_health,
+            "get_search_backend_profiles": self._handle_search_backend_profiles,
             "get_doc_intelligence_profiles": self._handle_doc_intelligence_profiles,
             "concat_audio": self._handle_concat_audio,
             "get_music_profiles": self._handle_music_profiles,
@@ -1426,6 +1436,35 @@ class MCPGenerationTools:
         )
         return result.to_dict()
 
+    async def _handle_search_external(self, args):
+        from ai_generation.search_backends import ExternalSearchBackend
+        backend = ExternalSearchBackend(args["backend"])
+        result = await self.sdk.search_backends.search(
+            backend, args["index_name"], args["query"],
+            limit=args.get("limit", 20),
+        )
+        return result.to_dict()
+
+    async def _handle_vector_search(self, args):
+        result = await self.sdk.search_backends.vector_search(
+            args["collection"], args["query"],
+            limit=args.get("limit", 10),
+            model=args.get("model", ""),
+        )
+        return result.to_dict()
+
+    async def _handle_index_documents_external(self, args):
+        from ai_generation.search_backends import ExternalSearchBackend
+        backend = ExternalSearchBackend(args["backend"])
+        return await self.sdk.search_backends.index_documents(
+            backend, args["collection"], args["documents"],
+        )
+
+    async def _handle_check_search_health(self, args):
+        return await self.sdk.search_backends.check_health()
+
+    async def _handle_search_backend_profiles(self, args):
+        return {"profiles": self.sdk.search_backends.get_profiles(), "stats": self.sdk.search_backends.get_stats()}
     async def _handle_doc_intelligence_profiles(self, args):
         return {
             "parsing": self.sdk.document_intelligence.get_parsing_profiles(),

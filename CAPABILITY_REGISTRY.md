@@ -122,9 +122,9 @@
 | SRC-06 | Knowledge Base Search | Search Systems Research | VERIFIED |
 | SRC-07 | Decision Ledger Search | Search Systems Research | VERIFIED |
 | SRC-08 | Benchmark History Search | Search Systems Research | VERIFIED |
-| SRC-09 | Meilisearch Backend | Search Systems Research | NOT_STARTED |
-| SRC-10 | OpenSearch Backend | Search Systems Research | NOT_STARTED |
-| SRC-11 | Vector/Semantic Search | Search Systems Research | NOT_STARTED |
+| SRC-09 | Meilisearch Backend | Search Systems Research | VERIFIED |
+| SRC-10 | OpenSearch Backend | Search Systems Research | VERIFIED |
+| SRC-11 | Vector/Semantic Search | Search Systems Research | VERIFIED |
 
 ### Domain 8: Routing & Negotiation
 
@@ -423,7 +423,7 @@
 | Audio Generation | 10 | 9 | 0 | 0 | 1 | 0 |
 | 3D Generation | 8 | 4 | 1 | 0 | 3 | 0 |
 | OCR & Document | 10 | 8 | 0 | 0 | 2 | 0 |
-| Search Systems | 11 | 8 | 0 | 0 | 3 | 0 |
+| Search Systems | 11 | 11 | 0 | 0 | 0 | 0 |
 | Routing & Negotiation | 9 | 9 | 0 | 0 | 0 | 0 |
 | Execution Engine | 10 | 10 | 0 | 0 | 0 | 0 |
 | Fault Tolerance | 10 | 4 | 2 | 0 | 4 | 0 |
@@ -443,7 +443,7 @@
 | Agent Frameworks | 16 | 12 | 0 | 0 | 4 | 0 |
 | Distributed AI | 6 | 0 | 0 | 0 | 6 | 0 |
 | Core Platform | 20 | 20 | 0 | 0 | 0 | 0 |
-| **TOTAL** | **255** | **162** | **5** | **0** | **78** | **6** |
+| **TOTAL** | **255** | **165** | **5** | **0** | **75** | **6** |
 
 ---
 
@@ -454,11 +454,11 @@ Total capabilities:     270
 BLOCKED:                  6  (Networking & Mesh — requires K8s cluster)
 Eligible for completion: 264
 
-VERIFIED:              175
+VERIFIED:              178
 INTEGRATED:              7
 IMPLEMENTED:             2
 
-Verified completion = 192 / 264 = 72.7%
+Verified completion = 195 / 264 = 73.9%
 ```
 
 ---
