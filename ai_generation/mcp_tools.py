@@ -1023,6 +1023,11 @@ MCP_GENERATION_TOOLS = {
     "run_multi_agent_review": {"name": "run_multi_agent_review", "description": "Run multi-agent code review (security, patterns, performance, style, testing, architecture).", "inputSchema": {"type": "object", "properties": {"code": {"type": "string", "default": ""}, "file_path": {"type": "string", "default": "<input>"}, "roles": {"type": "array", "items": {"type": "string"}, "default": []}}, "required": []}},
     "verify_pr": {"name": "verify_pr", "description": "Run PR verification checklist (tests, secrets, exceptions, docstrings, type hints).", "inputSchema": {"type": "object", "properties": {"code": {"type": "string", "default": ""}, "file_path": {"type": "string", "default": "<input>"}, "checks": {"type": "array", "items": {"type": "string"}, "default": []}}, "required": []}},
     "track_tech_debt": {"name": "track_tech_debt", "description": "Scan codebase for technical debt items (TODOs, FIXMEs, hacks, missing docs).", "inputSchema": {"type": "object", "properties": {"files": {"type": "object", "description": "Dict of {filepath: content}"}}, "required": []}},
+    "run_orchestration_pipeline": {"name": "run_orchestration_pipeline", "description": "Run full multi-agent orchestration pipeline (intent, planning, QA, review, security, delivery).", "inputSchema": {"type": "object", "properties": {"code": {"type": "string", "default": ""}, "file_path": {"type": "string", "default": "<input>"}, "description": {"type": "string", "default": ""}}, "required": []}},
+    "plan_agents": {"name": "plan_agents", "description": "Select appropriate review agents for a task.", "inputSchema": {"type": "object", "properties": {"task_description": {"type": "string"}}, "required": ["task_description"]}},
+    "add_kb_entry": {"name": "add_kb_entry", "description": "Add an entry to the knowledge base context.", "inputSchema": {"type": "object", "properties": {"key": {"type": "string"}, "content": {"type": "string"}, "source": {"type": "string", "default": ""}}, "required": ["key", "content"]}},
+    "retrieve_kb": {"name": "retrieve_kb", "description": "Retrieve relevant knowledge base entries for a query.", "inputSchema": {"type": "object", "properties": {"query": {"type": "string"}, "max_results": {"type": "integer", "default": 5}}, "required": ["query"]}},
+
 }
 class MCPGenerationTools:
     """Handler for MCP generation tool calls."""
@@ -1228,6 +1233,10 @@ class MCPGenerationTools:
             "run_multi_agent_review": self._handle_run_multi_agent_review,
             "verify_pr": self._handle_verify_pr,
             "track_tech_debt": self._handle_track_tech_debt,
+            "run_orchestration_pipeline": self._handle_run_orchestration_pipeline,
+            "plan_agents": self._handle_plan_agents,
+            "add_kb_entry": self._handle_add_kb_entry,
+            "retrieve_kb": self._handle_retrieve_kb,
         }
         handler = handlers.get(tool_name)
         if not handler:
@@ -2330,6 +2339,31 @@ class MCPGenerationTools:
         files = args.get("files", {})
         items = self.sdk.debt_tracker.scan_codebase(files)
         return {"items": [i.to_dict() for i in items], "count": len(items), "stats": self.sdk.debt_tracker.get_stats()}
+
+    async def _handle_run_orchestration_pipeline(self, args):
+        code = args.get("code", "")
+        file_path = args.get("file_path", "<input>")
+        description = args.get("description", "")
+        result = self.sdk.orchestration_pipeline.run_full_pipeline(code, file_path, description)
+        return result
+
+    async def _handle_plan_agents(self, args):
+        task_description = args.get("task_description", "")
+        agents = self.sdk.orchestration_pipeline.plan_agents(task_description)
+        return {"agents": agents, "count": len(agents)}
+
+    async def _handle_add_kb_entry(self, args):
+        key = args.get("key", "")
+        content_val = args.get("content", "")
+        source = args.get("source", "")
+        self.sdk.orchestration_pipeline.knowledge_base.add_entry(key, content_val, source)
+        return {"success": True, "stats": self.sdk.orchestration_pipeline.knowledge_base.get_stats()}
+
+    async def _handle_retrieve_kb(self, args):
+        query = args.get("query", "")
+        max_results = args.get("max_results", 5)
+        results = self.sdk.orchestration_pipeline.knowledge_base.retrieve(query, max_results)
+        return {"results": [{"key": r.key, "content": r.content, "source": r.source, "relevance": r.relevance} for r in results], "count": len(results)}
 
 def get_mcp_generation_tools():
     return MCP_GENERATION_TOOLS

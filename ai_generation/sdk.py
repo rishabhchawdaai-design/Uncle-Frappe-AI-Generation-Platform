@@ -114,6 +114,9 @@ class UncleFrappeAI:
         # Phase 15 — Negotiation Engine & Supervisor Tree
         self._negotiation_engine = None
         self._supervisor = None
+        # Phase 34 — Multi-Agent Orchestration
+        self._orchestration_pipeline = None
+        self._knowledge_base = None
         # Phase 33 — Code Analysis Engines
         self._secret_scanner = None
         self._static_analyzer = None
@@ -234,6 +237,21 @@ class UncleFrappeAI:
             from .code_analysis import TechnicalDebtTracker
             self._debt_tracker = TechnicalDebtTracker(self.config.get("debt_tracker", {}))
         return self._debt_tracker
+
+    # Phase 34 — Multi-Agent Orchestration
+    @property
+    def orchestration_pipeline(self):
+        if self._orchestration_pipeline is None:
+            from .orchestration import OrchestrationPipeline, PipelineConfig
+            self._orchestration_pipeline = OrchestrationPipeline(PipelineConfig())
+        return self._orchestration_pipeline
+
+    @property
+    def knowledge_base(self):
+        if self._knowledge_base is None:
+            from .orchestration import KnowledgeBaseContext
+            self._knowledge_base = KnowledgeBaseContext()
+        return self._knowledge_base
 
     @property
     def workflow_engine(self):

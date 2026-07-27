@@ -515,3 +515,28 @@ Verified completion = 200 / 204 = 98.0%
 - **Tests**: 12 tests in `test_code_analysis.py`
 - **MCP Tools**: `track_tech_debt`
 - **Pattern**: Debt cataloging with categories (TODO, FIXME, HACK, deprecated, code smell, missing docs, type ignore), priority levels, resolution tracking, statistics.
+
+### QE-15 — Orchestration Pipeline (extracted from autodev-studio)
+- **Status**: VERIFIED
+- **Module**: `ai_generation/orchestration.py` → `OrchestrationPipeline`
+- **Tests**: 32 tests in `test_orchestration.py`
+- **MCP Tools**: `run_orchestration_pipeline`, `plan_agents`, `add_kb_entry`, `retrieve_kb`
+- **Pattern**: Multi-agent orchestration pipeline with stages (intent, planning, QA, review, security, delivery). Bounded revision loop (Dev → QA → Review cycle). Knowledge base context with RAG retrieval. Domain-specific agent selection. Fast path for trivial changes. 7 agent domains with specialized prompts.
+
+### QE-16 — Domain Review Agents (extracted from custom-ai-agents)
+- **Status**: VERIFIED
+- **Module**: `ai_generation/orchestration.py` → `AGENT_PROMPTS`
+- **Tests**: Covered in `test_orchestration.py`
+- **Pattern**: 7 specialized agent domains: Security, Performance, Refactoring, Testing, Architecture, Documentation, Maintainability. Each with review areas and output format.
+
+### QE-17 — Knowledge Base Context (extracted from autodev-studio)
+- **Status**: VERIFIED
+- **Module**: `ai_generation/orchestration.py` → `KnowledgeBaseContext`
+- **Tests**: Covered in `test_orchestration.py`
+- **Pattern**: RAG-based context retrieval with word-level indexing, relevance scoring, source tracking.
+
+### QE-18 — Revision Loop (extracted from autodev-studio)
+- **Status**: VERIFIED
+- **Module**: `ai_generation/orchestration.py` → `RevisionLoop`
+- **Tests**: Covered in `test_orchestration.py`
+- **Pattern**: Bounded revision loop with max rounds, QA/Review feedback integration, ship decision tracking.
