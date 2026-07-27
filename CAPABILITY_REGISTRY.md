@@ -79,7 +79,7 @@
 | AUD-06 | Voice Cloning | Audio Speech Research | VERIFIED |
 | AUD-07 | Music Generation | Audio Speech Research | VERIFIED |
 | AUD-08 | Sound Effects Generation | Audio Speech Research | VERIFIED |
-| AUD-09 | Audio Enhancement/Restoration | Audio Speech Research | NOT_STARTED |
+| AUD-09 | Audio Enhancement/Restoration | Audio Speech Research | VERIFIED |
 | AUD-10 | Lip Sync | Audio Speech Research | NOT_STARTED |
 
 ### Domain 5: 3D Generation
@@ -420,7 +420,7 @@
 | Image Generation | 13 | 13 | 0 | 0 | 0 | 0 |
 | Image Editing | 8 | 7 | 0 | 0 | 1 | 0 |
 | Video Generation | 9 | 7 | 0 | 0 | 2 | 0 |
-| Audio Generation | 10 | 8 | 0 | 0 | 2 | 0 |
+| Audio Generation | 10 | 9 | 0 | 0 | 1 | 0 |
 | 3D Generation | 8 | 4 | 1 | 0 | 3 | 0 |
 | OCR & Document | 10 | 5 | 0 | 0 | 5 | 0 |
 | Search Systems | 11 | 8 | 0 | 0 | 3 | 0 |
@@ -443,7 +443,7 @@
 | Agent Frameworks | 16 | 12 | 0 | 0 | 4 | 0 |
 | Distributed AI | 6 | 0 | 0 | 0 | 6 | 0 |
 | Core Platform | 20 | 20 | 0 | 0 | 0 | 0 |
-| **TOTAL** | **255** | **158** | **5** | **0** | **82** | **6** |
+| **TOTAL** | **255** | **159** | **5** | **0** | **81** | **6** |
 
 ---
 
@@ -454,11 +454,11 @@ Total capabilities:     270
 BLOCKED:                  6  (Networking & Mesh — requires K8s cluster)
 Eligible for completion: 264
 
-VERIFIED:              171
+VERIFIED:              172
 INTEGRATED:              7
 IMPLEMENTED:             2
 
-Verified completion = 188 / 264 = 71.2%
+Verified completion = 189 / 264 = 71.6%
 ```
 
 ---

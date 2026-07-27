@@ -137,6 +137,12 @@ MCP_GENERATION_TOOLS = {
     "generate_music": {"name": "generate_music", "description": "Generate music from text prompt using AudioCraft/MusicGen.", "inputSchema": {"type": "object", "properties": {"prompt": {"type": "string"}, "duration_secs": {"type": "number", "default": 10.0}, "model": {"type": "string", "default": ""}, "output_path": {"type": "string", "default": ""}}, "required": ["prompt"]}},
     "generate_sfx": {"name": "generate_sfx", "description": "Generate sound effects from text prompt using AudioCraft/AudioGen.", "inputSchema": {"type": "object", "properties": {"prompt": {"type": "string"}, "duration_secs": {"type": "number", "default": 5.0}, "output_path": {"type": "string", "default": ""}}, "required": ["prompt"]}},
     "generate_melody": {"name": "generate_melody", "description": "Generate melody-conditioned music from text prompt and reference melody.", "inputSchema": {"type": "object", "properties": {"prompt": {"type": "string"}, "melody_path": {"type": "string"}, "duration_secs": {"type": "number", "default": 10.0}, "output_path": {"type": "string", "default": ""}}, "required": ["prompt", "melody_path"]}},
+        "enhance_audio": {"name": "enhance_audio", "description": "Execute audio enhancement operation (denoise, normalize, equalize, remove_silence, convert_format, resample, compress, limit, fade_in, fade_out, speed, pitch, reverse, mix, concat, gain).", "inputSchema": {"type": "object", "properties": {"operation": {"type": "string", "enum": ["denoise", "normalize", "equalize", "remove_silence", "convert_format", "resample", "compress", "limit", "fade_in", "fade_out", "trim_silence", "speed", "pitch", "reverse", "concat", "mix", "gain"]}, "input_path": {"type": "string"}, "input_paths": {"type": "array", "items": {"type": "string"}}, "output_path": {"type": "string", "default": ""}}, "required": ["operation"]}},
+    "denoise_audio": {"name": "denoise_audio", "description": "Remove noise from audio.", "inputSchema": {"type": "object", "properties": {"input_path": {"type": "string"}, "output_path": {"type": "string", "default": ""}, "strength": {"type": "string", "enum": ["light", "medium", "strong"], "default": "medium"}}, "required": ["input_path"]}},
+    "normalize_audio": {"name": "normalize_audio", "description": "Normalize audio loudness.", "inputSchema": {"type": "object", "properties": {"input_path": {"type": "string"}, "output_path": {"type": "string", "default": ""}, "target_level": {"type": "number", "default": -16}}, "required": ["input_path"]}},
+    "convert_audio": {"name": "convert_audio", "description": "Convert audio format (wav, mp3, aac, ogg, flac).", "inputSchema": {"type": "object", "properties": {"input_path": {"type": "string"}, "output_path": {"type": "string", "default": ""}, "format": {"type": "string", "enum": ["wav", "mp3", "aac", "ogg", "flac"], "default": "wav"}}, "required": ["input_path"]}},
+    "mix_audio": {"name": "mix_audio", "description": "Mix multiple audio files together.", "inputSchema": {"type": "object", "properties": {"input_paths": {"type": "array", "items": {"type": "string"}}, "output_path": {"type": "string", "default": ""}, "weights": {"type": "array", "items": {"type": "number"}}}, "required": ["input_paths"]}},
+    "concat_audio": {"name": "concat_audio", "description": "Concatenate multiple audio files sequentially.", "inputSchema": {"type": "object", "properties": {"input_paths": {"type": "array", "items": {"type": "string"}}, "output_path": {"type": "string", "default": ""}}, "required": ["input_paths"]}},
     "get_music_profiles": {"name": "get_music_profiles", "description": "List available music/SFX generation models.", "inputSchema": {"type": "object", "properties": {}}},
     "probe_video": {"name": "probe_video", "description": "Probe video file metadata (resolution, fps, codec, duration).", "inputSchema": {"type": "object", "properties": {"input_path": {"type": "string"}}, "required": ["input_path"]}},
 
@@ -1022,6 +1028,12 @@ class MCPGenerationTools:
             "generate_music": self._handle_generate_music,
             "generate_sfx": self._handle_generate_sfx,
             "generate_melody": self._handle_generate_melody,
+            "enhance_audio": self._handle_enhance_audio,
+            "denoise_audio": self._handle_denoise_audio,
+            "normalize_audio": self._handle_normalize_audio,
+            "convert_audio": self._handle_convert_audio,
+            "mix_audio": self._handle_mix_audio,
+            "concat_audio": self._handle_concat_audio,
             "get_music_profiles": self._handle_music_profiles,
             "probe_video": self._handle_probe_video,
             "create_cinematic_pipeline": self._handle_create_pipeline,
@@ -1343,6 +1355,56 @@ class MCPGenerationTools:
         )
         return result.to_dict()
 
+
+    async def _handle_enhance_audio(self, args):
+        from ai_generation.audio_enhancement import AudioEnhanceOperation
+        op_str = args.get("operation", "denoise")
+        op = AudioEnhanceOperation(op_str)
+        result = await self.sdk.audio_enhancement.execute(
+            op, input_path=args.get("input_path", ""),
+            input_paths=args.get("input_paths", []),
+            output_path=args.get("output_path", ""),
+            **{k: v for k, v in args.items() if k not in ("operation", "input_path", "input_paths", "output_path")},
+        )
+        return result.to_dict()
+
+    async def _handle_denoise_audio(self, args):
+        result = await self.sdk.audio_enhancement.denoise(
+            args["input_path"], output_path=args.get("output_path", ""),
+            strength=args.get("strength", "medium"),
+        )
+        return result.to_dict()
+
+    async def _handle_normalize_audio(self, args):
+        result = await self.sdk.audio_enhancement.normalize(
+            args["input_path"], output_path=args.get("output_path", ""),
+            target_level=args.get("target_level", -16),
+        )
+        return result.to_dict()
+
+    async def _handle_convert_audio(self, args):
+        result = await self.sdk.audio_enhancement.convert_format(
+            args["input_path"], output_path=args.get("output_path", ""),
+            format=args.get("format", "wav"),
+        )
+        return result.to_dict()
+
+    async def _handle_mix_audio(self, args):
+        from ai_generation.audio_enhancement import AudioEnhanceOperation
+        result = await self.sdk.audio_enhancement.execute(
+            AudioEnhanceOperation.MIX, input_paths=args["input_paths"],
+            output_path=args.get("output_path", ""),
+            weights=args.get("weights"),
+        )
+        return result.to_dict()
+
+    async def _handle_concat_audio(self, args):
+        from ai_generation.audio_enhancement import AudioEnhanceOperation
+        result = await self.sdk.audio_enhancement.execute(
+            AudioEnhanceOperation.CONCAT, input_paths=args["input_paths"],
+            output_path=args.get("output_path", ""),
+        )
+        return result.to_dict()
     async def _handle_music_profiles(self, args):
         task = args.get("task", "")
         if task:

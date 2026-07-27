@@ -60,6 +60,7 @@ class UncleFrappeAI:
         self._audio_generation = None
         self._voice_cloning = None
         self._music_generation = None
+        self._audio_enhancement = None
         # Phase 17 — Decision Ledger
         self._decision_ledger = None
         # Phase 18 — Browser AI Inference Layer
@@ -331,6 +332,13 @@ class UncleFrappeAI:
         return self._music_generation
 
     @property
+    def audio_enhancement(self):
+        if self._audio_enhancement is None:
+            from .audio_enhancement import AudioEnhancementEngine
+            self._audio_enhancement = AudioEnhancementEngine(self.config)
+        return self._audio_enhancement
+
+    @property
     def negotiation_engine(self):
         if self._negotiation_engine is None:
             from .negotiation_engine import NegotiationEngine
@@ -470,6 +478,7 @@ class UncleFrappeAI:
             "video_editing": self.video_editing.get_stats(),
             "voice_cloning": self.voice_cloning.get_stats(),
             "music_generation": self.music_generation.get_stats(),
+            "audio_enhancement": self.audio_enhancement.get_stats(),
             "cinematic_workflow": self.cinematic_workflow.get_stats(),
             "characters": self.character_manager.get_stats(),
             "projects": self.project_manager.get_stats(),
@@ -570,6 +579,31 @@ class UncleFrappeAI:
 
     async def generate_melody(self, prompt, melody_path, duration_secs=10.0, output_path="", **kwargs):
         return await self.music_generation.generate_melody(prompt=prompt, melody_path=melody_path, duration_secs=duration_secs, output_path=output_path, **kwargs)
+
+    # ── Audio Enhancement Convenience Methods ──
+
+    async def denoise_audio(self, input_path, output_path="", **kwargs):
+        return await self.audio_enhancement.denoise(input_path, output_path, **kwargs)
+
+    async def normalize_audio(self, input_path, output_path="", **kwargs):
+        return await self.audio_enhancement.normalize(input_path, output_path, **kwargs)
+
+    async def convert_audio(self, input_path, output_path="", format="wav", **kwargs):
+        return await self.audio_enhancement.convert_format(input_path, output_path, format=format, **kwargs)
+
+    async def resample_audio(self, input_path, output_path="", sample_rate=44100, **kwargs):
+        return await self.audio_enhancement.resample(input_path, output_path, sample_rate=sample_rate, **kwargs)
+
+    async def compress_audio(self, input_path, output_path="", **kwargs):
+        return await self.audio_enhancement.compress(input_path, output_path, **kwargs)
+
+    async def mix_audio(self, input_paths, output_path="", weights=None, **kwargs):
+        from .audio_enhancement import AudioEnhanceOperation
+        return await self.audio_enhancement.execute(AudioEnhanceOperation.MIX, input_paths=input_paths, output_path=output_path, weights=weights, **kwargs)
+
+    async def concat_audio(self, input_paths, output_path="", **kwargs):
+        from .audio_enhancement import AudioEnhanceOperation
+        return await self.audio_enhancement.execute(AudioEnhanceOperation.CONCAT, input_paths=input_paths, output_path=output_path, **kwargs)
 
     def create_cinematic_pipeline(self, template="full_cinematic", name="", **kwargs):
         return self.cinematic_workflow.create_pipeline(template=template, name=name, **kwargs)
