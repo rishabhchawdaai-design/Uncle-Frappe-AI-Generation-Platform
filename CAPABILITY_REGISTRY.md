@@ -473,3 +473,45 @@ Verified completion = 200 / 204 = 98.0%
 8. **MSG-01**: In-Memory Event Bus — messaging foundation
 9. **SEC-03**: Authentication Methods — security foundation
 10. **SEC-04**: RBAC Authorization — security foundation
+
+### QE-09 — Secret Scanner (extracted from ai-code-reviewer)
+- **Status**: VERIFIED
+- **Module**: `ai_generation/code_analysis.py` → `SecretScanner`
+- **Tests**: 12 tests in `test_code_analysis.py`
+- **MCP Tools**: `scan_secrets`
+- **Pattern**: Regex-based secret detection in code and unified diffs. AWS keys, GitHub PATs, private keys, OpenAI keys, Slack tokens, database connection strings, generic secrets.
+
+### QE-10 — Static Analyzer (extracted from llm-code-review)
+- **Status**: VERIFIED
+- **Module**: `ai_generation/code_analysis.py` → `StaticAnalyzer`
+- **Tests**: 12 tests in `test_code_analysis.py`
+- **MCP Tools**: `analyze_code_static`
+- **Pattern**: Multi-language static analysis with security rules (eval, exec, os.system, pickle, yaml.load) and quality rules (bare except, star imports, TODOs, print statements). Docstring analysis for Python.
+
+### QE-11 — Structural Analyzer (extracted from polyscan)
+- **Status**: VERIFIED
+- **Module**: `ai_generation/code_analysis.py` → `StructuralAnalyzer`
+- **Tests**: 6 tests in `test_code_analysis.py`
+- **MCP Tools**: `analyze_code_structural`
+- **Pattern**: Dead code detection via AST analysis, duplicate code detection via line hashing, cyclomatic complexity calculation, long function detection.
+
+### QE-12 — Multi-Agent Review Engine (extracted from ai-code-reviewer)
+- **Status**: VERIFIED
+- **Module**: `ai_generation/code_analysis.py` → `MultiAgentReviewEngine`
+- **Tests**: 6 tests in `test_code_analysis.py`
+- **MCP Tools**: `run_multi_agent_review`
+- **Pattern**: Parallel multi-agent review with 6 agent roles (security, patterns, performance, style, testing, architecture). Consensus detection, quality scoring, finding aggregation.
+
+### QE-13 — PR Verification Engine (extracted from github-template-ai-agents)
+- **Status**: VERIFIED
+- **Module**: `ai_generation/code_analysis.py` → `PRVerificationEngine`
+- **Tests**: 8 tests in `test_code_analysis.py`
+- **MCP Tools**: `verify_pr`
+- **Pattern**: PR verification checklist with 10 checks: tests, secrets, bare excepts, print statements, docstrings, type hints, star imports, conventional commits, file size, code review.
+
+### QE-14 — Technical Debt Tracker (extracted from claude-code-agents)
+- **Status**: VERIFIED
+- **Module**: `ai_generation/code_analysis.py` → `TechnicalDebtTracker`
+- **Tests**: 12 tests in `test_code_analysis.py`
+- **MCP Tools**: `track_tech_debt`
+- **Pattern**: Debt cataloging with categories (TODO, FIXME, HACK, deprecated, code smell, missing docs, type ignore), priority levels, resolution tracking, statistics.

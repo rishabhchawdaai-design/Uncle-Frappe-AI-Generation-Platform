@@ -114,6 +114,13 @@ class UncleFrappeAI:
         # Phase 15 — Negotiation Engine & Supervisor Tree
         self._negotiation_engine = None
         self._supervisor = None
+        # Phase 33 — Code Analysis Engines
+        self._secret_scanner = None
+        self._static_analyzer = None
+        self._structural_analyzer = None
+        self._multi_agent_review = None
+        self._pr_verification = None
+        self._debt_tracker = None
 
     @property
     def generation_manager(self):
@@ -184,6 +191,49 @@ class UncleFrappeAI:
             from .quality_engineering import QualityScoringEngine
             self._quality_scoring = QualityScoringEngine(self.config)
         return self._quality_scoring
+
+    # Phase 33 — Code Analysis Engines
+    @property
+    def secret_scanner(self):
+        if self._secret_scanner is None:
+            from .code_analysis import SecretScanner
+            self._secret_scanner = SecretScanner(self.config.get("secret_scanner", {}))
+        return self._secret_scanner
+
+    @property
+    def static_analyzer(self):
+        if self._static_analyzer is None:
+            from .code_analysis import StaticAnalyzer
+            self._static_analyzer = StaticAnalyzer()
+        return self._static_analyzer
+
+    @property
+    def structural_analyzer(self):
+        if self._structural_analyzer is None:
+            from .code_analysis import StructuralAnalyzer
+            self._structural_analyzer = StructuralAnalyzer()
+        return self._structural_analyzer
+
+    @property
+    def multi_agent_review(self):
+        if self._multi_agent_review is None:
+            from .code_analysis import MultiAgentReviewEngine
+            self._multi_agent_review = MultiAgentReviewEngine(self.config.get("multi_agent_review", {}))
+        return self._multi_agent_review
+
+    @property
+    def pr_verification(self):
+        if self._pr_verification is None:
+            from .code_analysis import PRVerificationEngine
+            self._pr_verification = PRVerificationEngine(self.config.get("pr_verification", {}))
+        return self._pr_verification
+
+    @property
+    def debt_tracker(self):
+        if self._debt_tracker is None:
+            from .code_analysis import TechnicalDebtTracker
+            self._debt_tracker = TechnicalDebtTracker(self.config.get("debt_tracker", {}))
+        return self._debt_tracker
 
     @property
     def workflow_engine(self):

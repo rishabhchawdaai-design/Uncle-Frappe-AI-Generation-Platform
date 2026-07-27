@@ -1017,9 +1017,13 @@ MCP_GENERATION_TOOLS = {
             },
         },
     },
+    "scan_secrets": {"name": "scan_secrets", "description": "Scan code or diff for hardcoded secrets and credentials.", "inputSchema": {"type": "object", "properties": {"code": {"type": "string", "default": ""}, "file_path": {"type": "string", "default": "<input>"}, "diff": {"type": "string", "default": ""}}, "required": []}},
+    "analyze_code_static": {"name": "analyze_code_static", "description": "Run static analysis for security and quality issues.", "inputSchema": {"type": "object", "properties": {"code": {"type": "string", "default": ""}, "file_path": {"type": "string", "default": "<input>"}}, "required": []}},
+    "analyze_code_structural": {"name": "analyze_code_structural", "description": "Analyze code for dead code, duplication, and complexity.", "inputSchema": {"type": "object", "properties": {"files": {"type": "object", "description": "Dict of {filepath: content}"}}, "required": []}},
+    "run_multi_agent_review": {"name": "run_multi_agent_review", "description": "Run multi-agent code review (security, patterns, performance, style, testing, architecture).", "inputSchema": {"type": "object", "properties": {"code": {"type": "string", "default": ""}, "file_path": {"type": "string", "default": "<input>"}, "roles": {"type": "array", "items": {"type": "string"}, "default": []}}, "required": []}},
+    "verify_pr": {"name": "verify_pr", "description": "Run PR verification checklist (tests, secrets, exceptions, docstrings, type hints).", "inputSchema": {"type": "object", "properties": {"code": {"type": "string", "default": ""}, "file_path": {"type": "string", "default": "<input>"}, "checks": {"type": "array", "items": {"type": "string"}, "default": []}}, "required": []}},
+    "track_tech_debt": {"name": "track_tech_debt", "description": "Scan codebase for technical debt items (TODOs, FIXMEs, hacks, missing docs).", "inputSchema": {"type": "object", "properties": {"files": {"type": "object", "description": "Dict of {filepath: content}"}}, "required": []}},
 }
-
-
 class MCPGenerationTools:
     """Handler for MCP generation tool calls."""
 
@@ -1218,6 +1222,12 @@ class MCPGenerationTools:
             "otel_export_all": self._handle_otel_export_all,
             "get_otel_stats": self._handle_get_otel_stats,
             "get_otel_history": self._handle_get_otel_history,
+            "scan_secrets": self._handle_scan_secrets,
+            "analyze_code_static": self._handle_analyze_code_static,
+            "analyze_code_structural": self._handle_analyze_code_structural,
+            "run_multi_agent_review": self._handle_run_multi_agent_review,
+            "verify_pr": self._handle_verify_pr,
+            "track_tech_debt": self._handle_track_tech_debt,
         }
         handler = handlers.get(tool_name)
         if not handler:
@@ -2280,6 +2290,46 @@ class MCPGenerationTools:
 
     async def _handle_get_otel_history(self, args):
         return self.sdk.get_otel_history(args.get("limit", 50))
+
+    async def _handle_scan_secrets(self, args):
+        code = args.get("code", "")
+        file_path = args.get("file_path", "<input>")
+        diff = args.get("diff", "")
+        if diff:
+            findings = self.sdk.secret_scanner.scan_diff(diff)
+        else:
+            findings = self.sdk.secret_scanner.scan_text(code, file_path)
+        return {"findings": [f.to_dict() for f in findings], "count": len(findings)}
+
+    async def _handle_analyze_code_static(self, args):
+        code = args.get("code", "")
+        file_path = args.get("file_path", "<input>")
+        issues = self.sdk.static_analyzer.analyze_code(code, file_path)
+        return {"issues": [i.to_dict() for i in issues], "count": len(issues)}
+
+    async def _handle_analyze_code_structural(self, args):
+        files = args.get("files", {})
+        findings = self.sdk.structural_analyzer.analyze(files)
+        return {"findings": [f.to_dict() for f in findings], "count": len(findings)}
+
+    async def _handle_run_multi_agent_review(self, args):
+        code = args.get("code", "")
+        file_path = args.get("file_path", "<input>")
+        roles = args.get("roles", None)
+        review = self.sdk.multi_agent_review.simulate_review(code, file_path, roles)
+        return review.to_dict()
+
+    async def _handle_verify_pr(self, args):
+        code = args.get("code", "")
+        file_path = args.get("file_path", "<input>")
+        checks = args.get("checks", None)
+        result = self.sdk.pr_verification.run_full_verification(code, file_path)
+        return result
+
+    async def _handle_track_tech_debt(self, args):
+        files = args.get("files", {})
+        items = self.sdk.debt_tracker.scan_codebase(files)
+        return {"items": [i.to_dict() for i in items], "count": len(items), "stats": self.sdk.debt_tracker.get_stats()}
 
 def get_mcp_generation_tools():
     return MCP_GENERATION_TOOLS
