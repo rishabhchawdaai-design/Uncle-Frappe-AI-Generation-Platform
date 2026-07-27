@@ -243,7 +243,7 @@
 | SEC-07 | Plugin Sandboxing (Process) | Security Canon | NOT_STARTED |
 | SEC-08 | Plugin Sandboxing (Container) | Security Canon | NOT_STARTED |
 | SEC-09 | Plugin Sandboxing (WASM) | Security Canon | NOT_STARTED |
-| SEC-10 | Plugin Signing & Verification | Security Canon | NOT_STARTED |
+| SEC-10 | Plugin Signing & Verification | Security Canon | VERIFIED |
 | SEC-11 | Supply Chain Security (SBOM) | Security Canon | NOT_STARTED |
 | SEC-12 | Model Security (Checksum) | Security Canon | VERIFIED |
 
@@ -293,7 +293,7 @@
 | OBS-04 | Generation Request Tracking | Observability Research | VERIFIED |
 | OBS-05 | Provider Selection Tracking | Observability Research | VERIFIED |
 | OBS-06 | Fallback Activation Tracking | Observability Research | VERIFIED |
-| OBS-07 | OpenTelemetry Export | Observability Research | NOT_STARTED |
+| OBS-07 | OpenTelemetry Export | Observability Research | VERIFIED |
 | OBS-08 | Prometheus Metrics Export | Observability Research | NOT_STARTED |
 | OBS-09 | Grafana Dashboard Integration | Observability Research | NOT_STARTED |
 | OBS-10 | Loki Log Aggregation | Observability Research | NOT_STARTED |
@@ -443,7 +443,7 @@
 | Agent Frameworks | 16 | 12 | 0 | 0 | 4 | 0 |
 | Distributed AI | 6 | 0 | 0 | 0 | 6 | 0 |
 | Core Platform | 20 | 20 | 0 | 0 | 0 | 0 |
-| **TOTAL** | **255** | **176** | **1** | **0** | **64** | **6** |
+| **TOTAL** | **255** | **178** | **1** | **0** | **62** | **6** |
 
 ---
 
@@ -454,11 +454,11 @@ Total capabilities:     270
 BLOCKED:                  6  (Networking & Mesh — requires K8s cluster)
 Eligible for completion: 264
 
-VERIFIED:              189
+VERIFIED:              191
 INTEGRATED:              3
 IMPLEMENTED:             2
 
-Verified completion = 208 / 264 = 78.8%
+Verified completion = 210 / 264 = 79.5%
 ```
 
 ---
