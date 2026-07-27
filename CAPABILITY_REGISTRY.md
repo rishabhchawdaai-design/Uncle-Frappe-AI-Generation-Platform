@@ -51,7 +51,7 @@
 | EDT-05 | Background Replacement | Image Gen Research | VERIFIED |
 | EDT-06 | Style Transfer | Image Gen Research | VERIFIED |
 | EDT-07 | Image Upscaling | Image Gen Research | VERIFIED |
-| EDT-08 | Face Restoration | Image Gen Research | NOT_STARTED |
+| EDT-08 | Face Restoration | Image Gen Research | VERIFIED |
 
 ### Domain 3: Video Generation
 
@@ -418,7 +418,7 @@
 | Domain | Total | VERIFIED | INTEGRATED | IMPLEMENTED | NOT_STARTED | BLOCKED |
 |--------|-------|----------|------------|-------------|-------------|---------|
 | Image Generation | 13 | 13 | 0 | 0 | 0 | 0 |
-| Image Editing | 8 | 7 | 0 | 0 | 1 | 0 |
+| Image Editing | 8 | 8 | 0 | 0 | 0 | 0 |
 | Video Generation | 9 | 7 | 0 | 0 | 2 | 0 |
 | Audio Generation | 10 | 9 | 0 | 0 | 1 | 0 |
 | 3D Generation | 8 | 8 | 0 | 0 | 0 | 0 |
@@ -443,7 +443,7 @@
 | Agent Frameworks | 16 | 12 | 0 | 0 | 4 | 0 |
 | Distributed AI | 6 | 0 | 0 | 0 | 6 | 0 |
 | Core Platform | 20 | 20 | 0 | 0 | 0 | 0 |
-| **TOTAL** | **255** | **169** | **1** | **0** | **71** | **6** |
+| **TOTAL** | **255** | **170** | **1** | **0** | **70** | **6** |
 
 ---
 
@@ -454,11 +454,11 @@ Total capabilities:     270
 BLOCKED:                  6  (Networking & Mesh — requires K8s cluster)
 Eligible for completion: 264
 
-VERIFIED:              182
+VERIFIED:              183
 INTEGRATED:              3
 IMPLEMENTED:             2
 
-Verified completion = 201 / 264 = 76.1%
+Verified completion = 202 / 264 = 76.5%
 ```
 
 ---

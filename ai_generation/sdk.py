@@ -529,6 +529,9 @@ class UncleFrappeAI:
     async def upscale_image(self, input_path, **kwargs):
         return await self.image_editing.upscale(input_path, **kwargs)
 
+    async def restore_face(self, input_path, **kwargs):
+        return await self.image_editing.restore_face(input_path, **kwargs)
+
     async def text_to_video(self, prompt, **kwargs):
         return await self.video_generation.text_to_video(prompt, **kwargs)
 

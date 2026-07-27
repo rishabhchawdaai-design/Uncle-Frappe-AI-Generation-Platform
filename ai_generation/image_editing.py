@@ -30,6 +30,7 @@ class EditOperation(str, Enum):
     OBJECT_INSERTION = "object_insertion"
     STYLE_TRANSFER = "style_transfer"
     FACE_PRESERVATION = "face_preservation"
+    FACE_RESTORATION = "face_restoration"
     IDENTITY_PRESERVATION = "identity_preservation"
     UPSCALE = "upscale"
     RESTORATION = "restoration"
@@ -97,6 +98,7 @@ PROVIDER_EDIT_CAPABILITIES = {
         EditOperation.IDENTITY_PRESERVATION: {"supported": False},
         EditOperation.RESTORATION: {"supported": False},
         EditOperation.BACKGROUND_REPLACEMENT: {"supported": True, "model": "sd3-medium"},
+        EditOperation.FACE_RESTORATION: {"supported": True, "model": "gfpgan"},
     },
     "replicate": {
         EditOperation.IMG2IMG: {"supported": True, "model": "stability-ai/sdxl"},
@@ -107,11 +109,13 @@ PROVIDER_EDIT_CAPABILITIES = {
         EditOperation.FACE_PRESERVATION: {"supported": True, "model": "tencentarc/photomaker"},
         EditOperation.IDENTITY_PRESERVATION: {"supported": True, "model": "tencentarc/photomaker"},
         EditOperation.RESTORATION: {"supported": True, "model": "nightmareai/real-esrgan"},
+        EditOperation.FACE_RESTORATION: {"supported": True, "model": "tencentarc/gfpgan"},
     },
     "fal": {
         EditOperation.IMG2IMG: {"supported": True, "model": "fal-ai/flux/dev/image-to-image"},
         EditOperation.INPAINTING: {"supported": True, "model": "fal-ai/flux/dev/inpainting"},
         EditOperation.UPSCALE: {"supported": True, "model": "fal-ai/real-esrgan"},
+        EditOperation.FACE_RESTORATION: {"supported": True, "model": "fal-ai/gfpgan"},
     },
     "pollinations": {
         EditOperation.IMG2IMG: {"supported": False},
@@ -445,6 +449,9 @@ class ImageEditingEngine:
 
     async def restore(self, input_path, **kwargs):
         return await self.edit(EditOperation.RESTORATION, input_path, **kwargs)
+
+    async def restore_face(self, input_path, **kwargs):
+        return await self.edit(EditOperation.FACE_RESTORATION, input_path, **kwargs)
 
     def get_stats(self) -> Dict[str, Any]:
         ops = {}

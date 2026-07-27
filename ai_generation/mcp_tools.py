@@ -120,6 +120,7 @@ MCP_GENERATION_TOOLS = {
         },
     },
     "analyze_media_request": {"name": "analyze_media_request", "description": "Analyze a media request for strategy, providers, workflow.", "inputSchema": {"type": "object", "properties": {"prompt": {"type": "string"}, "budget": {"type": "string", "default": "free"}}, "required": ["prompt"]}},
+    "restore_face": {"name": "restore_face", "description": "Restore faces in images using GFPGAN/CodeFormer.", "inputSchema": {"type": "object", "properties": {"input_path": {"type": "string"}, "output_path": {"type": "string", "default": ""}, "provider": {"type": "string", "default": ""}}, "required": ["input_path"]}},
     "edit_image": {"name": "edit_image", "description": "Image editing: img2img, inpainting, outpainting, background, style transfer, upscaling.", "inputSchema": {"type": "object", "properties": {"operation": {"type": "string", "enum": ["img2img", "inpainting", "outpainting", "background_removal", "background_replacement", "style_transfer", "upscale"]}, "input_path": {"type": "string"}, "prompt": {"type": "string"}}, "required": ["operation", "input_path"]}},
     "list_edit_operations": {"name": "list_edit_operations", "description": "List all supported image editing operations.", "inputSchema": {"type": "object", "properties": {}}},
     "generate_video_ai": {"name": "generate_video_ai", "description": "Generate true AI video (text-to-video or image-to-video).", "inputSchema": {"type": "object", "properties": {"prompt": {"type": "string"}, "mode": {"type": "string", "default": "text_to_video"}, "image_path": {"type": "string"}, "duration_secs": {"type": "number", "default": 4.0}}, "required": ["prompt"]}},
@@ -1028,6 +1029,7 @@ class MCPGenerationTools:
             "render_template": self._handle_render_template,
             "evaluate_generation": self._handle_evaluate,
             "analyze_media_request": self._handle_analyze_media,
+            "restore_face": self._handle_restore_face,
             "edit_image": self._handle_edit_image,
             "list_edit_operations": self._handle_list_edits,
             "generate_video_ai": self._handle_video_ai,
@@ -1264,6 +1266,12 @@ class MCPGenerationTools:
             prioritize_speed=args.get("prioritize_speed", False),
         )
         return analysis.to_dict()
+
+    async def _handle_restore_face(self, args):
+        result = await self.sdk.restore_face(
+            args["input_path"],
+        )
+        return result.to_dict()
 
     async def _handle_edit_image(self, args):
         from ai_generation.image_editing import EditOperation
