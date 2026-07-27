@@ -131,6 +131,13 @@ MCP_GENERATION_TOOLS = {
     "upscale_video": {"name": "upscale_video", "description": "Upscale video resolution (2x or 4x) using Lanczos or Real-ESRGAN.", "inputSchema": {"type": "object", "properties": {"input_path": {"type": "string"}, "output_path": {"type": "string", "default": ""}, "scale_factor": {"type": "integer", "default": 2, "enum": [2, 4]}}, "required": ["input_path"]}},
     "enhance_video": {"name": "enhance_video", "description": "Enhance video quality (denoise, sharpen, color grade).", "inputSchema": {"type": "object", "properties": {"input_path": {"type": "string"}, "output_path": {"type": "string", "default": ""}, "denoise": {"type": "boolean", "default": True}, "sharpen": {"type": "boolean", "default": True}}, "required": ["input_path"]}},
     "get_video_edit_profiles": {"name": "get_video_edit_profiles", "description": "List all video editing operations and their requirements.", "inputSchema": {"type": "object", "properties": {}}},
+    
+    "clone_voice": {"name": "clone_voice", "description": "Clone a voice from reference audio and generate speech. Supports XTTS, Fish Speech, OpenVoice.", "inputSchema": {"type": "object", "properties": {"reference_audio_path": {"type": "string"}, "text": {"type": "string"}, "language": {"type": "string", "default": "en"}, "provider": {"type": "string", "enum": ["xtts", "fish_speech", "openvoice"]}, "output_path": {"type": "string", "default": ""}}, "required": ["reference_audio_path", "text"]}},
+    "get_voice_clone_profiles": {"name": "get_voice_clone_profiles", "description": "List available voice cloning providers and their capabilities.", "inputSchema": {"type": "object", "properties": {}}},
+    "generate_music": {"name": "generate_music", "description": "Generate music from text prompt using AudioCraft/MusicGen.", "inputSchema": {"type": "object", "properties": {"prompt": {"type": "string"}, "duration_secs": {"type": "number", "default": 10.0}, "model": {"type": "string", "default": ""}, "output_path": {"type": "string", "default": ""}}, "required": ["prompt"]}},
+    "generate_sfx": {"name": "generate_sfx", "description": "Generate sound effects from text prompt using AudioCraft/AudioGen.", "inputSchema": {"type": "object", "properties": {"prompt": {"type": "string"}, "duration_secs": {"type": "number", "default": 5.0}, "output_path": {"type": "string", "default": ""}}, "required": ["prompt"]}},
+    "generate_melody": {"name": "generate_melody", "description": "Generate melody-conditioned music from text prompt and reference melody.", "inputSchema": {"type": "object", "properties": {"prompt": {"type": "string"}, "melody_path": {"type": "string"}, "duration_secs": {"type": "number", "default": 10.0}, "output_path": {"type": "string", "default": ""}}, "required": ["prompt", "melody_path"]}},
+    "get_music_profiles": {"name": "get_music_profiles", "description": "List available music/SFX generation models.", "inputSchema": {"type": "object", "properties": {}}},
     "probe_video": {"name": "probe_video", "description": "Probe video file metadata (resolution, fps, codec, duration).", "inputSchema": {"type": "object", "properties": {"input_path": {"type": "string"}}, "required": ["input_path"]}},
 
     "create_cinematic_pipeline": {"name": "create_cinematic_pipeline", "description": "Create cinematic production pipeline from template.", "inputSchema": {"type": "object", "properties": {"template": {"type": "string", "enum": ["full_cinematic", "quick_ad", "storyboard_only", "character_design", "post_production"]}}, "required": ["template"]}},
@@ -1010,6 +1017,12 @@ class MCPGenerationTools:
             "upscale_video": self._handle_upscale_video,
             "enhance_video": self._handle_enhance_video,
             "get_video_edit_profiles": self._handle_video_edit_profiles,
+            "clone_voice": self._handle_clone_voice,
+            "get_voice_clone_profiles": self._handle_voice_clone_profiles,
+            "generate_music": self._handle_generate_music,
+            "generate_sfx": self._handle_generate_sfx,
+            "generate_melody": self._handle_generate_melody,
+            "get_music_profiles": self._handle_music_profiles,
             "probe_video": self._handle_probe_video,
             "create_cinematic_pipeline": self._handle_create_pipeline,
             "list_cinematic_templates": self._handle_list_templates_cinematic,
@@ -1292,6 +1305,50 @@ class MCPGenerationTools:
     async def _handle_video_edit_profiles(self, args):
         return {"profiles": self.sdk.video_editing.get_profiles(), "available": self.sdk.video_editing.get_available_operations()}
 
+
+    async def _handle_clone_voice(self, args):
+        result = await self.sdk.clone_voice(
+            args["reference_audio_path"], args["text"],
+            language=args.get("language", "en"),
+            provider=args.get("provider"),
+            output_path=args.get("output_path", ""),
+        )
+        return result.to_dict()
+
+    async def _handle_voice_clone_profiles(self, args):
+        return {"profiles": self.sdk.voice_cloning.get_profiles(), "providers": self.sdk.voice_cloning.get_provider_names()}
+
+    async def _handle_generate_music(self, args):
+        result = await self.sdk.generate_music(
+            args["prompt"],
+            duration_secs=args.get("duration_secs", 10.0),
+            model=args.get("model", ""),
+            output_path=args.get("output_path", ""),
+        )
+        return result.to_dict()
+
+    async def _handle_generate_sfx(self, args):
+        result = await self.sdk.generate_sfx(
+            args["prompt"],
+            duration_secs=args.get("duration_secs", 5.0),
+            output_path=args.get("output_path", ""),
+        )
+        return result.to_dict()
+
+    async def _handle_generate_melody(self, args):
+        result = await self.sdk.generate_melody(
+            args["prompt"], args["melody_path"],
+            duration_secs=args.get("duration_secs", 10.0),
+            output_path=args.get("output_path", ""),
+        )
+        return result.to_dict()
+
+    async def _handle_music_profiles(self, args):
+        task = args.get("task", "")
+        if task:
+            from ai_generation.music_generation import MusicTask
+            return {"profiles": self.sdk.music_generation.get_models_for_task(MusicTask(task))}
+        return {"profiles": self.sdk.music_generation.get_profiles()}
     async def _handle_probe_video(self, args):
         return self.sdk.video_editing.probe(args["input_path"])
 

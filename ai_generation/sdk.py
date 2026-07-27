@@ -58,6 +58,8 @@ class UncleFrappeAI:
         self._benchmark_lab = None
         # Phase 16 — Audio Generation
         self._audio_generation = None
+        self._voice_cloning = None
+        self._music_generation = None
         # Phase 17 — Decision Ledger
         self._decision_ledger = None
         # Phase 18 — Browser AI Inference Layer
@@ -315,6 +317,20 @@ class UncleFrappeAI:
         return self._audio_generation
 
     @property
+    def voice_cloning(self):
+        if self._voice_cloning is None:
+            from .voice_cloning import VoiceCloningEngine
+            self._voice_cloning = VoiceCloningEngine(self.config)
+        return self._voice_cloning
+
+    @property
+    def music_generation(self):
+        if self._music_generation is None:
+            from .music_generation import MusicGenerationEngine
+            self._music_generation = MusicGenerationEngine(self.config)
+        return self._music_generation
+
+    @property
     def negotiation_engine(self):
         if self._negotiation_engine is None:
             from .negotiation_engine import NegotiationEngine
@@ -452,6 +468,8 @@ class UncleFrappeAI:
             "image_editing": self.image_editing.get_stats(),
             "video_generation": self.video_generation.get_stats(),
             "video_editing": self.video_editing.get_stats(),
+            "voice_cloning": self.voice_cloning.get_stats(),
+            "music_generation": self.music_generation.get_stats(),
             "cinematic_workflow": self.cinematic_workflow.get_stats(),
             "characters": self.character_manager.get_stats(),
             "projects": self.project_manager.get_stats(),
@@ -536,6 +554,22 @@ class UncleFrappeAI:
     async def reverse_video(self, input_path, output_path="", **kwargs):
         from .video_editing import VideoEditOperation
         return await self.video_editing.execute(VideoEditOperation.REVERSE, input_path=input_path, output_path=output_path, **kwargs)
+
+    # ── Voice Cloning Convenience Methods ──
+
+    async def clone_voice(self, reference_audio_path, text, language="en", provider=None, output_path="", **kwargs):
+        return await self.voice_cloning.clone_voice(reference_audio_path, text, language=language, provider=provider, output_path=output_path, **kwargs)
+
+    # ── Music Generation Convenience Methods ──
+
+    async def generate_music(self, prompt, duration_secs=10.0, model="", output_path="", **kwargs):
+        return await self.music_generation.generate_music(prompt=prompt, duration_secs=duration_secs, model=model, output_path=output_path, **kwargs)
+
+    async def generate_sfx(self, prompt, duration_secs=5.0, output_path="", **kwargs):
+        return await self.music_generation.generate_sfx(prompt=prompt, duration_secs=duration_secs, output_path=output_path, **kwargs)
+
+    async def generate_melody(self, prompt, melody_path, duration_secs=10.0, output_path="", **kwargs):
+        return await self.music_generation.generate_melody(prompt=prompt, melody_path=melody_path, duration_secs=duration_secs, output_path=output_path, **kwargs)
 
     def create_cinematic_pipeline(self, template="full_cinematic", name="", **kwargs):
         return self.cinematic_workflow.create_pipeline(template=template, name=name, **kwargs)
