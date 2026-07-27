@@ -88,6 +88,8 @@ class UncleFrappeAI:
         # Phase 31 — In-Memory Event Bus
         self._event_bus = None
         self._event_kernel = None
+        # Phase 32 — OpenTelemetry Export
+        self._otel_exporter = None
         self._encryption_in_transit = None
         self._model_security = None
         # Phase 15 — Negotiation Engine & Supervisor Tree
@@ -1104,6 +1106,28 @@ class UncleFrappeAI:
 
     def get_model_security_stats(self) -> dict:
         return self.model_security.get_stats()
+
+    # ── Phase 32 — OTLP Export Convenience Methods ──
+
+    async def otel_start(self) -> None:
+        """Start the OTLP exporter background task."""
+        return await self.otel_exporter.start()
+
+    async def otel_stop(self) -> None:
+        """Stop the OTLP exporter."""
+        return await self.otel_exporter.stop()
+
+    async def otel_export_all(self) -> list:
+        """Export all signals (metrics, traces, logs) to OTLP endpoint."""
+        return await self.otel_exporter.export_all()
+
+    def get_otel_stats(self) -> dict:
+        """Get OTLP exporter statistics."""
+        return self.otel_exporter.get_stats()
+
+    def get_otel_history(self, limit: int = 50) -> list:
+        """Get OTLP export history."""
+        return self.otel_exporter.get_export_history(limit)
 
     # ── Phase 31 — Event Bus Convenience Methods ──
 

@@ -928,6 +928,38 @@ MCP_GENERATION_TOOLS = {
         "description": "Get event-driven kernel statistics.",
         "inputSchema": {"type": "object", "properties": {}},
     },
+
+    # ── Phase 32 — OpenTelemetry Export Tools ──
+    "otel_start": {
+        "name": "otel_start",
+        "description": "Start the OTLP exporter background task.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+    "otel_stop": {
+        "name": "otel_stop",
+        "description": "Stop the OTLP exporter.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+    "otel_export_all": {
+        "name": "otel_export_all",
+        "description": "Export all signals (metrics, traces, logs) to OTLP endpoint.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+    "get_otel_stats": {
+        "name": "get_otel_stats",
+        "description": "Get OTLP exporter statistics.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+    "get_otel_history": {
+        "name": "get_otel_history",
+        "description": "Get OTLP export history.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "limit": {"type": "integer", "description": "Max entries", "default": 50},
+            },
+        },
+    },
 }
 
 
@@ -1069,6 +1101,11 @@ class MCPGenerationTools:
             "get_event_bus_stats": self._handle_get_event_bus_stats,
             "emit_event": self._handle_emit_event,
             "get_event_kernel_stats": self._handle_get_event_kernel_stats,
+            "otel_start": self._handle_otel_start,
+            "otel_stop": self._handle_otel_stop,
+            "otel_export_all": self._handle_otel_export_all,
+            "get_otel_stats": self._handle_get_otel_stats,
+            "get_otel_history": self._handle_get_otel_history,
         }
         handler = handlers.get(tool_name)
         if not handler:
@@ -1772,6 +1809,26 @@ class MCPGenerationTools:
 
     async def _handle_get_event_kernel_stats(self, args):
         return self.sdk.get_event_kernel_stats()
+
+
+    # ── Phase 32 — OpenTelemetry Export Handlers ──
+
+    async def _handle_otel_start(self, args):
+        await self.sdk.otel_start()
+        return {"success": True, "message": "OTLP exporter started"}
+
+    async def _handle_otel_stop(self, args):
+        await self.sdk.otel_stop()
+        return {"success": True, "message": "OTLP exporter stopped"}
+
+    async def _handle_otel_export_all(self, args):
+        return await self.sdk.otel_export_all()
+
+    async def _handle_get_otel_stats(self, args):
+        return self.sdk.get_otel_stats()
+
+    async def _handle_get_otel_history(self, args):
+        return self.sdk.get_otel_history(args.get("limit", 50))
 
 def get_mcp_generation_tools():
     return MCP_GENERATION_TOOLS
