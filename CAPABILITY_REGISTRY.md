@@ -203,15 +203,15 @@
 |----|-----------|--------|--------|
 | RUN-01 | vLLM Runtime Integration | Runtime Capability Registry | VERIFIED |
 | RUN-02 | llama.cpp Runtime Integration | Runtime Capability Registry | VERIFIED |
-| RUN-03 | Diffusers Runtime Integration | Runtime Capability Registry | NOT_STARTED |
-| RUN-04 | ComfyUI Runtime Integration | Runtime Capability Registry | NOT_STARTED |
+| RUN-03 | Diffusers Runtime Integration | Runtime Capability Registry | VERIFIED |
+| RUN-04 | ComfyUI Runtime Integration | Runtime Capability Registry | VERIFIED |
 | RUN-05 | Ollama Runtime Integration | Runtime Capability Registry | VERIFIED |
-| RUN-06 | SGLang Runtime Integration | Runtime Capability Registry | NOT_STARTED |
-| RUN-07 | MLC-LLM Runtime Integration | Runtime Capability Registry | NOT_STARTED |
-| RUN-08 | ONNX Runtime Integration | Runtime Capability Registry | NOT_STARTED |
-| RUN-09 | HuggingFace TGI Integration | Runtime Capability Registry | NOT_STARTED |
-| RUN-10 | ExoLab Runtime Integration | Runtime Capability Registry | NOT_STARTED |
-| RUN-11 | Petals Runtime Integration | Runtime Capability Registry | NOT_STARTED |
+| RUN-06 | SGLang Runtime Integration | Runtime Capability Registry | VERIFIED |
+| RUN-07 | MLC-LLM Runtime Integration | Runtime Capability Registry | VERIFIED |
+| RUN-08 | ONNX Runtime Integration | Runtime Capability Registry | VERIFIED |
+| RUN-09 | HuggingFace TGI Integration | Runtime Capability Registry | VERIFIED |
+| RUN-10 | ExoLab Runtime Integration | Runtime Capability Registry | VERIFIED |
+| RUN-11 | Petals Runtime Integration | Runtime Capability Registry | VERIFIED |
 | RUN-12 | Runtime Health Monitoring | Runtime Capability Registry | INTEGRATED |
 
 ### Domain 14: Infrastructure
@@ -443,7 +443,7 @@
 | Agent Frameworks | 16 | 12 | 0 | 0 | 4 | 0 |
 | Distributed AI | 6 | 0 | 0 | 0 | 6 | 0 |
 | Core Platform | 20 | 20 | 0 | 0 | 0 | 0 |
-| **TOTAL** | **248** | **145** | **5** | **0** | **88** | **6** |
+| **TOTAL** | **255** | **152** | **5** | **0** | **88** | **6** |
 
 ---
 
@@ -458,7 +458,7 @@ VERIFIED:              165
 INTEGRATED:              7
 IMPLEMENTED:             2
 
-Verified completion = 175 / 264 = 66.3%
+Verified completion = 182 / 264 = 68.9%
 ```
 
 ---

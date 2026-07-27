@@ -173,7 +173,7 @@ def test_health_checker_check_all():
     from ai_generation.local_runtimes import RuntimeHealthChecker
     hc = RuntimeHealthChecker()
     results = asyncio.run(hc.check_all())
-    assert len(results) == 3  # vllm, llamacpp, ollama
+    assert len(results) == 11  # all runtimes
     for rt, profile in results.items():
         assert profile.runtime_type == rt
         assert profile.status.value in ["healthy", "degraded", "unavailable", "unknown"]
@@ -189,8 +189,8 @@ def test_health_checker_custom_timeout():
 def test_runtime_type_all_values():
     from ai_generation.local_runtimes import RuntimeType
     types = list(RuntimeType)
-    assert len(types) == 3
-    assert set(t.value for t in types) == {"vllm", "llamacpp", "ollama"}
+    assert len(types) == 11
+    assert set(t.value for t in types) == {"vllm", "llamacpp", "ollama", "diffusers", "comfyui", "sglang", "mlc_llm", "onnx_runtime", "hf_tgi", "exolab", "petals"}
 
 
 def test_runtime_status_all_values():

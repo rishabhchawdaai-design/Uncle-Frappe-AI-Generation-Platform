@@ -20,12 +20,20 @@ from typing import Any, AsyncIterator, Dict, List, Optional
 logger = logging.getLogger(__name__)
 
 
+
+
 class RuntimeType(str, Enum):
     VLLM = "vllm"
     LLAMACPP = "llamacpp"
     OLLAMA = "ollama"
-
-
+    DIFFUSERS = "diffusers"
+    COMFYUI = "comfyui"
+    SGLANG = "sglang"
+    MLC_LLM = "mlc_llm"
+    ONNX_RUNTIME = "onnx_runtime"
+    HF_TGI = "hf_tgi"
+    EXOLAB = "exolab"
+    PETALS = "petals"
 class RuntimeStatus(str, Enum):
     HEALTHY = "healthy"
     DEGRADED = "degraded"
@@ -137,18 +145,42 @@ class RuntimeHealthChecker:
         RuntimeType.VLLM: "http://localhost:8000",
         RuntimeType.LLAMACPP: "http://localhost:8080",
         RuntimeType.OLLAMA: "http://localhost:11434",
+        RuntimeType.DIFFUSERS: "http://localhost:9000",
+        RuntimeType.COMFYUI: "http://localhost:8188",
+        RuntimeType.SGLANG: "http://localhost:30000",
+        RuntimeType.MLC_LLM: "http://localhost:8001",
+        RuntimeType.ONNX_RUNTIME: "http://localhost:8002",
+        RuntimeType.HF_TGI: "http://localhost:8081",
+        RuntimeType.EXOLAB: "http://localhost:8082",
+        RuntimeType.PETALS: "http://localhost:8083",
     }
 
     HEALTH_ENDPOINTS = {
         RuntimeType.VLLM: "/health",
         RuntimeType.LLAMACPP: "/health",
         RuntimeType.OLLAMA: "/",
+        RuntimeType.DIFFUSERS: "/health",
+        RuntimeType.COMFYUI: "/system_stats",
+        RuntimeType.SGLANG: "/health",
+        RuntimeType.MLC_LLM: "/health",
+        RuntimeType.ONNX_RUNTIME: "/health",
+        RuntimeType.HF_TGI: "/health",
+        RuntimeType.EXOLAB: "/health",
+        RuntimeType.PETALS: "/health",
     }
 
     MODELS_ENDPOINTS = {
         RuntimeType.VLLM: "/v1/models",
         RuntimeType.LLAMACPP: "/v1/models",
         RuntimeType.OLLAMA: "/api/tags",
+        RuntimeType.DIFFUSERS: "/models",
+        RuntimeType.COMFYUI: "/system/models",
+        RuntimeType.SGLANG: "/v1/models",
+        RuntimeType.MLC_LLM: "/v1/models",
+        RuntimeType.ONNX_RUNTIME: "/v1/models",
+        RuntimeType.HF_TGI: "/v1/models",
+        RuntimeType.EXOLAB: "/v1/models",
+        RuntimeType.PETALS: "/v1/models",
     }
 
     def __init__(self, config: Optional[Dict[str, Any]] = None):
