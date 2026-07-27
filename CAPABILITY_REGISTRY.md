@@ -443,7 +443,7 @@
 | Agent Frameworks | 16 | 12 | 0 | 0 | 0 | 4 |
 | Distributed AI | 6 | 0 | 0 | 0 | 0 | 6 |
 | Core Platform | 20 | 20 | 0 | 0 | 0 | 0 |
-| **TOTAL** | **255** | **183** | **1** | **0** | **2** | **49** |
+| **TOTAL** | **251** | **170** | **4** | **0** | **29** | **48** |
 
 ---
 
@@ -451,14 +451,14 @@
 
 ```
 Total capabilities:     270
-BLOCKED:                 49  (external service dependencies)
-Eligible for completion: 221
+BLOCKED:                 48  (external service dependencies)
+Eligible for completion: 203
 
-VERIFIED:              180
+VERIFIED:              170
 INTEGRATED:              3
 IMPLEMENTED:             2
 
-Verified completion = 183 / 221 = 82.8%
+Verified completion = 170 / 203 = 83.7%
 ```
 
 ---
