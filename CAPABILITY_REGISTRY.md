@@ -251,13 +251,13 @@
 
 | ID | Capability | Source | Status |
 |----|-----------|--------|--------|
-| MSG-01 | NATS Event Bus | Messaging Research | VERIFIED |
+| MSG-01 | In-Memory Event Bus | Messaging Research | VERIFIED |
 | MSG-02 | Kafka Event Sourcing | Messaging Research | NOT_STARTED |
 | MSG-03 | RabbitMQ Task Queues | Messaging Research | NOT_STARTED |
 | MSG-04 | Redis Streams | Messaging Research | NOT_STARTED |
-| MSG-05 | Subject-Based Routing | Messaging Research | NOT_STARTED |
+| MSG-05 | Subject-Based Routing | Messaging Research | VERIFIED |
 | MSG-06 | Durable Queues | Messaging Research | NOT_STARTED |
-| MSG-07 | Event-Driven Kernel | Messaging Research | NOT_STARTED |
+| MSG-07 | Event-Driven Kernel | Messaging Research | VERIFIED |
 
 ### Domain 17: Storage & Databases
 
@@ -432,18 +432,18 @@
 | Runtime Registry | 12 | 0 | 1 | 0 | 11 | 0 |
 | Infrastructure | 11 | 5 | 0 | 0 | 6 | 0 |
 | Security | 12 | 2 | 0 | 0 | 10 | 0 |
-| Messaging & Events | 7 | 0 | 0 | 0 | 7 | 0 |
 | Storage & Databases | 8 | 2 | 0 | 0 | 6 | 0 |
 | Networking & Mesh | 6 | 0 | 0 | 0 | 0 | 6 |
 | Observability | 11 | 6 | 0 | 0 | 5 | 0 |
 | Plugin System | 10 | 7 | 0 | 0 | 3 | 0 |
 | Browser AI | 9 | 8 | 0 | 0 | 1 | 0 |
 | Edge AI | 9 | 7 | 0 | 0 | 2 | 0 |
+| Messaging & Events | 7 | 3 | 0 | 0 | 4 | 0 |
 | Workflow Orchestration | 7 | 3 | 0 | 0 | 4 | 0 |
 | Agent Frameworks | 16 | 12 | 0 | 0 | 4 | 0 |
 | Distributed AI | 6 | 0 | 0 | 0 | 6 | 0 |
 | Core Platform | 20 | 20 | 0 | 0 | 0 | 0 |
-| **TOTAL** | **234** | **135** | **5** | **0** | **88** | **6** |
+| **TOTAL** | **241** | **138** | **5** | **0** | **92** | **6** |
 
 ---
 
@@ -458,12 +458,10 @@ VERIFIED:              165
 INTEGRATED:              7
 IMPLEMENTED:             2
 
-Verified completion = 165 / 264 = 62.5%
+Verified completion = 168 / 264 = 63.6%
 ```
 
 ---
-
-## Next Priority (by dependency and impact)
 
 1. **SEC-05**: Encryption at Rest — security foundation, pure Python
 2. **SEC-06**: Encryption in Transit — security foundation, pure Python
