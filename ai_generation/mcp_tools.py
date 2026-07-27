@@ -1027,6 +1027,8 @@ MCP_GENERATION_TOOLS = {
     "plan_agents": {"name": "plan_agents", "description": "Select appropriate review agents for a task.", "inputSchema": {"type": "object", "properties": {"task_description": {"type": "string"}}, "required": ["task_description"]}},
     "add_kb_entry": {"name": "add_kb_entry", "description": "Add an entry to the knowledge base context.", "inputSchema": {"type": "object", "properties": {"key": {"type": "string"}, "content": {"type": "string"}, "source": {"type": "string", "default": ""}}, "required": ["key", "content"]}},
     "retrieve_kb": {"name": "retrieve_kb", "description": "Retrieve relevant knowledge base entries for a query.", "inputSchema": {"type": "object", "properties": {"query": {"type": "string"}, "max_results": {"type": "integer", "default": 5}}, "required": ["query"]}},
+    "detect_code_smells": {"name": "detect_code_smells", "description": "Detect code smells (long methods, large classes, magic numbers, dead code, etc.).", "inputSchema": {"type": "object", "properties": {"code": {"type": "string", "default": ""}, "file_path": {"type": "string", "default": "<input>"}}, "required": []}},
+    "suggest_refactoring": {"name": "suggest_refactoring", "description": "Analyze code and generate refactoring suggestions with techniques and steps.", "inputSchema": {"type": "object", "properties": {"code": {"type": "string", "default": ""}, "file_path": {"type": "string", "default": "<input>"}, "files": {"type": "object", "description": "Dict of {filepath: content} for multi-file analysis"}}, "required": []}},
 
 }
 class MCPGenerationTools:
@@ -1237,6 +1239,8 @@ class MCPGenerationTools:
             "plan_agents": self._handle_plan_agents,
             "add_kb_entry": self._handle_add_kb_entry,
             "retrieve_kb": self._handle_retrieve_kb,
+            "detect_code_smells": self._handle_detect_code_smells,
+            "suggest_refactoring": self._handle_suggest_refactoring,
         }
         handler = handlers.get(tool_name)
         if not handler:
@@ -2364,6 +2368,24 @@ class MCPGenerationTools:
         max_results = args.get("max_results", 5)
         results = self.sdk.orchestration_pipeline.knowledge_base.retrieve(query, max_results)
         return {"results": [{"key": r.key, "content": r.content, "source": r.source, "relevance": r.relevance} for r in results], "count": len(results)}
+
+    async def _handle_detect_code_smells(self, args):
+        from .refactoring_engine import SmellDetector
+        code = args.get("code", "")
+        file_path = args.get("file_path", "<input>")
+        detector = SmellDetector()
+        smells = detector.detect(code, file_path)
+        return {"smells": [s.to_dict() for s in smells], "count": len(smells)}
+
+    async def _handle_suggest_refactoring(self, args):
+        code = args.get("code", "")
+        file_path = args.get("file_path", "<input>")
+        files = args.get("files", None)
+        if files:
+            suggestions = self.sdk.refactoring_engine.analyze_files(files)
+        else:
+            suggestions = self.sdk.refactoring_engine.analyze(code, file_path)
+        return {"suggestions": [s.to_dict() for s in suggestions], "count": len(suggestions), "stats": self.sdk.refactoring_engine.get_stats(suggestions)}
 
 def get_mcp_generation_tools():
     return MCP_GENERATION_TOOLS

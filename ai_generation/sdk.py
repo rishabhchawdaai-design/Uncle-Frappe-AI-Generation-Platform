@@ -117,6 +117,8 @@ class UncleFrappeAI:
         # Phase 34 — Multi-Agent Orchestration
         self._orchestration_pipeline = None
         self._knowledge_base = None
+        # Phase 35 — Refactoring Engine
+        self._refactoring_engine = None
         # Phase 33 — Code Analysis Engines
         self._secret_scanner = None
         self._static_analyzer = None
@@ -252,6 +254,14 @@ class UncleFrappeAI:
             from .orchestration import KnowledgeBaseContext
             self._knowledge_base = KnowledgeBaseContext()
         return self._knowledge_base
+
+    # Phase 35 — Refactoring Engine
+    @property
+    def refactoring_engine(self):
+        if self._refactoring_engine is None:
+            from .refactoring_engine import RefactoringEngine
+            self._refactoring_engine = RefactoringEngine()
+        return self._refactoring_engine
 
     @property
     def workflow_engine(self):

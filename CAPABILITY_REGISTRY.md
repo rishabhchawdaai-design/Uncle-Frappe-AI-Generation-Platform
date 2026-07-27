@@ -540,3 +540,10 @@ Verified completion = 200 / 204 = 98.0%
 - **Module**: `ai_generation/orchestration.py` → `RevisionLoop`
 - **Tests**: Covered in `test_orchestration.py`
 - **Pattern**: Bounded revision loop with max rounds, QA/Review feedback integration, ship decision tracking.
+
+### QE-19 — Refactoring Engine (extracted from claude-code-agents)
+- **Status**: VERIFIED
+- **Module**: `ai_generation/refactoring_engine.py` → `RefactoringEngine`, `SmellDetector`
+- **Tests**: 22 tests in `test_refactoring.py`
+- **MCP Tools**: `detect_code_smells`, `suggest_refactoring`
+- **Pattern**: AST-based code smell detection (20 smell types across 6 categories). Technique mapping with step-by-step refactoring guidance. Priority scoring by severity. Multi-file analysis. Covers: long methods, large classes, long params, deep nesting, magic numbers, dead code, feature envy, switch statements, god class, low cohesion, tight coupling, and more.
