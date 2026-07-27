@@ -90,10 +90,10 @@
 | 3D-02 | Text-to-3D (Hunyuan3D) | Image Gen Research §3D | VERIFIED |
 | 3D-03 | Text-to-3D (Point-E) | Image Gen Research §3D | VERIFIED |
 | 3D-04 | Text-to-3D (Shap-E) | Image Gen Research §3D | VERIFIED |
-| 3D-05 | Image-to-3D | Image Gen Research §3D | INTEGRATED |
-| 3D-06 | Gaussian Splatting | Image Gen Research §3D | NOT_STARTED |
-| 3D-07 | Mesh Generation | Image Gen Research §3D | NOT_STARTED |
-| 3D-08 | 3D Editing | Image Gen Research §3D | NOT_STARTED |
+| 3D-05 | Image-to-3D | Image Gen Research §3D | VERIFIED |
+| 3D-06 | Gaussian Splatting | Image Gen Research §3D | VERIFIED |
+| 3D-07 | Mesh Generation | Image Gen Research §3D | VERIFIED |
+| 3D-08 | 3D Editing | Image Gen Research §3D | VERIFIED |
 
 ### Domain 6: OCR & Document Intelligence
 
@@ -421,7 +421,7 @@
 | Image Editing | 8 | 7 | 0 | 0 | 1 | 0 |
 | Video Generation | 9 | 7 | 0 | 0 | 2 | 0 |
 | Audio Generation | 10 | 9 | 0 | 0 | 1 | 0 |
-| 3D Generation | 8 | 4 | 1 | 0 | 3 | 0 |
+| 3D Generation | 8 | 8 | 0 | 0 | 0 | 0 |
 | OCR & Document | 10 | 8 | 0 | 0 | 2 | 0 |
 | Search Systems | 11 | 11 | 0 | 0 | 0 | 0 |
 | Routing & Negotiation | 9 | 9 | 0 | 0 | 0 | 0 |
@@ -443,7 +443,7 @@
 | Agent Frameworks | 16 | 12 | 0 | 0 | 4 | 0 |
 | Distributed AI | 6 | 0 | 0 | 0 | 6 | 0 |
 | Core Platform | 20 | 20 | 0 | 0 | 0 | 0 |
-| **TOTAL** | **255** | **165** | **5** | **0** | **75** | **6** |
+| **TOTAL** | **255** | **169** | **1** | **0** | **71** | **6** |
 
 ---
 
@@ -454,11 +454,11 @@ Total capabilities:     270
 BLOCKED:                  6  (Networking & Mesh — requires K8s cluster)
 Eligible for completion: 264
 
-VERIFIED:              178
-INTEGRATED:              7
+VERIFIED:              182
+INTEGRATED:              3
 IMPLEMENTED:             2
 
-Verified completion = 195 / 264 = 73.9%
+Verified completion = 201 / 264 = 76.1%
 ```
 
 ---

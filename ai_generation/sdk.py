@@ -79,6 +79,9 @@ class UncleFrappeAI:
         self._document_intelligence = None
         # Phase 24 — 3D Generation
         self._generation_3d = None
+        self._gaussian_splatting = None
+        self._mesh_processing = None
+        self._edit_3d = None
         # Phase 25 — Benchmark Regression Detection
         self._regression_detector = None
         # Phase 26 — Capability Graph
@@ -483,6 +486,9 @@ class UncleFrappeAI:
             "audio_enhancement": self.audio_enhancement.get_stats(),
             "document_intelligence": self.document_intelligence.get_stats(),
             "search_backends": self.search_backends.get_stats(),
+            "gaussian_splatting": self.gaussian_splatting.get_stats(),
+            "mesh_processing": self.mesh_processing.get_stats(),
+            "edit_3d": self.edit_3d.get_stats(),
             "cinematic_workflow": self.cinematic_workflow.get_stats(),
             "characters": self.character_manager.get_stats(),
             "projects": self.project_manager.get_stats(),
@@ -720,6 +726,27 @@ class UncleFrappeAI:
             from .generation_3d import Generation3DEngine
             self._generation_3d = Generation3DEngine(self.config)
         return self._generation_3d
+
+    @property
+    def gaussian_splatting(self):
+        if self._gaussian_splatting is None:
+            from .generation_3d_extensions import GaussianSplattingEngine
+            self._gaussian_splatting = GaussianSplattingEngine(self.config)
+        return self._gaussian_splatting
+
+    @property
+    def mesh_processing(self):
+        if self._mesh_processing is None:
+            from .generation_3d_extensions import MeshProcessingEngine
+            self._mesh_processing = MeshProcessingEngine(self.config)
+        return self._mesh_processing
+
+    @property
+    def edit_3d(self):
+        if self._edit_3d is None:
+            from .generation_3d_extensions import Edit3DEngine
+            self._edit_3d = Edit3DEngine(self.config)
+        return self._edit_3d
 
     @property
     def ocr_engine(self):

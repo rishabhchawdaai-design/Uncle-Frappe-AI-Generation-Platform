@@ -149,6 +149,13 @@ MCP_GENERATION_TOOLS = {
     "vector_search": {"name": "vector_search", "description": "Semantic similarity search using sentence-transformers embeddings.", "inputSchema": {"type": "object", "properties": {"collection": {"type": "string"}, "query": {"type": "string"}, "limit": {"type": "integer", "default": 10}, "model": {"type": "string", "default": ""}}, "required": ["collection", "query"]}},
     "index_documents_external": {"name": "index_documents_external", "description": "Index documents into an external search backend.", "inputSchema": {"type": "object", "properties": {"backend": {"type": "string", "enum": ["meilisearch", "opensearch", "vector"]}, "collection": {"type": "string"}, "documents": {"type": "array", "items": {"type": "object"}}}, "required": ["backend", "collection", "documents"]}},
     "check_search_health": {"name": "check_search_health", "description": "Check health of external search backends.", "inputSchema": {"type": "object", "properties": {}}},
+        "train_gaussian_splat": {"name": "train_gaussian_splat", "description": "Train Gaussian Splatting model from images/video.", "inputSchema": {"type": "object", "properties": {"input_path": {"type": "string"}, "output_path": {"type": "string", "default": ""}, "backend": {"type": "string", "enum": ["auto", "splatfacto", "gausstudio", "nerfstudio"], "default": "auto"}}, "required": ["input_path"]}},
+    "render_gaussian_splat": {"name": "render_gaussian_splat", "description": "Render from trained Gaussian Splatting model.", "inputSchema": {"type": "object", "properties": {"model_path": {"type": "string"}, "output_path": {"type": "string", "default": ""}}, "required": ["model_path"]}},
+    "process_mesh": {"name": "process_mesh", "description": "Process 3D mesh (simplify, smooth, remesh, triangulate, decimate, UV unwrap, normal map, scale, merge).", "inputSchema": {"type": "object", "properties": {"operation": {"type": "string", "enum": ["simplify", "smooth", "remesh", "triangulate", "decimate", "uv_unwrap", "normal_map", "scale", "rotate", "translate", "merge", "split"]}, "input_path": {"type": "string"}, "output_path": {"type": "string", "default": ""}}, "required": ["operation", "input_path"]}},
+    "edit_3d_model": {"name": "edit_3d_model", "description": "Edit 3D model (transform, clip, reconstruct, export).", "inputSchema": {"type": "object", "properties": {"operation": {"type": "string", "enum": ["transform", "clip", "paint", "morph", "reconstruct", "export", "import"]}, "input_path": {"type": "string"}, "output_path": {"type": "string", "default": ""}}, "required": ["operation", "input_path"]}},
+    "get_gaussian_splat_profiles": {"name": "get_gaussian_splat_profiles", "description": "List Gaussian Splatting backends.", "inputSchema": {"type": "object", "properties": {}}},
+    "get_mesh_profiles": {"name": "get_mesh_profiles", "description": "List mesh processing operations.", "inputSchema": {"type": "object", "properties": {}}},
+    "get_3d_edit_profiles": {"name": "get_3d_edit_profiles", "description": "List 3D editing operations.", "inputSchema": {"type": "object", "properties": {}}},
     "get_search_backend_profiles": {"name": "get_search_backend_profiles", "description": "List available external search backends.", "inputSchema": {"type": "object", "properties": {}}},
     "get_doc_intelligence_profiles": {"name": "get_doc_intelligence_profiles", "description": "List available document intelligence backends.", "inputSchema": {"type": "object", "properties": {}}},
     "concat_audio": {"name": "concat_audio", "description": "Concatenate multiple audio files sequentially.", "inputSchema": {"type": "object", "properties": {"input_paths": {"type": "array", "items": {"type": "string"}}, "output_path": {"type": "string", "default": ""}}, "required": ["input_paths"]}},
@@ -1049,6 +1056,13 @@ class MCPGenerationTools:
             "vector_search": self._handle_vector_search,
             "index_documents_external": self._handle_index_documents_external,
             "check_search_health": self._handle_check_search_health,
+            "train_gaussian_splat": self._handle_train_gaussian_splat,
+            "render_gaussian_splat": self._handle_render_gaussian_splat,
+            "process_mesh": self._handle_process_mesh,
+            "edit_3d_model": self._handle_edit_3d_model,
+            "get_gaussian_splat_profiles": self._handle_gaussian_splat_profiles,
+            "get_mesh_profiles": self._handle_mesh_profiles,
+            "get_3d_edit_profiles": self._handle_3d_edit_profiles,
             "get_search_backend_profiles": self._handle_search_backend_profiles,
             "get_doc_intelligence_profiles": self._handle_doc_intelligence_profiles,
             "concat_audio": self._handle_concat_audio,
@@ -1463,6 +1477,43 @@ class MCPGenerationTools:
     async def _handle_check_search_health(self, args):
         return await self.sdk.search_backends.check_health()
 
+    async def _handle_train_gaussian_splat(self, args):
+        result = await self.sdk.gaussian_splatting.train(
+            args["input_path"], output_path=args.get("output_path", ""),
+            backend=args.get("backend", "auto"),
+        )
+        return result.to_dict()
+
+    async def _handle_render_gaussian_splat(self, args):
+        result = await self.sdk.gaussian_splatting.render(
+            args["model_path"], output_path=args.get("output_path", ""),
+        )
+        return result.to_dict()
+
+    async def _handle_process_mesh(self, args):
+        from ai_generation.generation_3d_extensions import MeshOperation
+        op = MeshOperation(args["operation"])
+        result = await self.sdk.mesh_processing.process(
+            op, args["input_path"], output_path=args.get("output_path", ""),
+        )
+        return result.to_dict()
+
+    async def _handle_edit_3d_model(self, args):
+        from ai_generation.generation_3d_extensions import Edit3DOperation
+        op = Edit3DOperation(args["operation"])
+        result = await self.sdk.edit_3d.edit(
+            op, args["input_path"], output_path=args.get("output_path", ""),
+        )
+        return result.to_dict()
+
+    async def _handle_gaussian_splat_profiles(self, args):
+        return {"profiles": self.sdk.gaussian_splatting.get_profiles()}
+
+    async def _handle_mesh_profiles(self, args):
+        return {"profiles": self.sdk.mesh_processing.get_profiles()}
+
+    async def _handle_3d_edit_profiles(self, args):
+        return {"profiles": self.sdk.edit_3d.get_profiles()}
     async def _handle_search_backend_profiles(self, args):
         return {"profiles": self.sdk.search_backends.get_profiles(), "stats": self.sdk.search_backends.get_stats()}
     async def _handle_doc_intelligence_profiles(self, args):
