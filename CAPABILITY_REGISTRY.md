@@ -104,9 +104,9 @@
 | OCR-03 | Text Detection & Recognition (EasyOCR) | OCR Research | VERIFIED |
 | OCR-04 | Text Detection & Recognition (Surya) | OCR Research | VERIFIED |
 | OCR-05 | OCR Backend Selection | OCR Research | VERIFIED |
-| OCR-06 | Document Parsing | OCR Research | NOT_STARTED |
+| OCR-06 | Document Parsing | OCR Research | VERIFIED |
 | OCR-07 | Table Recognition | OCR Research | NOT_STARTED |
-| OCR-08 | Layout Analysis | OCR Research | NOT_STARTED |
+| OCR-08 | Layout Analysis | OCR Research | VERIFIED |
 | OCR-09 | PDF-to-Markdown (Marker) | OCR Research | NOT_STARTED |
 | OCR-10 | Scientific Document OCR (Nougat) | OCR Research | NOT_STARTED |
 
@@ -422,7 +422,7 @@
 | Video Generation | 9 | 7 | 0 | 0 | 2 | 0 |
 | Audio Generation | 10 | 9 | 0 | 0 | 1 | 0 |
 | 3D Generation | 8 | 4 | 1 | 0 | 3 | 0 |
-| OCR & Document | 10 | 5 | 0 | 0 | 5 | 0 |
+| OCR & Document | 10 | 8 | 0 | 0 | 2 | 0 |
 | Search Systems | 11 | 8 | 0 | 0 | 3 | 0 |
 | Routing & Negotiation | 9 | 9 | 0 | 0 | 0 | 0 |
 | Execution Engine | 10 | 10 | 0 | 0 | 0 | 0 |
@@ -443,7 +443,7 @@
 | Agent Frameworks | 16 | 12 | 0 | 0 | 4 | 0 |
 | Distributed AI | 6 | 0 | 0 | 0 | 6 | 0 |
 | Core Platform | 20 | 20 | 0 | 0 | 0 | 0 |
-| **TOTAL** | **255** | **159** | **5** | **0** | **81** | **6** |
+| **TOTAL** | **255** | **162** | **5** | **0** | **78** | **6** |
 
 ---
 
@@ -454,11 +454,11 @@ Total capabilities:     270
 BLOCKED:                  6  (Networking & Mesh — requires K8s cluster)
 Eligible for completion: 264
 
-VERIFIED:              172
+VERIFIED:              175
 INTEGRATED:              7
 IMPLEMENTED:             2
 
-Verified completion = 189 / 264 = 71.6%
+Verified completion = 192 / 264 = 72.7%
 ```
 
 ---

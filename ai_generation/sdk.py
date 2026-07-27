@@ -75,6 +75,7 @@ class UncleFrappeAI:
         self._search_systems = None
         # Phase 23 — OCR & Document Intelligence
         self._ocr_engine = None
+        self._document_intelligence = None
         # Phase 24 — 3D Generation
         self._generation_3d = None
         # Phase 25 — Benchmark Regression Detection
@@ -479,6 +480,7 @@ class UncleFrappeAI:
             "voice_cloning": self.voice_cloning.get_stats(),
             "music_generation": self.music_generation.get_stats(),
             "audio_enhancement": self.audio_enhancement.get_stats(),
+            "document_intelligence": self.document_intelligence.get_stats(),
             "cinematic_workflow": self.cinematic_workflow.get_stats(),
             "characters": self.character_manager.get_stats(),
             "projects": self.project_manager.get_stats(),
@@ -723,6 +725,13 @@ class UncleFrappeAI:
             from .ocr_engine import OCREngine
             self._ocr_engine = OCREngine(self.config)
         return self._ocr_engine
+
+    @property
+    def document_intelligence(self):
+        if self._document_intelligence is None:
+            from .document_intelligence import DocumentIntelligenceEngine
+            self._document_intelligence = DocumentIntelligenceEngine(self.config)
+        return self._document_intelligence
 
     @property
     def search_systems(self):

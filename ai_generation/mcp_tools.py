@@ -142,6 +142,10 @@ MCP_GENERATION_TOOLS = {
     "normalize_audio": {"name": "normalize_audio", "description": "Normalize audio loudness.", "inputSchema": {"type": "object", "properties": {"input_path": {"type": "string"}, "output_path": {"type": "string", "default": ""}, "target_level": {"type": "number", "default": -16}}, "required": ["input_path"]}},
     "convert_audio": {"name": "convert_audio", "description": "Convert audio format (wav, mp3, aac, ogg, flac).", "inputSchema": {"type": "object", "properties": {"input_path": {"type": "string"}, "output_path": {"type": "string", "default": ""}, "format": {"type": "string", "enum": ["wav", "mp3", "aac", "ogg", "flac"], "default": "wav"}}, "required": ["input_path"]}},
     "mix_audio": {"name": "mix_audio", "description": "Mix multiple audio files together.", "inputSchema": {"type": "object", "properties": {"input_paths": {"type": "array", "items": {"type": "string"}}, "output_path": {"type": "string", "default": ""}, "weights": {"type": "array", "items": {"type": "number"}}}, "required": ["input_paths"]}},
+        "parse_document": {"name": "parse_document", "description": "Parse document to Markdown (PDF, DOCX, HTML, EPUB, PPTX). Uses Marker, Nougat, or Docling.", "inputSchema": {"type": "object", "properties": {"input_path": {"type": "string"}, "output_path": {"type": "string", "default": ""}, "backend": {"type": "string", "enum": ["auto", "marker", "nougat", "docling", "builtin"], "default": "auto"}}, "required": ["input_path"]}},
+    "extract_tables": {"name": "extract_tables", "description": "Extract tables from PDF documents. Uses Camelot or Tabula.", "inputSchema": {"type": "object", "properties": {"input_path": {"type": "string"}, "backend": {"type": "string", "enum": ["auto", "camelot", "tabula", "builtin"], "default": "auto"}, "pages": {"type": "string", "default": "all"}}, "required": ["input_path"]}},
+    "analyze_layout": {"name": "analyze_layout", "description": "Analyze document layout (regions, columns, headers). Uses LayoutLMv3, DETR, or Surya.", "inputSchema": {"type": "object", "properties": {"input_path": {"type": "string"}, "backend": {"type": "string", "enum": ["auto", "layoutlmv3", "detr", "surya", "builtin"], "default": "auto"}}, "required": ["input_path"]}},
+    "get_doc_intelligence_profiles": {"name": "get_doc_intelligence_profiles", "description": "List available document intelligence backends.", "inputSchema": {"type": "object", "properties": {}}},
     "concat_audio": {"name": "concat_audio", "description": "Concatenate multiple audio files sequentially.", "inputSchema": {"type": "object", "properties": {"input_paths": {"type": "array", "items": {"type": "string"}}, "output_path": {"type": "string", "default": ""}}, "required": ["input_paths"]}},
     "get_music_profiles": {"name": "get_music_profiles", "description": "List available music/SFX generation models.", "inputSchema": {"type": "object", "properties": {}}},
     "probe_video": {"name": "probe_video", "description": "Probe video file metadata (resolution, fps, codec, duration).", "inputSchema": {"type": "object", "properties": {"input_path": {"type": "string"}}, "required": ["input_path"]}},
@@ -1033,6 +1037,10 @@ class MCPGenerationTools:
             "normalize_audio": self._handle_normalize_audio,
             "convert_audio": self._handle_convert_audio,
             "mix_audio": self._handle_mix_audio,
+            "parse_document": self._handle_parse_document,
+            "extract_tables": self._handle_extract_tables,
+            "analyze_layout": self._handle_analyze_layout,
+            "get_doc_intelligence_profiles": self._handle_doc_intelligence_profiles,
             "concat_audio": self._handle_concat_audio,
             "get_music_profiles": self._handle_music_profiles,
             "probe_video": self._handle_probe_video,
@@ -1398,6 +1406,33 @@ class MCPGenerationTools:
         )
         return result.to_dict()
 
+    async def _handle_parse_document(self, args):
+        result = await self.sdk.document_intelligence.parse_document(
+            args["input_path"], output_path=args.get("output_path", ""),
+            backend=args.get("backend", "auto"),
+        )
+        return result.to_dict()
+
+    async def _handle_extract_tables(self, args):
+        result = await self.sdk.document_intelligence.extract_tables(
+            args["input_path"], backend=args.get("backend", "auto"),
+            pages=args.get("pages", "all"),
+        )
+        return result.to_dict()
+
+    async def _handle_analyze_layout(self, args):
+        result = await self.sdk.document_intelligence.analyze_layout(
+            args["input_path"], backend=args.get("backend", "auto"),
+        )
+        return result.to_dict()
+
+    async def _handle_doc_intelligence_profiles(self, args):
+        return {
+            "parsing": self.sdk.document_intelligence.get_parsing_profiles(),
+            "table_extraction": self.sdk.document_intelligence.get_table_profiles(),
+            "layout": self.sdk.document_intelligence.get_layout_profiles(),
+            "available": self.sdk.document_intelligence.get_available_backends(),
+        }
     async def _handle_concat_audio(self, args):
         from ai_generation.audio_enhancement import AudioEnhanceOperation
         result = await self.sdk.audio_enhancement.execute(
