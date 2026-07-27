@@ -55,6 +55,44 @@ class UncleFrappeAI:
         self._knowledge_graph = None
         self._dynamic_adapter_manager = None
         self._benchmark_lab = None
+        # Phase 16 — Audio Generation
+        self._audio_generation = None
+        # Phase 17 — Decision Ledger
+        self._decision_ledger = None
+        # Phase 18 — Browser AI Inference Layer
+        self._browser_ai = None
+        # Phase 19 — Edge AI Runtime Detection
+        self._edge_ai = None
+        # Phase 20 — Plugin System Foundation
+        self._plugin_system = None
+        # Phase 21 — Observability Layer
+        self._observability = None
+        # Phase 22 — Search Systems
+        self._search_systems = None
+        # Phase 23 — OCR & Document Intelligence
+        self._ocr_engine = None
+        # Phase 24 — 3D Generation
+        self._generation_3d = None
+        # Phase 25 — Benchmark Regression Detection
+        self._regression_detector = None
+        # Phase 26 — Capability Graph
+        self._capability_graph = None
+        # Phase 27 — Security Layer
+        self._security_manager = None
+        # Phase 28 — Failure Recovery System
+        self._failure_recovery = None
+        # Phase 29 — Local Runtime Integrations
+        self._local_runtimes = None
+        # Phase 30 — Security Crypto Layer
+        self._encryption_at_rest = None
+        # Phase 31 — In-Memory Event Bus
+        self._event_bus = None
+        self._event_kernel = None
+        self._encryption_in_transit = None
+        self._model_security = None
+        # Phase 15 — Negotiation Engine & Supervisor Tree
+        self._negotiation_engine = None
+        self._supervisor = None
 
     @property
     def generation_manager(self):
@@ -251,6 +289,83 @@ class UncleFrappeAI:
             from .benchmark_lab import BenchmarkLab
             self._benchmark_lab = BenchmarkLab()
         return self._benchmark_lab
+
+    @property
+    def decision_ledger(self):
+        if self._decision_ledger is None:
+            from .decision_ledger import DecisionLedger
+            self._decision_ledger = DecisionLedger(self.config)
+        return self._decision_ledger
+
+    @property
+    def audio_generation(self):
+        if self._audio_generation is None:
+            from .audio_generation import AudioGenerationEngine
+            self._audio_generation = AudioGenerationEngine(self.config)
+        return self._audio_generation
+
+    @property
+    def negotiation_engine(self):
+        if self._negotiation_engine is None:
+            from .negotiation_engine import NegotiationEngine
+            self._negotiation_engine = NegotiationEngine()
+        return self._negotiation_engine
+
+    @property
+    def supervisor(self):
+        if self._supervisor is None:
+            from .supervisor import create_platform_supervisor
+            self._supervisor = create_platform_supervisor()
+        return self._supervisor
+
+    @property
+    def failure_recovery(self):
+        if self._failure_recovery is None:
+            from .failure_recovery import FailureRecoveryEngine
+            self._failure_recovery = FailureRecoveryEngine(self.config)
+        return self._failure_recovery
+
+    @property
+    def local_runtimes(self):
+        if self._local_runtimes is None:
+            from .local_runtimes import LocalRuntimeManager
+            self._local_runtimes = LocalRuntimeManager(self.config)
+        return self._local_runtimes
+
+    @property
+    def encryption_at_rest(self):
+        if self._encryption_at_rest is None:
+            from .security_crypto import EncryptionAtRest
+            self._encryption_at_rest = EncryptionAtRest(self.config)
+        return self._encryption_at_rest
+
+    @property
+    def encryption_in_transit(self):
+        if self._encryption_in_transit is None:
+            from .security_crypto import EncryptionInTransit
+            self._encryption_in_transit = EncryptionInTransit(self.config)
+        return self._encryption_in_transit
+
+    @property
+    def model_security(self):
+        if self._model_security is None:
+            from .security_crypto import ModelSecurity
+            self._model_security = ModelSecurity(self.config)
+        return self._model_security
+
+    @property
+    def event_bus(self):
+        if self._event_bus is None:
+            from .event_bus import EventBus
+            self._event_bus = EventBus(self.config)
+        return self._event_bus
+
+    @property
+    def event_kernel(self):
+        if self._event_kernel is None:
+            from .event_bus import EventDrivenKernel
+            self._event_kernel = EventDrivenKernel(self.config)
+        return self._event_kernel
 
     async def generate(self, prompt, style="", quality="high", enhance_prompt=True,
                        provider=None, width=1024, height=1024, seed=None, **kwargs):
@@ -453,3 +568,634 @@ class UncleFrappeAI:
         task = AgentTask(task_type="get_endpoints")
         agent = self.aigos.registry.get_agent("discovery")
         return agent.execute(task).data.get("endpoints", [])
+
+    # ── Phase 15 — Negotiation Engine Convenience Methods ──
+
+    @property
+    def security(self):
+        if self._security_manager is None:
+            from .security import SecurityManager
+            self._security_manager = SecurityManager(self.config)
+        return self._security_manager
+
+    @property
+    def capability_graph(self):
+        if self._capability_graph is None:
+            from .capability_graph import CapabilityGraph
+            self._capability_graph = CapabilityGraph(self.config)
+        return self._capability_graph
+
+    @property
+    def regression_detector(self):
+        if self._regression_detector is None:
+            from .regression_detector import RegressionDetector
+            self._regression_detector = RegressionDetector(self.config)
+        return self._regression_detector
+
+    @property
+    def generation_3d(self):
+        if self._generation_3d is None:
+            from .generation_3d import Generation3DEngine
+            self._generation_3d = Generation3DEngine(self.config)
+        return self._generation_3d
+
+    @property
+    def ocr_engine(self):
+        if self._ocr_engine is None:
+            from .ocr_engine import OCREngine
+            self._ocr_engine = OCREngine(self.config)
+        return self._ocr_engine
+
+    @property
+    def search_systems(self):
+        if self._search_systems is None:
+            from .search_systems import SearchManager
+            self._search_systems = SearchManager(self.config)
+        return self._search_systems
+
+    @property
+    def observability(self):
+        if self._observability is None:
+            from .observability import ObservabilityManager
+            self._observability = ObservabilityManager(self.config)
+        return self._observability
+
+    @property
+    def plugin_system(self):
+        if self._plugin_system is None:
+            from .plugin_system import PluginSystem
+            self._plugin_system = PluginSystem(self.config)
+        return self._plugin_system
+
+    @property
+    def edge_ai(self):
+        if self._edge_ai is None:
+            from .edge_ai import EdgeAIManager
+            self._edge_ai = EdgeAIManager(self.config)
+        return self._edge_ai
+
+    @property
+    def browser_ai(self):
+        if self._browser_ai is None:
+            from .browser_ai import BrowserAIManager
+            self._browser_ai = BrowserAIManager(self.config)
+        return self._browser_ai
+
+    def negotiate(self, request: str, **kwargs):
+        """Negotiate optimal execution path for a request."""
+        return self.auto_router.negotiate(request, **kwargs)
+
+    def negotiate_with_candidates(self, request, candidates):
+        """Negotiate with explicit candidate list."""
+        return self.negotiation_engine.negotiate(request, candidates)
+
+    def update_benchmark(self, provider, model, task_type, quality_score,
+                         success_rate, latency_ms):
+        """Update benchmark data for provider/model negotiation."""
+        self.negotiation_engine.update_benchmark(
+            provider, model, task_type, quality_score, success_rate, latency_ms
+        )
+
+    def get_negotiation_stats(self):
+        """Get negotiation engine statistics."""
+        return self.negotiation_engine.get_stats()
+
+    def get_negotiation_history(self, limit=20):
+        """Get recent negotiation history."""
+        return self.negotiation_engine.get_history(limit)
+
+    # ── Phase 15 — Supervisor Tree Convenience Methods ──
+
+    def supervisor_stats(self):
+        """Get platform supervisor statistics."""
+        return self.supervisor.get_stats()
+
+    def supervisor_workers(self):
+        """Get all supervised worker states."""
+        return self.supervisor.get_all_states()
+
+    def supervisor_events(self, limit=50):
+        """Get recent supervision events."""
+        return self.supervisor.get_events(limit)
+
+    def supervisor_crashed(self):
+        """Get crashed workers."""
+        return self.supervisor.get_crashed_workers()
+
+    def supervisor_reset(self):
+        """Reset all supervisor worker states."""
+        self.supervisor.reset_all()
+
+    # ── Phase 16 — Audio Generation Convenience Methods ──
+
+    async def text_to_speech(self, text: str, voice: str = "default",
+                             speed: float = 1.0, provider: str = None, **kwargs):
+        """Generate speech from text."""
+        return await self.audio_generation.text_to_speech(
+            text=text, voice=voice, speed=speed, provider=provider, **kwargs
+        )
+
+    async def transcribe(self, audio_data: bytes, language: str = "en",
+                         provider: str = None, **kwargs):
+        """Transcribe audio to text."""
+        return await self.audio_generation.transcribe(
+            audio_data=audio_data, language=language, provider=provider, **kwargs
+        )
+
+    def list_audio_providers(self):
+        """List all available audio providers."""
+        return self.audio_generation.list_providers()
+
+    def get_audio_stats(self):
+        """Get audio generation statistics."""
+        return self.audio_generation.get_stats()
+
+    # ── Phase 17 — Decision Ledger Convenience Methods ──
+
+    # ── Phase 18 — Browser AI ──
+
+    def list_browser_runtimes(self) -> list:
+        """List available browser AI runtimes."""
+        return self.browser_ai.list_runtimes()
+
+    def list_browser_models(self, category: str = "", runtime: str = "") -> list:
+        """List browser-compatible AI models."""
+        return self.browser_ai.list_models(category=category or None, runtime=runtime or None)
+
+    def find_browser_models(self, task_type: str, max_memory_mb: float = 4000) -> list:
+        """Find browser models for a task within memory limits."""
+        return self.browser_ai.find_models_for_task(task_type, max_memory_mb)
+
+    def select_browser_runtime(self, task_type: str, needs_offline: bool = False,
+                               needs_mobile: bool = False) -> str:
+        """Select optimal browser runtime for a task."""
+        return self.browser_ai.select_optimal_runtime(task_type, needs_offline, needs_mobile)
+
+    def generate_browser_template(self, runtime: str, task_type: str,
+                                   model_id: str = "") -> dict:
+        """Generate browser inference HTML/JS template."""
+        return self.browser_ai.generate_inference_template(runtime, task_type, model_id or None)
+
+    # ── Phase 19 — Edge AI ──
+
+    def detect_edge_hardware(self) -> dict:
+        """Detect edge AI hardware on this system."""
+        return self.edge_ai.detect_hardware()
+
+    def list_edge_profiles(self, hardware: str = "", platform: str = "") -> list:
+        """List edge hardware profiles."""
+        return self.edge_ai.list_profiles(hardware=hardware or None, platform_filter=platform or None)
+
+    def find_optimal_edge_profile(self, task_type: str, max_power_watts: float = 100.0,
+                                   min_memory_gb: float = 0.0) -> dict:
+        """Find optimal edge profile for a task."""
+        return self.edge_ai.find_optimal_profile(task_type, max_power_watts, min_memory_gb)
+
+    def generate_edge_template(self, hardware: str, task_type: str) -> dict:
+        """Generate edge deployment template."""
+        return self.edge_ai.generate_deployment_template(hardware, task_type)
+
+    # ── Phase 20 — Plugin System ──
+
+    def register_plugin(self, plugin_id: str, name: str = "", version: str = "1.0.0",
+                         plugin_type: str = "tool", description: str = "", **kwargs) -> dict:
+        """Register a new plugin."""
+        from .plugin_system import PluginType
+        pt = PluginType(plugin_type) if plugin_type in [e.value for e in PluginType] else PluginType.TOOL
+        entry = self.plugin_system.register_plugin(
+            plugin_id=plugin_id, name=name, version=version,
+            plugin_type=pt, description=description, **kwargs,
+        )
+        return entry.to_dict()
+
+    def activate_plugin(self, plugin_id: str) -> bool:
+        """Activate a plugin."""
+        return self.plugin_system.activate_plugin(plugin_id)
+
+    def deactivate_plugin(self, plugin_id: str) -> bool:
+        """Deactivate a plugin."""
+        return self.plugin_system.deactivate_plugin(plugin_id)
+
+    def uninstall_plugin(self, plugin_id: str) -> bool:
+        """Uninstall a plugin."""
+        return self.plugin_system.uninstall_plugin(plugin_id)
+
+    def list_plugins(self, plugin_type: str = "", state: str = "") -> list:
+        """List registered plugins."""
+        from .plugin_system import PluginType, PluginState
+        pt = PluginType(plugin_type) if plugin_type else None
+        ps = PluginState(state) if state else None
+        return self.plugin_system.list_plugins(plugin_type=pt, state=ps)
+
+    def get_plugin(self, plugin_id: str) -> dict:
+        """Get a specific plugin."""
+        return self.plugin_system.get_plugin(plugin_id) or {}
+
+    def list_plugin_tools(self) -> list:
+        """List all registered plugin tools."""
+        return self.plugin_system.list_tools()
+
+    # ── Phase 21 — Observability ──
+
+    def observe_generation(self, request_id: str, task_type: str, provider: str = "") -> str:
+        """Track generation start. Returns trace_id."""
+        return self.observability.track_generation_start(request_id, task_type, provider)
+
+    def observe_generation_end(self, trace_id: str, success: bool, latency_ms: float = 0.0,
+                                provider: str = "", quality_score: float = 0.0):
+        """Track generation end."""
+        self.observability.track_generation_end(trace_id, success, latency_ms, provider, quality_score)
+
+    def get_observability_metrics(self) -> dict:
+        """Get all observability metrics."""
+        return self.observability.export_metrics()
+
+    def get_observability_traces(self, limit: int = 50) -> list:
+        """Get recent traces."""
+        return self.observability.get_recent_traces(limit)
+
+    def get_observability_logs(self, level: str = "", source: str = "",
+                                limit: int = 100) -> list:
+        """Get log entries."""
+        return self.observability.get_logs(level=level or None, source=source or None, limit=limit)
+
+    # ── Phase 22 — Search Systems ──
+
+    def index_search_documents(self, index_name: str, documents: list):
+        """Index documents into a search index."""
+        self.search_systems.index_documents(index_name, documents)
+
+    def search_index(self, index_name: str, query: str, **kwargs) -> dict:
+        """Search an index."""
+        return self.search_systems.search(index_name, query, **kwargs).to_dict()
+
+    def search_providers(self, query: str, provider_type: str = "", tier: str = "") -> dict:
+        """Search providers."""
+        return self.search_systems.search_providers(query, provider_type, tier).to_dict()
+
+    def search_models(self, query: str, category: str = "", runtime: str = "") -> dict:
+        """Search models."""
+        return self.search_systems.search_models(query, category, runtime).to_dict()
+
+    def search_knowledge(self, query: str, category: str = "", domain: str = "") -> dict:
+        """Search knowledge base."""
+        return self.search_systems.search_knowledge(query, category, domain).to_dict()
+
+    def search_decisions(self, query: str, decision_type: str = "", outcome: str = "") -> dict:
+        """Search decision ledger."""
+        return self.search_systems.search_decisions(query, decision_type, outcome).to_dict()
+
+    def search_benchmarks(self, query: str, provider: str = "", task_type: str = "") -> dict:
+        """Search benchmark history."""
+        return self.search_systems.search_benchmarks(query, provider, task_type).to_dict()
+
+    def list_search_indexes(self) -> list:
+        """List all search indexes."""
+        return self.search_systems.list_indexes()
+
+    # ── Phase 23 — OCR ──
+
+    def list_ocr_providers(self) -> list:
+        """List OCR provider profiles."""
+        return self.ocr_engine.list_providers()
+
+    def select_ocr_backend(self, document_type: str = "image", language: str = "en",
+                            needs_gpu: bool = False) -> str:
+        """Select best OCR backend."""
+        from .ocr_engine import DocumentType
+        dt = DocumentType(document_type) if document_type in [e.value for e in DocumentType] else DocumentType.IMAGE
+        return self.ocr_engine.select_backend(dt, language, needs_gpu)
+
+    def process_ocr(self, document_type: str = "image", language: str = "en",
+                     backend: str = "") -> dict:
+        """Process an OCR request (routing only)."""
+        from .ocr_engine import OCRRequest, DocumentType
+        dt = DocumentType(document_type) if document_type in [e.value for e in DocumentType] else DocumentType.IMAGE
+        req = OCRRequest(document_type=dt, language=language, backend=backend or None)
+        return self.ocr_engine.process(req).to_dict()
+
+    # ── Phase 24 — 3D Generation ──
+
+    def list_3d_models(self, mode: str = "") -> list:
+        """List 3D generation models."""
+        return self.generation_3d.list_models(mode=mode or None)
+
+    def select_3d_model(self, mode: str = "text_to_3d", max_vram_gb: float = 32.0) -> str:
+        """Select best 3D model for a request."""
+        return self.generation_3d.select_model(mode, max_vram_gb) or ""
+
+    def get_3d_output_formats(self, model_id: str) -> list:
+        """Get output formats for a 3D model."""
+        return self.generation_3d.get_output_formats(model_id)
+
+    # ── Phase 25 — Regression Detection ──
+
+    def set_benchmark_baseline(self, provider: str, metrics: dict):
+        """Set baseline metrics for regression detection."""
+        self.regression_detector.set_baseline(provider, metrics)
+
+    def detect_regression(self, provider: str, metrics: dict) -> list:
+        """Auto-detect all regression types for a provider."""
+        return [a.to_dict() for a in self.regression_detector.auto_detect(provider, metrics)]
+
+    def get_regression_alerts(self, severity: str = "", provider: str = "",
+                               limit: int = 100) -> list:
+        """Get regression alerts."""
+        return self.regression_detector.get_all_alerts(severity or None, provider or None, limit)
+
+    # ── Phase 26 — Capability Graph ──
+
+    def find_capability_path(self, capability: str, preferred_provider: str = "") -> list:
+        """Find execution paths to a capability."""
+        return [p.to_dict() for p in self.capability_graph.find_capability_path(
+            capability, preferred_provider or None)]
+
+    def find_fallback_chain(self, capability: str, failed_provider: str = "") -> list:
+        """Find fallback chain for a capability."""
+        return self.capability_graph.find_fallback_chain(
+            capability, failed_provider or None)
+
+    def estimate_execution_cost(self, provider: str, capability: str) -> dict:
+        """Estimate execution cost."""
+        return self.capability_graph.estimate_execution_cost(provider, capability)
+
+    # ── Phase 27 — Security ──
+
+    def authenticate_api_key(self, api_key: str) -> dict:
+        """Authenticate via API key."""
+        result = self.security.authenticate_api_key(api_key)
+        return result or {"error": "authentication failed"}
+
+    def create_user(self, username: str, role: str = "viewer") -> dict:
+        """Create a new user."""
+        from .security import Role
+        r = Role(role) if role in [e.value for e in Role] else Role.VIEWER
+        result = self.security.create_user(username, r)
+        return result or {"error": "user already exists"}
+
+    def authorize(self, user_id: str, permission: str) -> dict:
+        """Check if a user has a permission."""
+        from .security import Permission
+        try:
+            p = Permission(permission)
+        except ValueError:
+            return {"allowed": False, "reason": f"unknown permission: {permission}"}
+        return self.security.authorize(user_id, p).to_dict()
+
+    def list_security_users(self) -> list:
+        """List all users."""
+        return self.security.list_users()
+
+    def get_security_stats(self) -> dict:
+        """Get security statistics."""
+        return self.security.get_stats()
+
+    def get_capability_graph_stats(self) -> dict:
+        """Get capability graph statistics."""
+        return self.capability_graph.get_stats()
+
+    def dynamic_graph_add_node(self, node_id: str, node_type: str = "capability",
+                                 name: str = "", attributes: dict = None) -> dict:
+        from .capability_graph import NodeType
+        nt = NodeType(node_type) if node_type in [e.value for e in NodeType] else NodeType.CAPABILITY
+        return self.capability_graph.dynamic_add_node(node_id, nt, name, attributes or {})
+
+    def dynamic_graph_add_edge(self, source_id: str, target_id: str,
+                                 edge_type: str = "supports", weight: float = 1.0,
+                                 attributes: dict = None) -> dict:
+        from .capability_graph import EdgeType
+        et = EdgeType(edge_type) if edge_type in [e.value for e in EdgeType] else EdgeType.SUPPORTS
+        return self.capability_graph.dynamic_add_edge(source_id, target_id, et, weight, attributes or {})
+
+    def dynamic_graph_update_node(self, node_id: str, attributes: dict) -> dict:
+        return self.capability_graph.dynamic_update_node(node_id, attributes)
+
+    def dynamic_graph_remove_node(self, node_id: str) -> dict:
+        return self.capability_graph.dynamic_remove_node(node_id)
+
+    def dynamic_graph_remove_edge(self, source_id: str, target_id: str,
+                                    edge_type: str = "") -> dict:
+        from .capability_graph import EdgeType
+        et = EdgeType(edge_type) if edge_type and edge_type in [e.value for e in EdgeType] else None
+        return self.capability_graph.dynamic_remove_edge(source_id, target_id, et)
+
+    def dynamic_graph_batch_benchmark(self, updates: list) -> dict:
+        return self.capability_graph.batch_update_benchmark(updates)
+
+    def dynamic_graph_batch_health(self, updates: dict) -> dict:
+        return self.capability_graph.batch_update_health(updates)
+
+    def dynamic_graph_get_history(self, limit: int = 50) -> list:
+        return self.capability_graph.get_update_history(limit)
+
+    def dynamic_graph_get_stats(self) -> dict:
+        return self.capability_graph.dynamic_get_stats()
+
+    def get_regression_stats(self) -> dict:
+        """Get regression detection statistics."""
+        return self.regression_detector.get_stats()
+
+    def get_3d_stats(self) -> dict:
+        """Get 3D generation statistics."""
+        return self.generation_3d.get_stats()
+
+    def get_ocr_stats(self) -> dict:
+        """Get OCR engine statistics."""
+        return self.ocr_engine.get_stats()
+
+    def get_search_stats(self) -> dict:
+        """Get search system statistics."""
+        return self.search_systems.get_stats()
+
+    def get_observability_stats(self) -> dict:
+        """Get observability statistics."""
+        return self.observability.get_stats()
+
+    def get_plugin_stats(self) -> dict:
+        """Get plugin system statistics."""
+        return self.plugin_system.get_stats()
+
+    def get_edge_ai_stats(self) -> dict:
+        """Get edge AI layer statistics."""
+        return self.edge_ai.get_stats()
+
+    def get_browser_ai_stats(self) -> dict:
+        """Get browser AI layer statistics."""
+        return self.browser_ai.get_stats()
+
+    # ── Phase 28 — Failure Recovery Convenience Methods ──
+
+    def attempt_recovery(self, error: str, task_context: dict) -> dict:
+        """Automatically detect failure and attempt recovery."""
+        return self.failure_recovery.attempt_recovery(error, task_context).to_dict()
+
+    def detect_failure_type(self, error: str) -> str:
+        """Detect the type of failure from an error message."""
+        engine = self.failure_recovery
+        if engine.detect_gpu_oom(error):
+            return 'gpu_oom'
+        if engine.detect_gpu_crash(error):
+            return 'gpu_crash'
+        if engine.detect_runtime_crash(error):
+            return 'runtime_crash'
+        return 'unknown'
+
+    def recover_gpu_oom(self, task_context: dict) -> dict:
+        """Execute GPU OOM recovery playbook."""
+        return self.failure_recovery.recover_gpu_oom(task_context).to_dict()
+
+    def recover_runtime_crash(self, task_context: dict) -> dict:
+        """Execute runtime crash recovery playbook."""
+        return self.failure_recovery.recover_runtime_crash(task_context).to_dict()
+
+    def recover_gpu_crash(self, task_context: dict) -> dict:
+        """Execute GPU crash recovery playbook."""
+        return self.failure_recovery.recover_gpu_crash(task_context).to_dict()
+
+    def recover_nan_inf(self, task_context: dict) -> dict:
+        """Execute NaN/Inf recovery playbook."""
+        return self.failure_recovery.recover_nan_inf(task_context).to_dict()
+
+    def get_failure_events(self, limit: int = 50, failure_type: str = '') -> list:
+        """Get recent failure events."""
+        return self.failure_recovery.get_events(limit, failure_type or None)
+
+    def get_failure_summary(self) -> dict:
+        """Get failure recovery summary."""
+        return self.failure_recovery.get_event_summary()
+
+    # ── Phase 30 — Security Crypto Convenience Methods ──
+
+    def generate_encryption_key(self, key_material: bytes = None, algorithm: str = "aes-256-gcm") -> dict:
+        from .security_crypto import EncryptionAlgorithm
+        alg = EncryptionAlgorithm(algorithm) if algorithm in [e.value for e in EncryptionAlgorithm] else EncryptionAlgorithm.AES_256_GCM
+        return self.encryption_at_rest.generate_key(key_material, alg).to_dict()
+
+    def encrypt_data(self, data: bytes, key_id: str = None) -> dict:
+        result = self.encryption_at_rest.encrypt(data, key_id)
+        return result.to_dict()
+
+    def decrypt_data(self, ciphertext: bytes, nonce: bytes, tag: bytes, key_id: str = None) -> dict:
+        from .security_crypto import EncryptedPayload
+        payload = EncryptedPayload(ciphertext=ciphertext, nonce=nonce, tag=tag, key_id=key_id or "")
+        result = self.encryption_at_rest.decrypt(payload, key_id)
+        return {"success": result is not None, "data": result.hex() if result else None}
+
+    def get_encryption_stats(self) -> dict:
+        return self.encryption_at_rest.get_stats()
+
+    async def verify_tls(self, host: str, port: int = 443) -> dict:
+        return (await self.encryption_in_transit.verify_tls(host, port)).to_dict()
+
+    def get_tls_stats(self) -> dict:
+        return self.encryption_in_transit.get_stats()
+
+    def compute_file_checksum(self, file_path: str, algorithm: str = "sha256") -> dict:
+        from .security_crypto import ChecksumAlgorithm
+        alg = ChecksumAlgorithm(algorithm) if algorithm in [e.value for e in ChecksumAlgorithm] else ChecksumAlgorithm.SHA256
+        return self.model_security.compute_checksum(file_path, alg).to_dict()
+
+    def verify_file_checksum(self, file_path: str, expected: str = None, algorithm: str = "sha256") -> dict:
+        from .security_crypto import ChecksumAlgorithm
+        alg = ChecksumAlgorithm(algorithm) if algorithm in [e.value for e in ChecksumAlgorithm] else ChecksumAlgorithm.SHA256
+        if expected:
+            self.model_security.register_expected(file_path, expected, alg)
+        return self.model_security.verify_checksum(file_path, alg)
+
+    def get_model_security_stats(self) -> dict:
+        return self.model_security.get_stats()
+
+    # ── Phase 31 — Event Bus Convenience Methods ──
+
+    def event_bus_subscribe(self, subject: str, callback=None) -> dict:
+        sub = self.event_bus.subscribe(subject, callback)
+        return {"subscription_id": sub.subscription_id, "subject": sub.subject}
+
+    def event_bus_unsubscribe(self, subscription_id: str) -> bool:
+        return self.event_bus.unsubscribe(subscription_id)
+
+    def event_bus_publish_sync(self, subject: str, payload=None, publisher: str = "") -> dict:
+        msg = self.event_bus.publish_sync(subject, payload, publisher=publisher)
+        return msg.to_dict()
+
+    def event_bus_get_history(self, subject: str = None, limit: int = 50) -> list:
+        return self.event_bus.get_history(subject, limit)
+
+    def event_bus_get_subscriptions(self) -> list:
+        return self.event_bus.get_subscriptions()
+
+    def get_event_bus_stats(self) -> dict:
+        return self.event_bus.get_stats()
+
+    def emit_event(self, event_type: str, data=None, source: str = "") -> dict:
+        import asyncio
+        loop = asyncio.new_event_loop()
+        try:
+            msg = loop.run_until_complete(self.event_kernel.emit(event_type, data, source))
+            return msg.to_dict()
+        finally:
+            loop.close()
+
+    def get_event_kernel_stats(self) -> dict:
+        return self.event_kernel.get_stats()
+
+    # ── Phase 29 — Local Runtime Convenience Methods ──
+
+    async def discover_local_runtimes(self) -> dict:
+        """Discover available local runtimes (vLLM, llama.cpp, Ollama)."""
+        return {k: v.to_dict() for k, v in (await self.local_runtimes.discover_runtimes()).items()}
+
+    def list_local_models(self) -> dict:
+        """List models available on all healthy local runtimes."""
+        import asyncio
+        loop = asyncio.get_event_loop()
+        if loop.is_running():
+            return {"error": "Use await discover_local_runtimes() from async context"}
+        return loop.run_until_complete(self.local_runtimes.list_all_models())
+
+    def get_local_runtime_stats(self) -> dict:
+        """Get local runtime statistics."""
+        return self.local_runtimes.get_stats()
+
+    def get_local_runtime_profile(self, runtime_type: str) -> dict:
+        """Get profile for a specific local runtime."""
+        from .local_runtimes import RuntimeType
+        rt = RuntimeType(runtime_type) if runtime_type in [e.value for e in RuntimeType] else RuntimeType.VLLM
+        profile = self.local_runtimes.get_runtime_profile(rt)
+        return profile or {"error": f"Runtime {runtime_type} not discovered"}
+
+    def configure_local_runtime(self, runtime_type: str, url: str = "", **kwargs) -> dict:
+        """Configure a local runtime endpoint."""
+        from .local_runtimes import RuntimeType
+        rt = RuntimeType(runtime_type) if runtime_type in [e.value for e in RuntimeType] else RuntimeType.VLLM
+        if url:
+            kwargs["url"] = url
+        self.local_runtimes.configure_runtime(rt, **kwargs)
+        return {"success": True, "runtime": runtime_type, "config": kwargs}
+
+    async def generate_local(self, model: str, prompt: str, runtime: str = "", **kwargs) -> dict:
+        """Generate text using a local runtime."""
+        from .local_runtimes import RuntimeType
+        rt = RuntimeType(runtime) if runtime and runtime in [e.value for e in RuntimeType] else None
+        result = await self.local_runtimes.generate(model, prompt, runtime=rt, **kwargs)
+        return result.to_dict()
+
+    def get_failure_recovery_stats(self) -> dict:
+        """Get failure recovery statistics."""
+        return self.failure_recovery.get_stats()
+
+    def get_decision_stats(self):
+        """Get decision ledger statistics."""
+        return self.decision_ledger.get_stats()
+
+    def get_recent_decisions(self, limit=50):
+        """Get recent decisions from the ledger."""
+        return self.decision_ledger.get_recent(limit)
+
+    def get_provider_decisions(self, provider, limit=50):
+        """Get decisions for a specific provider."""
+        return self.decision_ledger.get_by_provider(provider, limit)
+
+    def get_decision_failures(self, limit=50):
+        """Get all failed decisions."""
+        return self.decision_ledger.get_failures(limit)

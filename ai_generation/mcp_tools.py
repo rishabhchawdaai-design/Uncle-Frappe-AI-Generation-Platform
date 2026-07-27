@@ -153,6 +153,781 @@ MCP_GENERATION_TOOLS = {
     "aigos_benchmark": {"name": "aigos_benchmark", "description": "Run a benchmark on a provider for quality scoring.", "inputSchema": {"type": "object", "properties": {"provider": {"type": "string"}, "categories": {"type": "array", "items": {"type": "string"}, "default": ["realism", "prompt_adherence"]}}, "required": ["provider"]}},
     "aigos_report_failure": {"name": "aigos_report_failure", "description": "Report a provider failure to the Recovery Agent.", "inputSchema": {"type": "object", "properties": {"provider": {"type": "string"}, "error": {"type": "string", "default": "unknown"}}, "required": ["provider"]}},
     "aigos_evolve": {"name": "aigos_evolve", "description": "Trigger the Evolution Agent to refresh discovery, benchmarks, and routing.", "inputSchema": {"type": "object", "properties": {}}},
+
+    # ── Phase 16 — Audio Generation Tools ──
+    "text_to_speech": {
+        "name": "text_to_speech",
+        "description": "Convert text to speech using AI. Supports multiple providers (OpenAI, Kokoro, Piper) with automatic failover.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "text": {"type": "string", "description": "Text to convert to speech"},
+                "voice": {"type": "string", "description": "Voice name or ID", "default": "default"},
+                "provider": {"type": "string", "description": "Preferred provider (auto-select if omitted)"},
+                "output_path": {"type": "string", "description": "Output file path (optional)"},
+                "speed": {"type": "number", "description": "Speech speed multiplier (0.5-2.0)", "default": 1.0},
+            },
+            "required": ["text"],
+        },
+    },
+    "transcribe": {
+        "name": "transcribe",
+        "description": "Transcribe audio to text using AI speech recognition. Supports Whisper and other STT providers.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "audio_path": {"type": "string", "description": "Path to audio file to transcribe"},
+                "language": {"type": "string", "description": "Language code (e.g., 'en', 'es')", "default": "en"},
+                "provider": {"type": "string", "description": "Preferred provider (auto-select if omitted)"},
+            },
+            "required": ["audio_path"],
+        },
+    },
+    "list_audio_providers": {
+        "name": "list_audio_providers",
+        "description": "List all available audio generation and speech recognition providers.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+    "get_audio_stats": {
+        "name": "get_audio_stats",
+        "description": "Get performance statistics for audio providers.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+
+    # ── Phase 18 — Browser AI Inference Tools ──
+    "list_browser_runtimes": {
+        "name": "list_browser_runtimes",
+        "description": "List available browser AI runtimes (Transformers.js, WebLLM, ONNX Web, TF.js).",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+    "list_browser_models": {
+        "name": "list_browser_models",
+        "description": "List browser-compatible AI models with optional category/runtime filtering.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "category": {"type": "string", "description": "Filter by category (llm, embedding, classification)"},
+                "runtime": {"type": "string", "description": "Filter by runtime"},
+            },
+        },
+    },
+    "find_browser_models": {
+        "name": "find_browser_models",
+        "description": "Find browser models suitable for a task type within memory limits.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "task_type": {"type": "string", "description": "Task type (text_generation, embedding, etc.)"},
+                "max_memory_mb": {"type": "number", "description": "Max memory in MB", "default": 4000},
+            },
+            "required": ["task_type"],
+        },
+    },
+    "select_browser_runtime": {
+        "name": "select_browser_runtime",
+        "description": "Select optimal browser runtime for a task type.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "task_type": {"type": "string", "description": "Task type"},
+                "needs_offline": {"type": "boolean", "default": False},
+                "needs_mobile": {"type": "boolean", "default": False},
+            },
+            "required": ["task_type"],
+        },
+    },
+    "generate_browser_template": {
+        "name": "generate_browser_template",
+        "description": "Generate browser inference HTML/JS template for a runtime and task.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "runtime": {"type": "string", "description": "Browser runtime (transformers_js, webllm, onnx_web, tensorflow_js)"},
+                "task_type": {"type": "string", "description": "Task type (text_generation, text_classification, etc.)"},
+                "model_id": {"type": "string", "description": "Optional model ID"},
+            },
+            "required": ["runtime", "task_type"],
+        },
+    },
+    "get_browser_ai_stats": {
+        "name": "get_browser_ai_stats",
+        "description": "Get browser AI layer statistics.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+
+    # ── Phase 19 — Edge AI Runtime Detection Tools ──
+    "detect_edge_hardware": {
+        "name": "detect_edge_hardware",
+        "description": "Detect edge AI hardware on this system (Apple ANE, Qualcomm NPU, Intel NPU, Jetson, Coral).",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+    "list_edge_profiles": {
+        "name": "list_edge_profiles",
+        "description": "List edge hardware profiles with optional filtering.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "hardware": {"type": "string", "description": "Filter by hardware type (apple_ane, qualcomm_npu, etc.)"},
+                "platform": {"type": "string", "description": "Filter by platform (macos, linux, android)"},
+            },
+        },
+    },
+    "find_edge_profile": {
+        "name": "find_edge_profile",
+        "description": "Find optimal edge profile for a task within power/memory constraints.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "task_type": {"type": "string", "description": "Task type (text_generation, image_classification, etc.)"},
+                "max_power_watts": {"type": "number", "description": "Max power budget in watts", "default": 100},
+                "min_memory_gb": {"type": "number", "description": "Minimum memory in GB", "default": 0},
+            },
+            "required": ["task_type"],
+        },
+    },
+    "generate_edge_template": {
+        "name": "generate_edge_template",
+        "description": "Generate deployment template for edge AI hardware.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "hardware": {"type": "string", "description": "Edge hardware type"},
+                "task_type": {"type": "string", "description": "Task type"},
+            },
+            "required": ["hardware", "task_type"],
+        },
+    },
+    "get_edge_ai_stats": {
+        "name": "get_edge_ai_stats",
+        "description": "Get edge AI layer statistics and detected hardware.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+
+    # ── Phase 20 — Plugin System Tools ──
+    "list_plugins": {
+        "name": "list_plugins",
+        "description": "List all registered plugins with optional type/state filtering.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "plugin_type": {"type": "string", "description": "Filter by type (tool, runtime, compute, workflow, extension)"},
+                "state": {"type": "string", "description": "Filter by state (active, registered, installed, etc.)"},
+            },
+        },
+    },
+    "get_plugin": {
+        "name": "get_plugin",
+        "description": "Get details of a specific plugin.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "plugin_id": {"type": "string", "description": "Plugin ID"},
+            },
+            "required": ["plugin_id"],
+        },
+    },
+    "list_plugin_tools": {
+        "name": "list_plugin_tools",
+        "description": "List all MCP tools registered by plugins.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+    "get_plugin_stats": {
+        "name": "get_plugin_stats",
+        "description": "Get plugin system statistics.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+
+    # ── Phase 21 — Observability Tools ──
+    "get_observability_metrics": {
+        "name": "get_observability_metrics",
+        "description": "Get all observability metrics (counters, gauges, histograms).",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+    "get_observability_traces": {
+        "name": "get_observability_traces",
+        "description": "Get recent distributed traces.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "limit": {"type": "integer", "description": "Max traces to return", "default": 50},
+            },
+        },
+    },
+    "get_observability_logs": {
+        "name": "get_observability_logs",
+        "description": "Get structured log entries with optional filtering.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "level": {"type": "string", "description": "Filter by level (info, warning, error)"},
+                "source": {"type": "string", "description": "Filter by source"},
+                "limit": {"type": "integer", "description": "Max logs", "default": 100},
+            },
+        },
+    },
+    "get_observability_stats": {
+        "name": "get_observability_stats",
+        "description": "Get observability layer statistics.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+
+    # ── Phase 22 — Search Systems Tools ──
+    "search_index": {
+        "name": "search_index",
+        "description": "Search a document index with full-text search, filtering, and faceting.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "index_name": {"type": "string", "description": "Index to search (providers, models, knowledge, decisions, benchmarks)"},
+                "query": {"type": "string", "description": "Search query"},
+                "filter": {"type": "object", "description": "Filter expression"},
+                "page": {"type": "integer", "default": 1},
+                "hits_per_page": {"type": "integer", "default": 20},
+            },
+            "required": ["index_name", "query"],
+        },
+    },
+    "search_providers": {
+        "name": "search_providers",
+        "description": "Search AI providers with filtering by type and tier.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "query": {"type": "string"},
+                "provider_type": {"type": "string"},
+                "tier": {"type": "string"},
+            },
+            "required": ["query"],
+        },
+    },
+    "search_models": {
+        "name": "search_models",
+        "description": "Search AI models with category and runtime filtering.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "query": {"type": "string"},
+                "category": {"type": "string"},
+                "runtime": {"type": "string"},
+            },
+            "required": ["query"],
+        },
+    },
+    "list_search_indexes": {
+        "name": "list_search_indexes",
+        "description": "List all available search indexes and their document counts.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+    "get_search_stats": {
+        "name": "get_search_stats",
+        "description": "Get search system statistics.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+
+    # ── Phase 23 — OCR Tools ──
+    "list_ocr_providers": {
+        "name": "list_ocr_providers",
+        "description": "List available OCR provider profiles (Tesseract, PaddleOCR, EasyOCR, Surya).",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+    "select_ocr_backend": {
+        "name": "select_ocr_backend",
+        "description": "Select optimal OCR backend for a document type and language.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "document_type": {"type": "string", "default": "image"},
+                "language": {"type": "string", "default": "en"},
+                "needs_gpu": {"type": "boolean", "default": False},
+            },
+        },
+    },
+    "process_ocr": {
+        "name": "process_ocr",
+        "description": "Route an OCR request to the best available backend.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "document_type": {"type": "string", "default": "image"},
+                "language": {"type": "string", "default": "en"},
+                "backend": {"type": "string"},
+            },
+        },
+    },
+    "get_ocr_stats": {
+        "name": "get_ocr_stats",
+        "description": "Get OCR engine statistics.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+
+    # ── Phase 24 — 3D Generation Tools ──
+    "list_3d_models": {
+        "name": "list_3d_models",
+        "description": "List available 3D generation models (TRELLIS, Hunyuan3D, Point-E, Shap-E).",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "mode": {"type": "string", "description": "Filter by mode (text_to_3d, image_to_3d)"},
+            },
+        },
+    },
+    "select_3d_model": {
+        "name": "select_3d_model",
+        "description": "Select optimal 3D model for a generation mode and VRAM budget.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "mode": {"type": "string", "default": "text_to_3d"},
+                "max_vram_gb": {"type": "number", "default": 32},
+            },
+        },
+    },
+    "get_3d_output_formats": {
+        "name": "get_3d_output_formats",
+        "description": "Get supported output formats for a 3D model.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "model_id": {"type": "string"},
+            },
+            "required": ["model_id"],
+        },
+    },
+    "get_3d_stats": {
+        "name": "get_3d_stats",
+        "description": "Get 3D generation statistics.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+
+    # ── Phase 25 — Regression Detection Tools ──
+    "detect_regression": {
+        "name": "detect_regression",
+        "description": "Auto-detect latency, quality, and stability regressions for a provider.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "provider": {"type": "string"},
+                "metrics": {"type": "object"},
+            },
+            "required": ["provider", "metrics"],
+        },
+    },
+    "get_regression_alerts": {
+        "name": "get_regression_alerts",
+        "description": "Get regression alerts with optional filtering.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "severity": {"type": "string"},
+                "provider": {"type": "string"},
+                "limit": {"type": "integer", "default": 100},
+            },
+        },
+    },
+    "get_regression_stats": {
+        "name": "get_regression_stats",
+        "description": "Get regression detection statistics.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+
+    # ── Phase 26 — Capability Graph Tools ──
+    "find_capability_path": {
+        "name": "find_capability_path",
+        "description": "Find execution paths from providers to a capability.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "capability": {"type": "string", "description": "Target capability (text_to_image, text_to_video, etc.)"},
+                "preferred_provider": {"type": "string"},
+            },
+            "required": ["capability"],
+        },
+    },
+    "find_fallback_chain": {
+        "name": "find_fallback_chain",
+        "description": "Find fallback chain for a capability, excluding failed providers.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "capability": {"type": "string"},
+                "failed_provider": {"type": "string"},
+            },
+            "required": ["capability"],
+        },
+    },
+    "estimate_execution_cost": {
+        "name": "estimate_execution_cost",
+        "description": "Estimate execution cost for a provider-capability pair.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "provider": {"type": "string"},
+                "capability": {"type": "string"},
+            },
+            "required": ["provider", "capability"],
+        },
+    },
+    "get_capability_graph_stats": {
+        "name": "get_capability_graph_stats",
+        "description": "Get capability graph statistics.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+
+    # ── Phase 27 — Security Tools ──
+    "list_security_users": {
+        "name": "list_security_users",
+        "description": "List all platform users and their roles.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+    "authorize_user": {
+        "name": "authorize_user",
+        "description": "Check if a user has a specific permission.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "user_id": {"type": "string"},
+                "permission": {"type": "string"},
+            },
+            "required": ["user_id", "permission"],
+        },
+    },
+    "get_security_stats": {
+        "name": "get_security_stats",
+        "description": "Get security statistics.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+
+    # ── Phase 28 — Failure Recovery Tools ──
+    "attempt_recovery": {
+        "name": "attempt_recovery",
+        "description": "Automatically detect failure type and attempt recovery.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "error": {"type": "string", "description": "Error message to analyze"},
+                "task_context": {"type": "object", "description": "Task context with model, batch_size, vram_gb, etc."},
+            },
+            "required": ["error", "task_context"],
+        },
+    },
+    "recover_gpu_oom": {
+        "name": "recover_gpu_oom",
+        "description": "Execute GPU OOM recovery playbook.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "task_context": {"type": "object", "description": "Task context with model, batch_size, vram_gb, etc."},
+            },
+            "required": ["task_context"],
+        },
+    },
+    "recover_runtime_crash": {
+        "name": "recover_runtime_crash",
+        "description": "Execute runtime crash recovery playbook.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "task_context": {"type": "object", "description": "Task context with runtime_id, model, can_restart, etc."},
+            },
+            "required": ["task_context"],
+        },
+    },
+    "recover_gpu_crash": {
+        "name": "recover_gpu_crash",
+        "description": "Execute GPU crash recovery playbook.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "task_context": {"type": "object", "description": "Task context with gpu_id, healthy_gpus, etc."},
+            },
+            "required": ["task_context"],
+        },
+    },
+    "recover_nan_inf": {
+        "name": "recover_nan_inf",
+        "description": "Execute NaN/Inf recovery playbook.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "task_context": {"type": "object", "description": "Task context with has_nan, has_inf, layer, etc."},
+            },
+            "required": ["task_context"],
+        },
+    },
+    "get_failure_events": {
+        "name": "get_failure_events",
+        "description": "Get recent failure events.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "limit": {"type": "integer", "description": "Max events to return"},
+                "failure_type": {"type": "string", "description": "Filter by failure type"},
+            },
+        },
+    },
+    "get_failure_recovery_stats": {
+        "name": "get_failure_recovery_stats",
+        "description": "Get failure recovery statistics.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+    # ── Phase 28b — Dynamic Graph Update Tools ──
+    "dynamic_graph_add_node": {
+        "name": "dynamic_graph_add_node",
+        "description": "Add a new node to the capability graph at runtime.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "node_id": {"type": "string", "description": "Unique node identifier"},
+                "node_type": {"type": "string", "description": "Node type: provider, runtime, hardware, model, capability"},
+                "name": {"type": "string", "description": "Human-readable name"},
+                "attributes": {"type": "object", "description": "Node attributes"},
+            },
+            "required": ["node_id"],
+        },
+    },
+    "dynamic_graph_add_edge": {
+        "name": "dynamic_graph_add_edge",
+        "description": "Add a new edge between nodes in the capability graph.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "source_id": {"type": "string"},
+                "target_id": {"type": "string"},
+                "edge_type": {"type": "string", "description": "Edge type: supports, requires, depends_on, fallback_to, cost"},
+                "weight": {"type": "number", "description": "Edge weight (higher = better)"},
+            },
+            "required": ["source_id", "target_id"],
+        },
+    },
+    "dynamic_graph_update_node": {
+        "name": "dynamic_graph_update_node",
+        "description": "Update node attributes (scores, health, etc.) at runtime.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "node_id": {"type": "string"},
+                "attributes": {"type": "object", "description": "Attributes to update"},
+            },
+            "required": ["node_id", "attributes"],
+        },
+    },
+    "dynamic_graph_remove_node": {
+        "name": "dynamic_graph_remove_node",
+        "description": "Remove a node and its edges from the capability graph.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "node_id": {"type": "string"},
+            },
+            "required": ["node_id"],
+        },
+    },
+    "dynamic_graph_batch_benchmark": {
+        "name": "dynamic_graph_batch_benchmark",
+        "description": "Batch update benchmark scores on nodes.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "updates": {"type": "array", "items": {"type": "object"}, "description": "List of {node_id, benchmark_score, latency_ms, quality_score}"},
+            },
+            "required": ["updates"],
+        },
+    },
+    "dynamic_graph_batch_health": {
+        "name": "dynamic_graph_batch_health",
+        "description": "Batch update health scores for nodes.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "updates": {"type": "object", "description": "Dict of {node_id: health_score}"},
+            },
+            "required": ["updates"],
+        },
+    },
+    "dynamic_graph_get_history": {
+        "name": "dynamic_graph_get_history",
+        "description": "Get recent graph update history.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "limit": {"type": "integer", "description": "Max entries to return"},
+            },
+        },
+    },
+    "dynamic_graph_get_stats": {
+        "name": "dynamic_graph_get_stats",
+        "description": "Get enhanced graph statistics including update count.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+
+
+    # ── Phase 29 — Local Runtime Tools ──
+    "discover_local_runtimes": {
+        "name": "discover_local_runtimes",
+        "description": "Discover available local runtimes (vLLM, llama.cpp, Ollama).",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+    "configure_local_runtime": {
+        "name": "configure_local_runtime",
+        "description": "Configure a local runtime endpoint URL.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "runtime_type": {"type": "string", "description": "Runtime: vllm, llamacpp, ollama"},
+                "url": {"type": "string", "description": "Runtime server URL"},
+            },
+            "required": ["runtime_type", "url"],
+        },
+    },
+    "get_local_runtime_stats": {
+        "name": "get_local_runtime_stats",
+        "description": "Get statistics for local runtime usage.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+    "get_local_runtime_profile": {
+        "name": "get_local_runtime_profile",
+        "description": "Get detailed profile for a specific local runtime.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "runtime_type": {"type": "string", "description": "Runtime: vllm, llamacpp, ollama"},
+            },
+            "required": ["runtime_type"],
+        },
+    },
+    "generate_local": {
+        "name": "generate_local",
+        "description": "Generate text using a local runtime (vLLM, llama.cpp, Ollama).",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "model": {"type": "string", "description": "Model name"},
+                "prompt": {"type": "string", "description": "Input prompt"},
+                "runtime": {"type": "string", "description": "Preferred runtime: vllm, llamacpp, ollama"},
+                "max_tokens": {"type": "integer", "description": "Max tokens to generate", "default": 512},
+                "temperature": {"type": "number", "description": "Sampling temperature", "default": 0.7},
+            },
+            "required": ["model", "prompt"],
+        },
+    },
+
+    # ── Phase 30 — Security Crypto Tools ──
+    "generate_encryption_key": {
+        "name": "generate_encryption_key",
+        "description": "Generate an encryption key for data at rest.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "algorithm": {"type": "string", "description": "Encryption algorithm: aes-256-gcm, aes-128-gcm, chacha20-poly1305", "default": "aes-256-gcm"},
+            },
+        },
+    },
+    "encrypt_data": {
+        "name": "encrypt_data",
+        "description": "Encrypt data using AES-256-GCM.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "data": {"type": "string", "description": "Data to encrypt (hex encoded)"},
+                "key_id": {"type": "string", "description": "Encryption key ID"},
+            },
+            "required": ["data"],
+        },
+    },
+    "get_encryption_stats": {
+        "name": "get_encryption_stats",
+        "description": "Get encryption at rest statistics.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+    "compute_file_checksum": {
+        "name": "compute_file_checksum",
+        "description": "Compute checksum of a file for integrity verification.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "file_path": {"type": "string", "description": "Path to file"},
+                "algorithm": {"type": "string", "description": "Checksum algorithm: sha256, sha512, sha3-256, blake2b", "default": "sha256"},
+            },
+            "required": ["file_path"],
+        },
+    },
+    "verify_file_checksum": {
+        "name": "verify_file_checksum",
+        "description": "Verify a file's checksum against expected value.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "file_path": {"type": "string", "description": "Path to file"},
+                "expected": {"type": "string", "description": "Expected checksum"},
+                "algorithm": {"type": "string", "description": "Checksum algorithm", "default": "sha256"},
+            },
+            "required": ["file_path"],
+        },
+    },
+    "get_model_security_stats": {
+        "name": "get_model_security_stats",
+        "description": "Get model security statistics.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+    "get_tls_stats": {
+        "name": "get_tls_stats",
+        "description": "Get TLS verification statistics.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+
+    # ── Phase 31 — Event Bus Tools ──
+    "event_bus_publish": {
+        "name": "event_bus_publish",
+        "description": "Publish a message to the in-memory event bus.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "subject": {"type": "string", "description": "Message subject"},
+                "payload": {"type": "string", "description": "Message payload"},
+                "publisher": {"type": "string", "description": "Publisher name"},
+            },
+            "required": ["subject"],
+        },
+    },
+    "event_bus_get_history": {
+        "name": "event_bus_get_history",
+        "description": "Get recent messages from the event bus.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "subject": {"type": "string", "description": "Filter by subject"},
+                "limit": {"type": "integer", "description": "Max messages", "default": 50},
+            },
+        },
+    },
+    "event_bus_get_subscriptions": {
+        "name": "event_bus_get_subscriptions",
+        "description": "List all active subscriptions.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+    "get_event_bus_stats": {
+        "name": "get_event_bus_stats",
+        "description": "Get event bus statistics.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+    "emit_event": {
+        "name": "emit_event",
+        "description": "Emit a kernel event.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "event_type": {"type": "string", "description": "Event type"},
+                "data": {"type": "string", "description": "Event data"},
+                "source": {"type": "string", "description": "Event source"},
+            },
+            "required": ["event_type"],
+        },
+    },
+    "get_event_kernel_stats": {
+        "name": "get_event_kernel_stats",
+        "description": "Get event-driven kernel statistics.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
 }
 
 
@@ -214,7 +989,87 @@ class MCPGenerationTools:
             "aigos_verify_provider": self._handle_aigos_verify_provider,
             "aigos_benchmark": self._handle_aigos_benchmark,
             "aigos_report_failure": self._handle_aigos_report_failure,
-            "aigos_evolve": self._handle_aigos_evolve,        }
+            "aigos_evolve": self._handle_aigos_evolve,
+            "text_to_speech": self._handle_text_to_speech,
+            "transcribe": self._handle_transcribe,
+            "list_audio_providers": self._handle_list_audio_providers,
+            "get_audio_stats": self._handle_get_audio_stats,
+            "list_browser_runtimes": self._handle_list_browser_runtimes,
+            "list_browser_models": self._handle_list_browser_models,
+            "find_browser_models": self._handle_find_browser_models,
+            "select_browser_runtime": self._handle_select_browser_runtime,
+            "generate_browser_template": self._handle_generate_browser_template,
+            "get_browser_ai_stats": self._handle_get_browser_ai_stats,
+            "detect_edge_hardware": self._handle_detect_edge_hardware,
+            "list_edge_profiles": self._handle_list_edge_profiles,
+            "find_edge_profile": self._handle_find_edge_profile,
+            "generate_edge_template": self._handle_generate_edge_template,
+            "get_edge_ai_stats": self._handle_get_edge_ai_stats,
+            "list_plugins": self._handle_list_plugins,
+            "get_plugin": self._handle_get_plugin,
+            "list_plugin_tools": self._handle_list_plugin_tools,
+            "get_plugin_stats": self._handle_get_plugin_stats,
+            "get_observability_metrics": self._handle_get_observability_metrics,
+            "get_observability_traces": self._handle_get_observability_traces,
+            "get_observability_logs": self._handle_get_observability_logs,
+            "get_observability_stats": self._handle_get_observability_stats,
+            "search_index": self._handle_search_index,
+            "search_providers": self._handle_search_providers,
+            "search_models": self._handle_search_models,
+            "list_search_indexes": self._handle_list_search_indexes,
+            "get_search_stats": self._handle_get_search_stats,
+            "list_ocr_providers": self._handle_list_ocr_providers,
+            "select_ocr_backend": self._handle_select_ocr_backend,
+            "process_ocr": self._handle_process_ocr,
+            "get_ocr_stats": self._handle_get_ocr_stats,
+            "list_3d_models": self._handle_list_3d_models,
+            "select_3d_model": self._handle_select_3d_model,
+            "get_3d_output_formats": self._handle_get_3d_output_formats,
+            "get_3d_stats": self._handle_get_3d_stats,
+            "detect_regression": self._handle_detect_regression,
+            "get_regression_alerts": self._handle_get_regression_alerts,
+            "get_regression_stats": self._handle_get_regression_stats,
+            "find_capability_path": self._handle_find_capability_path,
+            "find_fallback_chain": self._handle_find_fallback_chain,
+            "estimate_execution_cost": self._handle_estimate_execution_cost,
+            "get_capability_graph_stats": self._handle_get_capability_graph_stats,
+            "list_security_users": self._handle_list_security_users,
+            "authorize_user": self._handle_authorize_user,
+            "get_security_stats": self._handle_get_security_stats,
+            "attempt_recovery": self._handle_attempt_recovery,
+            "recover_gpu_oom": self._handle_recover_gpu_oom,
+            "recover_runtime_crash": self._handle_recover_runtime_crash,
+            "recover_gpu_crash": self._handle_recover_gpu_crash,
+            "recover_nan_inf": self._handle_recover_nan_inf,
+            "get_failure_events": self._handle_get_failure_events,
+            "get_failure_recovery_stats": self._handle_get_failure_recovery_stats,
+            "dynamic_graph_add_node": self._handle_dynamic_add_node,
+            "dynamic_graph_add_edge": self._handle_dynamic_add_edge,
+            "dynamic_graph_update_node": self._handle_dynamic_update_node,
+            "dynamic_graph_remove_node": self._handle_dynamic_remove_node,
+            "dynamic_graph_batch_benchmark": self._handle_dynamic_batch_benchmark,
+            "dynamic_graph_batch_health": self._handle_dynamic_batch_health,
+            "dynamic_graph_get_history": self._handle_dynamic_get_history,
+            "dynamic_graph_get_stats": self._handle_dynamic_get_stats,
+            "discover_local_runtimes": self._handle_discover_local_runtimes,
+            "configure_local_runtime": self._handle_configure_local_runtime,
+            "get_local_runtime_stats": self._handle_get_local_runtime_stats,
+            "get_local_runtime_profile": self._handle_get_local_runtime_profile,
+            "generate_local": self._handle_generate_local,
+            "generate_encryption_key": self._handle_generate_encryption_key,
+            "encrypt_data": self._handle_encrypt_data,
+            "get_encryption_stats": self._handle_get_encryption_stats,
+            "compute_file_checksum": self._handle_compute_file_checksum,
+            "verify_file_checksum": self._handle_verify_file_checksum,
+            "get_model_security_stats": self._handle_get_model_security_stats,
+            "get_tls_stats": self._handle_get_tls_stats,
+            "event_bus_publish": self._handle_event_bus_publish,
+            "event_bus_get_history": self._handle_event_bus_get_history,
+            "event_bus_get_subscriptions": self._handle_event_bus_get_subscriptions,
+            "get_event_bus_stats": self._handle_get_event_bus_stats,
+            "emit_event": self._handle_emit_event,
+            "get_event_kernel_stats": self._handle_get_event_kernel_stats,
+        }
         handler = handlers.get(tool_name)
         if not handler:
             return {"error": f"Unknown tool: {tool_name}"}
@@ -500,6 +1355,423 @@ class MCPGenerationTools:
         agent = self.sdk.aigos.registry.get_agent("evolution")
         return agent.execute(task).data
 
+    # ── Audio Handlers ──
+
+    async def _handle_text_to_speech(self, args):
+        result = await self.sdk.text_to_speech(
+            text=args["text"],
+            voice=args.get("voice", "default"),
+            provider=args.get("provider", ""),
+            output_path=args.get("output_path", ""),
+            speed=args.get("speed", 1.0),
+        )
+        return result
+
+    async def _handle_transcribe(self, args):
+        audio_path = args["audio_path"]
+        with open(audio_path, "rb") as f:
+            audio_data = f.read()
+        result = await self.sdk.transcribe(
+            audio_data=audio_data,
+            language=args.get("language", "en"),
+            provider=args.get("provider", ""),
+        )
+        return result
+
+    async def _handle_list_audio_providers(self, args):
+        return self.sdk.list_audio_providers()
+
+    async def _handle_get_audio_stats(self, args):
+        return self.sdk.get_audio_stats()
+
+    # ── Browser AI Handlers ──
+
+    async def _handle_list_browser_runtimes(self, args):
+        return self.sdk.list_browser_runtimes()
+
+    async def _handle_list_browser_models(self, args):
+        return self.sdk.list_browser_models(
+            category=args.get("category", ""),
+            runtime=args.get("runtime", ""),
+        )
+
+    async def _handle_find_browser_models(self, args):
+        return self.sdk.find_browser_models(
+            task_type=args["task_type"],
+            max_memory_mb=args.get("max_memory_mb", 4000),
+        )
+
+    async def _handle_select_browser_runtime(self, args):
+        runtime = self.sdk.select_browser_runtime(
+            task_type=args["task_type"],
+            needs_offline=args.get("needs_offline", False),
+            needs_mobile=args.get("needs_mobile", False),
+        )
+        return {"selected_runtime": runtime}
+
+    async def _handle_generate_browser_template(self, args):
+        return self.sdk.generate_browser_template(
+            runtime=args["runtime"],
+            task_type=args["task_type"],
+            model_id=args.get("model_id", ""),
+        )
+
+    async def _handle_get_browser_ai_stats(self, args):
+        return self.sdk.get_browser_ai_stats()
+
+    # ── Edge AI Handlers ──
+
+    async def _handle_detect_edge_hardware(self, args):
+        return self.sdk.detect_edge_hardware()
+
+    async def _handle_list_edge_profiles(self, args):
+        return self.sdk.list_edge_profiles(
+            hardware=args.get("hardware", ""),
+            platform=args.get("platform", ""),
+        )
+
+    async def _handle_find_edge_profile(self, args):
+        result = self.sdk.find_optimal_edge_profile(
+            task_type=args["task_type"],
+            max_power_watts=args.get("max_power_watts", 100),
+            min_memory_gb=args.get("min_memory_gb", 0),
+        )
+        return result or {"error": "No suitable edge profile found"}
+
+    async def _handle_generate_edge_template(self, args):
+        return self.sdk.generate_edge_template(
+            hardware=args["hardware"],
+            task_type=args["task_type"],
+        )
+
+    async def _handle_get_edge_ai_stats(self, args):
+        return self.sdk.get_edge_ai_stats()
+
+    # ── Edge AI Handlers ──
+
+    async def _handle_detect_edge_hardware(self, args):
+        return self.sdk.detect_edge_hardware()
+
+    async def _handle_list_edge_profiles(self, args):
+        return self.sdk.list_edge_profiles(
+            hardware=args.get("hardware", ""),
+            platform=args.get("platform", ""),
+        )
+
+    async def _handle_find_edge_profile(self, args):
+        result = self.sdk.find_optimal_edge_profile(
+            task_type=args["task_type"],
+            max_power_watts=args.get("max_power_watts", 100),
+            min_memory_gb=args.get("min_memory_gb", 0),
+        )
+        return result or {"error": "No suitable edge profile found"}
+
+    async def _handle_generate_edge_template(self, args):
+        return self.sdk.generate_edge_template(
+            hardware=args["hardware"],
+            task_type=args["task_type"],
+        )
+
+    async def _handle_get_edge_ai_stats(self, args):
+        return self.sdk.get_edge_ai_stats()
+
+    # ── Plugin System Handlers ──
+
+    async def _handle_list_plugins(self, args):
+        return self.sdk.list_plugins(
+            plugin_type=args.get("plugin_type", ""),
+            state=args.get("state", ""),
+        )
+
+    async def _handle_get_plugin(self, args):
+        return self.sdk.get_plugin(args["plugin_id"])
+
+    async def _handle_list_plugin_tools(self, args):
+        return self.sdk.list_plugin_tools()
+
+    async def _handle_get_plugin_stats(self, args):
+        return self.sdk.get_plugin_stats()
+
+
+    # ── Observability Handlers ──
+
+    async def _handle_get_observability_metrics(self, args):
+        return self.sdk.get_observability_metrics()
+
+    async def _handle_get_observability_traces(self, args):
+        return self.sdk.get_observability_traces(limit=args.get("limit", 50))
+
+    async def _handle_get_observability_logs(self, args):
+        return self.sdk.get_observability_logs(
+            level=args.get("level", ""),
+            source=args.get("source", ""),
+            limit=args.get("limit", 100),
+        )
+
+    async def _handle_get_observability_stats(self, args):
+        return self.sdk.get_observability_stats()
+
+
+    # ── Search Systems Handlers ──
+
+    async def _handle_search_index(self, args):
+        return self.sdk.search_index(
+            index_name=args["index_name"],
+            query=args["query"],
+            filter_expr=args.get("filter"),
+            page=args.get("page", 1),
+            hits_per_page=args.get("hits_per_page", 20),
+        )
+
+    async def _handle_search_providers(self, args):
+        return self.sdk.search_providers(
+            query=args["query"],
+            provider_type=args.get("provider_type", ""),
+            tier=args.get("tier", ""),
+        )
+
+    async def _handle_search_models(self, args):
+        return self.sdk.search_models(
+            query=args["query"],
+            category=args.get("category", ""),
+            runtime=args.get("runtime", ""),
+        )
+
+    async def _handle_list_search_indexes(self, args):
+        return self.sdk.list_search_indexes()
+
+    async def _handle_get_search_stats(self, args):
+        return self.sdk.get_search_stats()
+
+
+    # ── OCR Handlers ──
+
+    async def _handle_list_ocr_providers(self, args):
+        return self.sdk.list_ocr_providers()
+
+    async def _handle_select_ocr_backend(self, args):
+        return {"selected_backend": self.sdk.select_ocr_backend(
+            document_type=args.get("document_type", "image"),
+            language=args.get("language", "en"),
+            needs_gpu=args.get("needs_gpu", False),
+        )}
+
+    async def _handle_process_ocr(self, args):
+        return self.sdk.process_ocr(
+            document_type=args.get("document_type", "image"),
+            language=args.get("language", "en"),
+            backend=args.get("backend", ""),
+        )
+
+    async def _handle_get_ocr_stats(self, args):
+        return self.sdk.get_ocr_stats()
+
+
+    # ── 3D Generation Handlers ──
+
+    async def _handle_list_3d_models(self, args):
+        return self.sdk.list_3d_models(mode=args.get("mode", ""))
+
+    async def _handle_select_3d_model(self, args):
+        model = self.sdk.select_3d_model(
+            mode=args.get("mode", "text_to_3d"),
+            max_vram_gb=args.get("max_vram_gb", 32),
+        )
+        return {"selected_model": model}
+
+    async def _handle_get_3d_output_formats(self, args):
+        return {"formats": self.sdk.get_3d_output_formats(args["model_id"])}
+
+    async def _handle_get_3d_stats(self, args):
+        return self.sdk.get_3d_stats()
+
+
+    # ── Regression Detection Handlers ──
+
+    async def _handle_detect_regression(self, args):
+        return self.sdk.detect_regression(args["provider"], args["metrics"])
+
+    async def _handle_get_regression_alerts(self, args):
+        return self.sdk.get_regression_alerts(
+            severity=args.get("severity", ""),
+            provider=args.get("provider", ""),
+            limit=args.get("limit", 100),
+        )
+
+    async def _handle_get_regression_stats(self, args):
+        return self.sdk.get_regression_stats()
+
+
+    # ── Capability Graph Handlers ──
+
+    async def _handle_find_capability_path(self, args):
+        return self.sdk.find_capability_path(
+            capability=args["capability"],
+            preferred_provider=args.get("preferred_provider", ""),
+        )
+
+    async def _handle_find_fallback_chain(self, args):
+        return self.sdk.find_fallback_chain(
+            capability=args["capability"],
+            failed_provider=args.get("failed_provider", ""),
+        )
+
+    async def _handle_estimate_execution_cost(self, args):
+        return self.sdk.estimate_execution_cost(args["provider"], args["capability"])
+
+    async def _handle_get_capability_graph_stats(self, args):
+        return self.sdk.get_capability_graph_stats()
+
+
+    # ── Security Handlers ──
+
+    async def _handle_list_security_users(self, args):
+        return self.sdk.list_security_users()
+
+    async def _handle_authorize_user(self, args):
+        return self.sdk.authorize(args["user_id"], args["permission"])
+
+    async def _handle_get_security_stats(self, args):
+        return self.sdk.get_security_stats()
+
+    # ── Phase 28 — Failure Recovery Handlers ──
+
+    async def _handle_attempt_recovery(self, args):
+        return self.sdk.attempt_recovery(args["error"], args["task_context"])
+
+    async def _handle_recover_gpu_oom(self, args):
+        return self.sdk.recover_gpu_oom(args["task_context"])
+
+    async def _handle_recover_runtime_crash(self, args):
+        return self.sdk.recover_runtime_crash(args["task_context"])
+
+    async def _handle_recover_gpu_crash(self, args):
+        return self.sdk.recover_gpu_crash(args["task_context"])
+
+    async def _handle_recover_nan_inf(self, args):
+        return self.sdk.recover_nan_inf(args["task_context"])
+
+    async def _handle_get_failure_events(self, args):
+        return self.sdk.get_failure_events(
+            args.get("limit", 50),
+            args.get("failure_type", ""),
+        )
+
+    async def _handle_get_failure_recovery_stats(self, args):
+        return self.sdk.get_failure_recovery_stats()
+
+    # ── Phase 28b — Dynamic Graph Update Handlers ──
+
+    async def _handle_dynamic_add_node(self, args):
+        return self.sdk.dynamic_graph_add_node(
+            args["node_id"],
+            args.get("node_type", "capability"),
+            args.get("name", ""),
+            args.get("attributes", {}),
+        )
+
+    async def _handle_dynamic_add_edge(self, args):
+        return self.sdk.dynamic_graph_add_edge(
+            args["source_id"],
+            args["target_id"],
+            args.get("edge_type", "supports"),
+            args.get("weight", 1.0),
+            args.get("attributes", {}),
+        )
+
+    async def _handle_dynamic_update_node(self, args):
+        return self.sdk.dynamic_graph_update_node(args["node_id"], args["attributes"])
+
+    async def _handle_dynamic_remove_node(self, args):
+        return self.sdk.dynamic_graph_remove_node(args["node_id"])
+
+    async def _handle_dynamic_batch_benchmark(self, args):
+        return self.sdk.dynamic_graph_batch_benchmark(args["updates"])
+
+    async def _handle_dynamic_batch_health(self, args):
+        return self.sdk.dynamic_graph_batch_health(args["updates"])
+
+    async def _handle_dynamic_get_history(self, args):
+        return self.sdk.dynamic_graph_get_history(args.get("limit", 50))
+
+    async def _handle_dynamic_get_stats(self, args):
+        return self.sdk.dynamic_graph_get_stats()
+
+
+
+    # ── Phase 29 — Local Runtime Handlers ──
+
+    async def _handle_discover_local_runtimes(self, args):
+        return await self.sdk.discover_local_runtimes()
+
+    async def _handle_configure_local_runtime(self, args):
+        return self.sdk.configure_local_runtime(args["runtime_type"], args["url"])
+
+    async def _handle_get_local_runtime_stats(self, args):
+        return self.sdk.get_local_runtime_stats()
+
+    async def _handle_get_local_runtime_profile(self, args):
+        return self.sdk.get_local_runtime_profile(args["runtime_type"])
+
+    async def _handle_generate_local(self, args):
+        return await self.sdk.generate_local(
+            args["model"], args["prompt"],
+            runtime=args.get("runtime", ""),
+            max_tokens=args.get("max_tokens", 512),
+            temperature=args.get("temperature", 0.7),
+        )
+
+
+    # ── Phase 30 — Security Crypto Handlers ──
+
+    async def _handle_generate_encryption_key(self, args):
+        return self.sdk.generate_encryption_key(algorithm=args.get("algorithm", "aes-256-gcm"))
+
+    async def _handle_encrypt_data(self, args):
+        return self.sdk.encrypt_data(args["data"].encode(), args.get("key_id"))
+
+    async def _handle_get_encryption_stats(self, args):
+        return self.sdk.get_encryption_stats()
+
+    async def _handle_compute_file_checksum(self, args):
+        return self.sdk.compute_file_checksum(args["file_path"], args.get("algorithm", "sha256"))
+
+    async def _handle_verify_file_checksum(self, args):
+        return self.sdk.verify_file_checksum(args["file_path"], args.get("expected"), args.get("algorithm", "sha256"))
+
+    async def _handle_get_model_security_stats(self, args):
+        return self.sdk.get_model_security_stats()
+
+    async def _handle_get_tls_stats(self, args):
+        return self.sdk.get_tls_stats()
+
+
+    # ── Phase 31 — Event Bus Handlers ──
+
+    async def _handle_event_bus_publish(self, args):
+        return self.sdk.event_bus_publish_sync(
+            args["subject"],
+            payload=args.get("payload"),
+            publisher=args.get("publisher", ""),
+        )
+
+    async def _handle_event_bus_get_history(self, args):
+        return self.sdk.event_bus_get_history(
+            args.get("subject"),
+            args.get("limit", 50),
+        )
+
+    async def _handle_event_bus_get_subscriptions(self, args):
+        return self.sdk.event_bus_get_subscriptions()
+
+    async def _handle_get_event_bus_stats(self, args):
+        return self.sdk.get_event_bus_stats()
+
+    async def _handle_emit_event(self, args):
+        return self.sdk.emit_event(args["event_type"], args.get("data"), args.get("source", ""))
+
+    async def _handle_get_event_kernel_stats(self, args):
+        return self.sdk.get_event_kernel_stats()
 
 def get_mcp_generation_tools():
     return MCP_GENERATION_TOOLS
