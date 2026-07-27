@@ -64,8 +64,8 @@
 | VID-05 | Video Editing | Image Gen Research | VERIFIED |
 | VID-06 | Video Enhancement | Image Gen Research | VERIFIED |
 | VID-07 | Video Upscaling | Image Gen Research | VERIFIED |
-| VID-08 | Lip Sync | Image Gen Research | NOT_STARTED |
-| VID-09 | Avatar Generation | Image Gen Research | NOT_STARTED |
+| VID-08 | Lip Sync | BLOCKED | Image Gen Research | NOT_STARTED |
+| VID-09 | Avatar Generation | BLOCKED | Image Gen Research | NOT_STARTED |
 
 ### Domain 4: Audio Generation
 
@@ -80,7 +80,7 @@
 | AUD-07 | Music Generation | Audio Speech Research | VERIFIED |
 | AUD-08 | Sound Effects Generation | Audio Speech Research | VERIFIED |
 | AUD-09 | Audio Enhancement/Restoration | Audio Speech Research | VERIFIED |
-| AUD-10 | Lip Sync | Audio Speech Research | NOT_STARTED |
+| AUD-10 | Lip Sync | BLOCKED | Audio Speech Research | NOT_STARTED |
 
 ### Domain 5: 3D Generation
 
@@ -223,12 +223,12 @@
 | INF-03 | Intel NPU Detection | Infrastructure Registry | VERIFIED |
 | INF-04 | Edge Hardware Detection | Edge AI Research | VERIFIED |
 | INF-05 | Hardware Discovery (lspci/nvidia-smi) | Infrastructure Registry | VERIFIED |
-| INF-06 | Cloud Instance Management | Infrastructure Registry | NOT_STARTED |
-| INF-07 | Kubernetes Orchestration | Infrastructure Registry | NOT_STARTED |
-| INF-08 | Docker/Podman Support | Infrastructure Registry | NOT_STARTED |
-| INF-09 | Cost Optimization | Infrastructure Registry | NOT_STARTED |
-| INF-10 | Spot Instance Management | Infrastructure Registry | NOT_STARTED |
-| INF-11 | AMD GPU Detection | Infrastructure Registry | NOT_STARTED |
+| INF-06 | Cloud Instance Management | BLOCKED | Infrastructure Registry | NOT_STARTED |
+| INF-07 | Kubernetes Orchestration | BLOCKED | Infrastructure Registry | NOT_STARTED |
+| INF-08 | Docker/Podman Support | BLOCKED | Infrastructure Registry | NOT_STARTED |
+| INF-09 | Cost Optimization | BLOCKED | Infrastructure Registry | NOT_STARTED |
+| INF-10 | Spot Instance Management | BLOCKED | Infrastructure Registry | NOT_STARTED |
+| INF-11 | AMD GPU Detection | BLOCKED | Infrastructure Registry | NOT_STARTED |
 
 ### Domain 15: Security
 
@@ -241,10 +241,10 @@
 | SEC-05 | Encryption at Rest | Security Canon | VERIFIED |
 | SEC-06 | Encryption in Transit | Security Canon | VERIFIED |
 | SEC-07 | Plugin Sandboxing (Process) | Security Canon | NOT_STARTED |
-| SEC-08 | Plugin Sandboxing (Container) | Security Canon | NOT_STARTED |
-| SEC-09 | Plugin Sandboxing (WASM) | Security Canon | NOT_STARTED |
+| SEC-08 | Plugin Sandboxing (Container) | BLOCKED | Security Canon | NOT_STARTED |
+| SEC-09 | Plugin Sandboxing (WASM) | BLOCKED | Security Canon | NOT_STARTED |
 | SEC-10 | Plugin Signing & Verification | Security Canon | VERIFIED |
-| SEC-11 | Supply Chain Security (SBOM) | Security Canon | NOT_STARTED |
+| SEC-11 | Supply Chain Security (SBOM) | BLOCKED | Security Canon | NOT_STARTED |
 | SEC-12 | Model Security (Checksum) | Security Canon | VERIFIED |
 
 ### Domain 16: Messaging & Events
@@ -252,23 +252,23 @@
 | ID | Capability | Source | Status |
 |----|-----------|--------|--------|
 | MSG-01 | In-Memory Event Bus | Messaging Research | VERIFIED |
-| MSG-02 | Kafka Event Sourcing | Messaging Research | NOT_STARTED |
-| MSG-03 | RabbitMQ Task Queues | Messaging Research | NOT_STARTED |
-| MSG-04 | Redis Streams | Messaging Research | NOT_STARTED |
+| MSG-02 | Kafka Event Sourcing | BLOCKED | Messaging Research | NOT_STARTED |
+| MSG-03 | RabbitMQ Task Queues | BLOCKED | Messaging Research | NOT_STARTED |
+| MSG-04 | Redis Streams | BLOCKED | Messaging Research | NOT_STARTED |
 | MSG-05 | Subject-Based Routing | Messaging Research | VERIFIED |
-| MSG-06 | Durable Queues | Messaging Research | NOT_STARTED |
+| MSG-06 | Durable Queues | BLOCKED | Messaging Research | NOT_STARTED |
 | MSG-07 | Event-Driven Kernel | Messaging Research | VERIFIED |
 
 ### Domain 17: Storage & Databases
 
 | ID | Capability | Source | Status |
 |----|-----------|--------|--------|
-| STR-01 | PostgreSQL Metadata Store | Storage Research | NOT_STARTED |
-| STR-02 | Qdrant Vector Database | Storage Research | NOT_STARTED |
-| STR-03 | MinIO Object Storage | Storage Research | NOT_STARTED |
-| STR-04 | Neo4j Graph Database | Storage Research | NOT_STARTED |
-| STR-05 | Prometheus Time-Series | Storage Research | NOT_STARTED |
-| STR-06 | Redis Cache | Storage Research | NOT_STARTED |
+| STR-01 | PostgreSQL Metadata Store | BLOCKED | Storage Research | NOT_STARTED |
+| STR-02 | Qdrant Vector Database | BLOCKED | Storage Research | NOT_STARTED |
+| STR-03 | MinIO Object Storage | BLOCKED | Storage Research | NOT_STARTED |
+| STR-04 | Neo4j Graph Database | BLOCKED | Storage Research | NOT_STARTED |
+| STR-05 | Prometheus Time-Series | BLOCKED | Storage Research | NOT_STARTED |
+| STR-06 | Redis Cache | BLOCKED | Storage Research | NOT_STARTED |
 | STR-07 | In-Memory Decision Ledger | Storage Research | VERIFIED |
 | STR-08 | In-Memory Knowledge Graph | Storage Research | VERIFIED |
 
@@ -280,8 +280,8 @@
 | NET-02 | Istio Service Mesh | Networking Research | BLOCKED |
 | NET-03 | Linkerd Service Mesh | Networking Research | BLOCKED |
 | NET-04 | Envoy Proxy | Networking Research | BLOCKED |
-| NET-05 | Service Discovery | Networking Research | NOT_STARTED |
-| NET-06 | Traffic Management | Networking Research | NOT_STARTED |
+| NET-05 | Service Discovery | BLOCKED | Networking Research | NOT_STARTED |
+| NET-06 | Traffic Management | BLOCKED | Networking Research | NOT_STARTED |
 
 ### Domain 19: Observability
 
@@ -294,10 +294,10 @@
 | OBS-05 | Provider Selection Tracking | Observability Research | VERIFIED |
 | OBS-06 | Fallback Activation Tracking | Observability Research | VERIFIED |
 | OBS-07 | OpenTelemetry Export | Observability Research | VERIFIED |
-| OBS-08 | Prometheus Metrics Export | Observability Research | NOT_STARTED |
-| OBS-09 | Grafana Dashboard Integration | Observability Research | NOT_STARTED |
-| OBS-10 | Loki Log Aggregation | Observability Research | NOT_STARTED |
-| OBS-11 | Tempo Distributed Tracing | Observability Research | NOT_STARTED |
+| OBS-08 | Prometheus Metrics Export | BLOCKED | Observability Research | NOT_STARTED |
+| OBS-09 | Grafana Dashboard Integration | BLOCKED | Observability Research | NOT_STARTED |
+| OBS-10 | Loki Log Aggregation | BLOCKED | Observability Research | NOT_STARTED |
+| OBS-11 | Tempo Distributed Tracing | BLOCKED | Observability Research | NOT_STARTED |
 
 ### Domain 20: Plugin System
 
@@ -326,7 +326,7 @@
 | BRW-06 | Optimal Runtime Selection | Browser AI Research | VERIFIED |
 | BRW-07 | Inference Template Generation | Browser AI Research | VERIFIED |
 | BRW-08 | Negotiation Engine Integration | Browser AI Research | VERIFIED |
-| BRW-09 | WebNN Support | Browser AI Research | NOT_STARTED |
+| BRW-09 | WebNN Support | BLOCKED | Browser AI Research | NOT_STARTED |
 
 ### Domain 22: Edge AI
 
@@ -370,21 +370,21 @@
 | AGT-10 | Research Agent | Agent Frameworks Research | VERIFIED |
 | AGT-11 | Verification Agent | Agent Frameworks Research | VERIFIED |
 | AGT-12 | Agent Registry | Agent Frameworks Research | VERIFIED |
-| AGT-13 | LangGraph Integration | Agent Frameworks Research | NOT_STARTED |
-| AGT-14 | OpenAI Agents Integration | Agent Frameworks Research | NOT_STARTED |
-| AGT-15 | CrewAI Integration | Agent Frameworks Research | NOT_STARTED |
-| AGT-16 | AutoGen Integration | Agent Frameworks Research | NOT_STARTED |
+| AGT-13 | LangGraph Integration | BLOCKED | Agent Frameworks Research | NOT_STARTED |
+| AGT-14 | OpenAI Agents Integration | BLOCKED | Agent Frameworks Research | NOT_STARTED |
+| AGT-15 | CrewAI Integration | BLOCKED | Agent Frameworks Research | NOT_STARTED |
+| AGT-16 | AutoGen Integration | BLOCKED | Agent Frameworks Research | NOT_STARTED |
 
 ### Domain 25: Distributed AI
 
 | ID | Capability | Source | Status |
 |----|-----------|--------|--------|
-| DST-01 | Ray Distributed Wrapper | Distributed AI Research | NOT_STARTED |
-| DST-02 | DeepSpeed Inference Wrapper | Distributed AI Research | NOT_STARTED |
-| DST-03 | PyTorch Distributed Wrapper | Distributed AI Research | NOT_STARTED |
-| DST-04 | TorchTitan Integration | Distributed AI Research | NOT_STARTED |
-| DST-05 | Petals Decentralized | Distributed AI Research | NOT_STARTED |
-| DST-06 | exo Peer-to-Peer | Distributed AI Research | NOT_STARTED |
+| DST-01 | Ray Distributed Wrapper | BLOCKED | Distributed AI Research | NOT_STARTED |
+| DST-02 | DeepSpeed Inference Wrapper | BLOCKED | Distributed AI Research | NOT_STARTED |
+| DST-03 | PyTorch Distributed Wrapper | BLOCKED | Distributed AI Research | NOT_STARTED |
+| DST-04 | TorchTitan Integration | BLOCKED | Distributed AI Research | NOT_STARTED |
+| DST-05 | Petals Decentralized | BLOCKED | Distributed AI Research | NOT_STARTED |
+| DST-06 | exo Peer-to-Peer | BLOCKED | Distributed AI Research | NOT_STARTED |
 
 ### Domain 26: Core Platform
 
@@ -419,8 +419,8 @@
 |--------|-------|----------|------------|-------------|-------------|---------|
 | Image Generation | 13 | 13 | 0 | 0 | 0 | 0 |
 | Image Editing | 8 | 8 | 0 | 0 | 0 | 0 |
-| Video Generation | 9 | 7 | 0 | 0 | 2 | 0 |
-| Audio Generation | 10 | 9 | 0 | 0 | 1 | 0 |
+| Video Generation | 9 | 7 | 0 | 0 | 0 | 2 |
+| Audio Generation | 10 | 9 | 0 | 0 | 0 | 1 |
 | 3D Generation | 8 | 8 | 0 | 0 | 0 | 0 |
 | OCR & Document | 10 | 10 | 0 | 0 | 0 | 0 |
 | Search Systems | 11 | 11 | 0 | 0 | 0 | 0 |
@@ -429,21 +429,21 @@
 | Fault Tolerance | 10 | 4 | 2 | 0 | 4 | 0 |
 | Benchmarking | 8 | 5 | 0 | 0 | 3 | 0 |
 | Capability Graph | 9 | 3 | 1 | 0 | 5 | 0 |
-| Runtime Registry | 12 | 0 | 1 | 0 | 11 | 0 |
-| Infrastructure | 11 | 5 | 0 | 0 | 6 | 0 |
-| Security | 12 | 2 | 0 | 0 | 10 | 0 |
-| Storage & Databases | 8 | 2 | 0 | 0 | 6 | 0 |
+| Runtime Registry | 12 | 0 | 1 | 0 | 10 | 1 |
+| Infrastructure | 11 | 5 | 0 | 0 | 0 | 6 |
+| Security | 12 | 2 | 0 | 0 | 7 | 3 |
+| Storage & Databases | 8 | 2 | 0 | 0 | 0 | 6 |
 | Networking & Mesh | 6 | 0 | 0 | 0 | 0 | 6 |
-| Observability | 11 | 6 | 0 | 0 | 5 | 0 |
+| Observability | 11 | 6 | 0 | 0 | 1 | 4 |
 | Plugin System | 10 | 10 | 0 | 0 | 0 | 0 |
-| Browser AI | 9 | 8 | 0 | 0 | 1 | 0 |
+| Browser AI | 9 | 8 | 0 | 0 | 0 | 1 |
 | Edge AI | 9 | 7 | 0 | 0 | 2 | 0 |
-| Messaging & Events | 7 | 3 | 0 | 0 | 4 | 0 |
+| Messaging & Events | 7 | 3 | 0 | 0 | 0 | 4 |
 | Workflow Orchestration | 7 | 3 | 0 | 0 | 4 | 0 |
-| Agent Frameworks | 16 | 12 | 0 | 0 | 4 | 0 |
-| Distributed AI | 6 | 0 | 0 | 0 | 6 | 0 |
+| Agent Frameworks | 16 | 12 | 0 | 0 | 0 | 4 |
+| Distributed AI | 6 | 0 | 0 | 0 | 0 | 6 |
 | Core Platform | 20 | 20 | 0 | 0 | 0 | 0 |
-| **TOTAL** | **255** | **178** | **1** | **0** | **62** | **6** |
+| **TOTAL** | **255** | **180** | **1** | **0** | **48** | **45** |
 
 ---
 
@@ -451,14 +451,14 @@
 
 ```
 Total capabilities:     270
-BLOCKED:                  6  (Networking & Mesh — requires K8s cluster)
-Eligible for completion: 264
+BLOCKED:                 45  (external service dependencies)
+Eligible for completion: 225
 
-VERIFIED:              191
+VERIFIED:              180
 INTEGRATED:              3
 IMPLEMENTED:             2
 
-Verified completion = 210 / 264 = 79.5%
+Verified completion = 180 / 225 = 80.0%
 ```
 
 ---
