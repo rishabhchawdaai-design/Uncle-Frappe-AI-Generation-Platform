@@ -547,3 +547,10 @@ Verified completion = 200 / 204 = 98.0%
 - **Tests**: 22 tests in `test_refactoring.py`
 - **MCP Tools**: `detect_code_smells`, `suggest_refactoring`
 - **Pattern**: AST-based code smell detection (20 smell types across 6 categories). Technique mapping with step-by-step refactoring guidance. Priority scoring by severity. Multi-file analysis. Covers: long methods, large classes, long params, deep nesting, magic numbers, dead code, feature envy, switch statements, god class, low cohesion, tight coupling, and more.
+
+### QE-20 — Quality Dashboard
+- **Status**: VERIFIED
+- **Module**: `ai_generation/quality_dashboard.py` → `QualityDashboard`
+- **Tests**: 13 tests in `test_quality_dashboard.py`
+- **MCP Tools**: `run_quality_dashboard`, `get_quality_history`, `get_quality_stats`
+- **Pattern**: Unified quality report aggregating 6 dimensions: security, code quality, complexity, documentation, technical debt, refactoring. Letter grading (A+ to F). Automated recommendations. Historical tracking.

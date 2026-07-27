@@ -119,6 +119,8 @@ class UncleFrappeAI:
         self._knowledge_base = None
         # Phase 35 — Refactoring Engine
         self._refactoring_engine = None
+        # Phase 36 — Quality Dashboard
+        self._quality_dashboard = None
         # Phase 33 — Code Analysis Engines
         self._secret_scanner = None
         self._static_analyzer = None
@@ -262,6 +264,14 @@ class UncleFrappeAI:
             from .refactoring_engine import RefactoringEngine
             self._refactoring_engine = RefactoringEngine()
         return self._refactoring_engine
+
+    # Phase 36 — Quality Dashboard
+    @property
+    def quality_dashboard(self):
+        if self._quality_dashboard is None:
+            from .quality_dashboard import QualityDashboard
+            self._quality_dashboard = QualityDashboard()
+        return self._quality_dashboard
 
     @property
     def workflow_engine(self):

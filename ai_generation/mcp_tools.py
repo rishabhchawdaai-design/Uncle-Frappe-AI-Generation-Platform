@@ -1029,6 +1029,9 @@ MCP_GENERATION_TOOLS = {
     "retrieve_kb": {"name": "retrieve_kb", "description": "Retrieve relevant knowledge base entries for a query.", "inputSchema": {"type": "object", "properties": {"query": {"type": "string"}, "max_results": {"type": "integer", "default": 5}}, "required": ["query"]}},
     "detect_code_smells": {"name": "detect_code_smells", "description": "Detect code smells (long methods, large classes, magic numbers, dead code, etc.).", "inputSchema": {"type": "object", "properties": {"code": {"type": "string", "default": ""}, "file_path": {"type": "string", "default": "<input>"}}, "required": []}},
     "suggest_refactoring": {"name": "suggest_refactoring", "description": "Analyze code and generate refactoring suggestions with techniques and steps.", "inputSchema": {"type": "object", "properties": {"code": {"type": "string", "default": ""}, "file_path": {"type": "string", "default": "<input>"}, "files": {"type": "object", "description": "Dict of {filepath: content} for multi-file analysis"}}, "required": []}},
+    "run_quality_dashboard": {"name": "run_quality_dashboard", "description": "Run comprehensive quality analysis across 6 dimensions (security, quality, complexity, documentation, debt, refactoring).", "inputSchema": {"type": "object", "properties": {"code": {"type": "string", "default": ""}, "file_path": {"type": "string", "default": "<input>"}}, "required": []}},
+    "get_quality_history": {"name": "get_quality_history", "description": "Get history of quality analyses.", "inputSchema": {"type": "object", "properties": {}}},
+    "get_quality_stats": {"name": "get_quality_stats", "description": "Get quality analysis statistics.", "inputSchema": {"type": "object", "properties": {}}},
 
 }
 class MCPGenerationTools:
@@ -1241,6 +1244,9 @@ class MCPGenerationTools:
             "retrieve_kb": self._handle_retrieve_kb,
             "detect_code_smells": self._handle_detect_code_smells,
             "suggest_refactoring": self._handle_suggest_refactoring,
+            "run_quality_dashboard": self._handle_run_quality_dashboard,
+            "get_quality_history": self._handle_get_quality_history,
+            "get_quality_stats": self._handle_get_quality_stats,
         }
         handler = handlers.get(tool_name)
         if not handler:
@@ -2386,6 +2392,18 @@ class MCPGenerationTools:
         else:
             suggestions = self.sdk.refactoring_engine.analyze(code, file_path)
         return {"suggestions": [s.to_dict() for s in suggestions], "count": len(suggestions), "stats": self.sdk.refactoring_engine.get_stats(suggestions)}
+
+    async def _handle_run_quality_dashboard(self, args):
+        code = args.get("code", "")
+        file_path = args.get("file_path", "<input>")
+        report = self.sdk.quality_dashboard.analyze(code, file_path)
+        return report.to_dict()
+
+    async def _handle_get_quality_history(self, args):
+        return {"history": self.sdk.quality_dashboard.get_history()}
+
+    async def _handle_get_quality_stats(self, args):
+        return self.sdk.quality_dashboard.get_stats()
 
 def get_mcp_generation_tools():
     return MCP_GENERATION_TOOLS
