@@ -163,6 +163,16 @@ MCP_GENERATION_TOOLS = {
     "reload_plugin": {"name": "reload_plugin", "description": "Hot-reload a changed plugin.", "inputSchema": {"type": "object", "properties": {"plugin_id": {"type": "string"}}, "required": ["plugin_id"]}},
     "sign_plugin": {"name": "sign_plugin", "description": "Sign a plugin with cryptographic hash.", "inputSchema": {"type": "object", "properties": {"plugin_id": {"type": "string"}, "version": {"type": "string"}, "code": {"type": "string"}, "key_id": {"type": "string", "default": "default"}}, "required": ["plugin_id", "version", "code"]}},
     "verify_plugin_signature": {"name": "verify_plugin_signature", "description": "Verify a plugin's cryptographic signature.", "inputSchema": {"type": "object", "properties": {"plugin_id": {"type": "string"}, "version": {"type": "string"}, "code": {"type": "string"}}, "required": ["plugin_id", "version", "code"]}},
+        "run_quality_gates": {"name": "run_quality_gates", "description": "Run all quality gates on code (Swiss Cheese Model: secrets, debug, imports, security, type hints).", "inputSchema": {"type": "object", "properties": {"file_path": {"type": "string", "default": ""}, "code": {"type": "string", "default": ""}, "gates": {"type": "array", "items": {"type": "string"}}}, "required": []}},
+    "run_single_gate": {"name": "run_single_gate", "description": "Run a single quality gate check.", "inputSchema": {"type": "object", "properties": {"gate_name": {"type": "string"}, "file_path": {"type": "string", "default": ""}, "code": {"type": "string", "default": ""}}, "required": ["gate_name"]}},
+    "list_quality_gates": {"name": "list_quality_gates", "description": "List all available quality gates.", "inputSchema": {"type": "object", "properties": {}}},
+    "review_code": {"name": "review_code", "description": "Run automated code review (correctness, security, performance, maintainability).", "inputSchema": {"type": "object", "properties": {"file_path": {"type": "string", "default": ""}, "code": {"type": "string", "default": ""}, "rules": {"type": "array", "items": {"type": "string"}}}, "required": []}},
+    "score_quality": {"name": "score_quality", "description": "Score code quality across 7 dimensions (correctness, security, performance, maintainability, testability, readability, documentation).", "inputSchema": {"type": "object", "properties": {"file_path": {"type": "string", "default": ""}, "code": {"type": "string", "default": ""}}, "required": []}},
+    "generate_tests": {"name": "generate_tests", "description": "Generate test cases for Python functions.", "inputSchema": {"type": "object", "properties": {"file_path": {"type": "string", "default": ""}, "code": {"type": "string", "default": ""}, "template": {"type": "string", "default": "unit_test_pytest"}}, "required": []}},
+    "analyze_coverage_gaps": {"name": "analyze_coverage_gaps", "description": "Analyze coverage gaps and prioritize by risk.", "inputSchema": {"type": "object", "properties": {"file_path": {"type": "string", "default": ""}, "code": {"type": "string", "default": ""}, "test_code": {"type": "string", "default": ""}}, "required": []}},
+    "detect_flaky_tests": {"name": "detect_flaky_tests", "description": "Detect flaky tests from test history.", "inputSchema": {"type": "object", "properties": {"min_runs": {"type": "integer", "default": 3}}, "required": []}},
+    "learn_pattern": {"name": "learn_pattern", "description": "Learn and store a codebase pattern for reuse.", "inputSchema": {"type": "object", "properties": {"pattern_id": {"type": "string"}, "pattern_type": {"type": "string"}, "description": {"type": "string"}, "code": {"type": "string"}}, "required": ["pattern_id", "pattern_type", "description", "code"]}},
+    "find_patterns": {"name": "find_patterns", "description": "Find learned patterns by type or context.", "inputSchema": {"type": "object", "properties": {"pattern_type": {"type": "string", "default": ""}, "context": {"type": "string", "default": ""}}, "required": []}},
     "get_plugin_signatures": {"name": "get_plugin_signatures", "description": "List all plugin signatures.", "inputSchema": {"type": "object", "properties": {}}},
     "get_3d_edit_profiles": {"name": "get_3d_edit_profiles", "description": "List 3D editing operations.", "inputSchema": {"type": "object", "properties": {}}},
     "get_search_backend_profiles": {"name": "get_search_backend_profiles", "description": "List available external search backends.", "inputSchema": {"type": "object", "properties": {}}},
@@ -1079,6 +1089,16 @@ class MCPGenerationTools:
             "reload_plugin": self._handle_reload_plugin,
             "sign_plugin": self._handle_sign_plugin,
             "verify_plugin_signature": self._handle_verify_plugin_signature,
+            "run_quality_gates": self._handle_run_quality_gates,
+            "run_single_gate": self._handle_run_single_gate,
+            "list_quality_gates": self._handle_list_quality_gates,
+            "review_code": self._handle_review_code,
+            "score_quality": self._handle_score_quality,
+            "generate_tests": self._handle_generate_tests,
+            "analyze_coverage_gaps": self._handle_analyze_coverage_gaps,
+            "detect_flaky_tests": self._handle_detect_flaky_tests,
+            "learn_pattern": self._handle_learn_pattern,
+            "find_patterns": self._handle_find_patterns,
             "get_plugin_signatures": self._handle_get_plugin_signatures,
             "get_3d_edit_profiles": self._handle_3d_edit_profiles,
             "get_search_backend_profiles": self._handle_search_backend_profiles,
@@ -1569,6 +1589,65 @@ class MCPGenerationTools:
         )
         return sig.to_dict()
 
+    async def _handle_run_quality_gates(self, args):
+        gates = args.get("gates")
+        if gates:
+            results = []
+            for g in gates:
+                r = await self.sdk.quality_gates.run_gate(g, file_path=args.get("file_path", ""), code=args.get("code", ""))
+                results.append(r.to_dict())
+            return {"results": results}
+        results = await self.sdk.quality_gates.run_all_gates(file_path=args.get("file_path", ""), code=args.get("code", ""))
+        return {"results": [r.to_dict() for r in results]}
+
+    async def _handle_run_single_gate(self, args):
+        result = await self.sdk.quality_gates.run_gate(
+            args["gate_name"], file_path=args.get("file_path", ""), code=args.get("code", ""),
+        )
+        return result.to_dict()
+
+    async def _handle_list_quality_gates(self, args):
+        return {"gates": self.sdk.quality_gates.list_gates(), "stats": self.sdk.quality_gates.get_stats()}
+
+    async def _handle_review_code(self, args):
+        result = await self.sdk.code_review.review(
+            file_path=args.get("file_path", ""), code=args.get("code", ""),
+            rules=args.get("rules"),
+        )
+        return result.to_dict()
+
+    async def _handle_score_quality(self, args):
+        return await self.sdk.quality_scoring.score_file(
+            file_path=args.get("file_path", ""), code=args.get("code", ""),
+        )
+
+    async def _handle_generate_tests(self, args):
+        return await self.sdk.test_generation.generate_tests(
+            file_path=args.get("file_path", ""), code=args.get("code", ""),
+            template=args.get("template", "unit_test_pytest"),
+        )
+
+    async def _handle_analyze_coverage_gaps(self, args):
+        return await self.sdk.coverage_gap.analyze_gaps(
+            file_path=args.get("file_path", ""), code=args.get("code", ""),
+            test_code=args.get("test_code", ""),
+        )
+
+    async def _handle_detect_flaky_tests(self, args):
+        flaky = await self.sdk.flaky_detection.detect_flaky(min_runs=args.get("min_runs", 3))
+        return {"flaky_tests": flaky}
+
+    async def _handle_learn_pattern(self, args):
+        self.sdk.pattern_learning.learn_pattern(
+            args["pattern_id"], args["pattern_type"], args["description"], args["code"],
+        )
+        return {"status": "learned", "pattern_id": args["pattern_id"]}
+
+    async def _handle_find_patterns(self, args):
+        patterns = self.sdk.pattern_learning.find_patterns(
+            pattern_type=args.get("pattern_type", ""), context=args.get("context", ""),
+        )
+        return {"patterns": patterns}
     async def _handle_get_plugin_signatures(self, args):
         return {"signatures": self.sdk.plugin_signer.list_signatures(), "stats": self.sdk.plugin_signer.get_stats()}
     async def _handle_3d_edit_profiles(self, args):

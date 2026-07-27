@@ -65,6 +65,358 @@
         "version": 1
       },
       "completed_at": "2026-07-17T18:46:55.941467"
+    },
+    {
+      "provider": "test_provider",
+      "schema_type": "json_schema",
+      "status": "integrated",
+      "started_at": "2026-07-27T13:20:39.828246",
+      "adapter": {
+        "provider": "test_provider",
+        "schema_type": "json_schema",
+        "endpoints": [
+          {
+            "name": "generate",
+            "type": "string"
+          }
+        ],
+        "auth": {
+          "type": "api_key"
+        },
+        "compiled_at": "2026-07-27T13:20:39.828260",
+        "version": 1
+      },
+      "completed_at": "2026-07-27T13:20:39.828265"
+    },
+    {
+      "provider": "test_provider",
+      "schema_type": "json_schema",
+      "status": "integrated",
+      "started_at": "2026-07-27T13:26:32.883157",
+      "adapter": {
+        "provider": "test_provider",
+        "schema_type": "json_schema",
+        "endpoints": [
+          {
+            "name": "generate",
+            "type": "string"
+          }
+        ],
+        "auth": {
+          "type": "api_key"
+        },
+        "compiled_at": "2026-07-27T13:26:32.883193",
+        "version": 1
+      },
+      "completed_at": "2026-07-27T13:26:32.883204"
+    },
+    {
+      "provider": "test_provider",
+      "schema_type": "json_schema",
+      "status": "integrated",
+      "started_at": "2026-07-27T13:38:46.639766",
+      "adapter": {
+        "provider": "test_provider",
+        "schema_type": "json_schema",
+        "endpoints": [
+          {
+            "name": "generate",
+            "type": "string"
+          }
+        ],
+        "auth": {
+          "type": "api_key"
+        },
+        "compiled_at": "2026-07-27T13:38:46.639784",
+        "version": 1
+      },
+      "completed_at": "2026-07-27T13:38:46.639792"
+    },
+    {
+      "provider": "test_provider",
+      "schema_type": "json_schema",
+      "status": "integrated",
+      "started_at": "2026-07-27T13:41:34.604893",
+      "adapter": {
+        "provider": "test_provider",
+        "schema_type": "json_schema",
+        "endpoints": [
+          {
+            "name": "generate",
+            "type": "string"
+          }
+        ],
+        "auth": {
+          "type": "api_key"
+        },
+        "compiled_at": "2026-07-27T13:41:34.604907",
+        "version": 1
+      },
+      "completed_at": "2026-07-27T13:41:34.604915"
+    },
+    {
+      "provider": "test_provider",
+      "schema_type": "json_schema",
+      "status": "integrated",
+      "started_at": "2026-07-27T13:47:27.521717",
+      "adapter": {
+        "provider": "test_provider",
+        "schema_type": "json_schema",
+        "endpoints": [
+          {
+            "name": "generate",
+            "type": "string"
+          }
+        ],
+        "auth": {
+          "type": "api_key"
+        },
+        "compiled_at": "2026-07-27T13:47:27.521731",
+        "version": 1
+      },
+      "completed_at": "2026-07-27T13:47:27.521738"
+    },
+    {
+      "provider": "test_provider",
+      "schema_type": "json_schema",
+      "status": "integrated",
+      "started_at": "2026-07-27T13:48:44.666586",
+      "adapter": {
+        "provider": "test_provider",
+        "schema_type": "json_schema",
+        "endpoints": [
+          {
+            "name": "generate",
+            "type": "string"
+          }
+        ],
+        "auth": {
+          "type": "api_key"
+        },
+        "compiled_at": "2026-07-27T13:48:44.666602",
+        "version": 1
+      },
+      "completed_at": "2026-07-27T13:48:44.666610"
+    },
+    {
+      "provider": "test_provider",
+      "schema_type": "json_schema",
+      "status": "integrated",
+      "started_at": "2026-07-27T13:49:02.541260",
+      "adapter": {
+        "provider": "test_provider",
+        "schema_type": "json_schema",
+        "endpoints": [
+          {
+            "name": "generate",
+            "type": "string"
+          }
+        ],
+        "auth": {
+          "type": "api_key"
+        },
+        "compiled_at": "2026-07-27T13:49:02.541277",
+        "version": 1
+      },
+      "completed_at": "2026-07-27T13:49:02.541284"
+    },
+    {
+      "provider": "test_provider",
+      "schema_type": "json_schema",
+      "status": "integrated",
+      "started_at": "2026-07-27T18:52:42.424046",
+      "adapter": {
+        "provider": "test_provider",
+        "schema_type": "json_schema",
+        "endpoints": [
+          {
+            "name": "generate",
+            "type": "string"
+          }
+        ],
+        "auth": {
+          "type": "api_key"
+        },
+        "compiled_at": "2026-07-27T18:52:42.424094",
+        "version": 1
+      },
+      "completed_at": "2026-07-27T18:52:42.424123"
+    },
+    {
+      "provider": "test_provider",
+      "schema_type": "json_schema",
+      "status": "integrated",
+      "started_at": "2026-07-27T18:59:34.109051",
+      "adapter": {
+        "provider": "test_provider",
+        "schema_type": "json_schema",
+        "endpoints": [
+          {
+            "name": "generate",
+            "type": "string"
+          }
+        ],
+        "auth": {
+          "type": "api_key"
+        },
+        "compiled_at": "2026-07-27T18:59:34.109092",
+        "version": 1
+      },
+      "completed_at": "2026-07-27T18:59:34.109118"
+    },
+    {
+      "provider": "test_provider",
+      "schema_type": "json_schema",
+      "status": "integrated",
+      "started_at": "2026-07-27T19:04:59.231642",
+      "adapter": {
+        "provider": "test_provider",
+        "schema_type": "json_schema",
+        "endpoints": [
+          {
+            "name": "generate",
+            "type": "string"
+          }
+        ],
+        "auth": {
+          "type": "api_key"
+        },
+        "compiled_at": "2026-07-27T19:04:59.231687",
+        "version": 1
+      },
+      "completed_at": "2026-07-27T19:04:59.231719"
+    },
+    {
+      "provider": "test_provider",
+      "schema_type": "json_schema",
+      "status": "integrated",
+      "started_at": "2026-07-27T19:10:30.830365",
+      "adapter": {
+        "provider": "test_provider",
+        "schema_type": "json_schema",
+        "endpoints": [
+          {
+            "name": "generate",
+            "type": "string"
+          }
+        ],
+        "auth": {
+          "type": "api_key"
+        },
+        "compiled_at": "2026-07-27T19:10:30.830380",
+        "version": 1
+      },
+      "completed_at": "2026-07-27T19:10:30.830387"
+    },
+    {
+      "provider": "test_provider",
+      "schema_type": "json_schema",
+      "status": "integrated",
+      "started_at": "2026-07-27T19:17:11.867990",
+      "adapter": {
+        "provider": "test_provider",
+        "schema_type": "json_schema",
+        "endpoints": [
+          {
+            "name": "generate",
+            "type": "string"
+          }
+        ],
+        "auth": {
+          "type": "api_key"
+        },
+        "compiled_at": "2026-07-27T19:17:11.868005",
+        "version": 1
+      },
+      "completed_at": "2026-07-27T19:17:11.868013"
+    },
+    {
+      "provider": "test_provider",
+      "schema_type": "json_schema",
+      "status": "integrated",
+      "started_at": "2026-07-27T19:25:07.555482",
+      "adapter": {
+        "provider": "test_provider",
+        "schema_type": "json_schema",
+        "endpoints": [
+          {
+            "name": "generate",
+            "type": "string"
+          }
+        ],
+        "auth": {
+          "type": "api_key"
+        },
+        "compiled_at": "2026-07-27T19:25:07.555497",
+        "version": 1
+      },
+      "completed_at": "2026-07-27T19:25:07.555504"
+    },
+    {
+      "provider": "test_provider",
+      "schema_type": "json_schema",
+      "status": "integrated",
+      "started_at": "2026-07-27T19:38:49.703393",
+      "adapter": {
+        "provider": "test_provider",
+        "schema_type": "json_schema",
+        "endpoints": [
+          {
+            "name": "generate",
+            "type": "string"
+          }
+        ],
+        "auth": {
+          "type": "api_key"
+        },
+        "compiled_at": "2026-07-27T19:38:49.703407",
+        "version": 1
+      },
+      "completed_at": "2026-07-27T19:38:49.703413"
+    },
+    {
+      "provider": "test_provider",
+      "schema_type": "json_schema",
+      "status": "integrated",
+      "started_at": "2026-07-27T20:05:22.099913",
+      "adapter": {
+        "provider": "test_provider",
+        "schema_type": "json_schema",
+        "endpoints": [
+          {
+            "name": "generate",
+            "type": "string"
+          }
+        ],
+        "auth": {
+          "type": "api_key"
+        },
+        "compiled_at": "2026-07-27T20:05:22.099926",
+        "version": 1
+      },
+      "completed_at": "2026-07-27T20:05:22.099934"
+    },
+    {
+      "provider": "test_provider",
+      "schema_type": "json_schema",
+      "status": "integrated",
+      "started_at": "2026-07-27T20:26:29.992099",
+      "adapter": {
+        "provider": "test_provider",
+        "schema_type": "json_schema",
+        "endpoints": [
+          {
+            "name": "generate",
+            "type": "string"
+          }
+        ],
+        "auth": {
+          "type": "api_key"
+        },
+        "compiled_at": "2026-07-27T20:26:29.992141",
+        "version": 1
+      },
+      "completed_at": "2026-07-27T20:26:29.992167"
     }
   ],
   "adapter_cache": {
@@ -80,9 +432,9 @@
       "auth": {
         "type": "api_key"
       },
-      "compiled_at": "2026-07-17T18:46:55.941461",
+      "compiled_at": "2026-07-27T20:26:29.992141",
       "version": 1
     }
   },
-  "updated_at": "2026-07-17T18:46:55.942080"
+  "updated_at": "2026-07-27T20:26:29.997609"
 }

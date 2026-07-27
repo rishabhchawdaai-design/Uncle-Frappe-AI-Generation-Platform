@@ -26,6 +26,13 @@ class UncleFrappeAI:
         self._generation_manager = None
         self._prompt_engine = None
         self._quality_engine = None
+        self._quality_gates = None
+        self._code_review = None
+        self._test_generation = None
+        self._coverage_gap = None
+        self._flaky_detection = None
+        self._pattern_learning = None
+        self._quality_scoring = None
         self._workflow_engine = None
         self._benchmark_engine = None
         self._asset_intelligence = None
@@ -128,6 +135,55 @@ class UncleFrappeAI:
             from .quality_engine import QualityEngine
             self._quality_engine = QualityEngine()
         return self._quality_engine
+
+    @property
+    def quality_gates(self):
+        if self._quality_gates is None:
+            from .quality_engineering import QualityGateEngine
+            self._quality_gates = QualityGateEngine(self.config)
+        return self._quality_gates
+
+    @property
+    def code_review(self):
+        if self._code_review is None:
+            from .quality_engineering import CodeReviewEngine
+            self._code_review = CodeReviewEngine(self.config)
+        return self._code_review
+
+    @property
+    def test_generation(self):
+        if self._test_generation is None:
+            from .quality_engineering import TestGenerationEngine
+            self._test_generation = TestGenerationEngine(self.config)
+        return self._test_generation
+
+    @property
+    def coverage_gap(self):
+        if self._coverage_gap is None:
+            from .quality_engineering import CoverageGapEngine
+            self._coverage_gap = CoverageGapEngine(self.config)
+        return self._coverage_gap
+
+    @property
+    def flaky_detection(self):
+        if self._flaky_detection is None:
+            from .quality_engineering import FlakyDetectionEngine
+            self._flaky_detection = FlakyDetectionEngine(self.config)
+        return self._flaky_detection
+
+    @property
+    def pattern_learning(self):
+        if self._pattern_learning is None:
+            from .quality_engineering import PatternLearningEngine
+            self._pattern_learning = PatternLearningEngine(self.config)
+        return self._pattern_learning
+
+    @property
+    def quality_scoring(self):
+        if self._quality_scoring is None:
+            from .quality_engineering import QualityScoringEngine
+            self._quality_scoring = QualityScoringEngine(self.config)
+        return self._quality_scoring
 
     @property
     def workflow_engine(self):
@@ -495,6 +551,13 @@ class UncleFrappeAI:
             "plugin_marketplace": self.plugin_marketplace.get_stats(),
             "plugin_hot_reloader": self.plugin_hot_reloader.get_stats(),
             "plugin_signer": self.plugin_signer.get_stats(),
+            "quality_gates": self.quality_gates.get_stats(),
+            "code_review": self.code_review.get_stats(),
+            "test_generation": self.test_generation.get_stats(),
+            "coverage_gap": self.coverage_gap.get_stats(),
+            "flaky_detection": self.flaky_detection.get_stats(),
+            "pattern_learning": self.pattern_learning.get_stats(),
+            "quality_scoring": self.quality_scoring.get_stats(),
             "cinematic_workflow": self.cinematic_workflow.get_stats(),
             "characters": self.character_manager.get_stats(),
             "projects": self.project_manager.get_stats(),

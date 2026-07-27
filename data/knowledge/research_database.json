@@ -1,0 +1,432 @@
+{
+  "discoveries": [
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-26T21:26:28.493257"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-26T21:26:45.147800"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-26T21:29:19.418624"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-26T21:31:47.385102"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-26T21:35:24.038372"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-26T21:55:13.760778"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-26T22:07:54.042649"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-26T22:09:47.321868"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-26T22:13:01.927312"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-26T22:18:12.075728"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-26T22:24:27.282705"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-26T22:24:41.447539"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-26T22:24:54.910143"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-26T22:30:18.025457"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-26T22:35:31.766736"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-26T22:41:20.973613"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-26T22:46:21.803475"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-26T22:51:03.913715"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-26T23:11:57.983037"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-26T23:15:35.742737"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-26T23:19:15.016646"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T06:14:36.284443"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T06:20:03.224205"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T06:40:31.715127"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T07:33:37.176965"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T07:37:13.970465"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T08:09:55.536137"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T10:04:54.225229"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T10:22:58.861351"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T10:38:48.177771"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T10:45:54.133443"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T10:56:55.357597"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T11:08:00.442214"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T11:14:46.813649"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T11:18:25.426939"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T12:24:10.378524"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T12:40:11.415722"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T12:43:45.421558"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T13:20:39.730270"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T13:26:32.815269"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T13:38:46.579564"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T13:41:34.550222"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T13:47:27.477148"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T13:48:44.613784"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T13:49:02.494625"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T18:52:42.327898"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T18:59:34.004663"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T19:04:59.128469"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T19:10:30.778156"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T19:17:11.817318"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T19:25:07.508346"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T19:38:49.661062"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T20:05:22.051917"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T20:26:29.881476"
+    }
+  ],
+  "providers": [
+    {
+      "name": "pollinations",
+      "source": "github",
+      "url": "https://image.pollinations.ai",
+      "type": "image_generation",
+      "free_tier": true
+    },
+    {
+      "name": "huggingface_inference",
+      "source": "huggingface",
+      "url": "https://api-inference.huggingface.co",
+      "type": "inference_api",
+      "free_tier": true
+    },
+    {
+      "name": "siliconflow",
+      "source": "provider_docs",
+      "url": "https://api.siliconflow.cn",
+      "type": "inference_api",
+      "free_tier": true
+    },
+    {
+      "name": "together",
+      "source": "provider_docs",
+      "url": "https://api.together.xyz",
+      "type": "inference_api",
+      "free_tier": true
+    },
+    {
+      "name": "stability",
+      "source": "provider_docs",
+      "url": "https://api.stability.ai",
+      "type": "image_generation",
+      "free_tier": false
+    },
+    {
+      "name": "replicate",
+      "source": "provider_docs",
+      "url": "https://api.replicate.com",
+      "type": "multi_modal",
+      "free_tier": true
+    },
+    {
+      "name": "fal",
+      "source": "provider_docs",
+      "url": "https://fal.ai",
+      "type": "image_generation",
+      "free_tier": false
+    },
+    {
+      "name": "craiyon",
+      "source": "github",
+      "url": "https://api.craiyon.com",
+      "type": "image_generation",
+      "free_tier": true
+    },
+    {
+      "name": "black_forest_labs",
+      "source": "huggingface",
+      "url": "https://huggingface.co/black-forest-labs",
+      "type": "image_generation",
+      "free_tier": true
+    },
+    {
+      "name": "deepseek",
+      "source": "provider_docs",
+      "url": "https://api.deepseek.com",
+      "type": "inference_api",
+      "free_tier": true
+    },
+    {
+      "name": "groq",
+      "source": "provider_docs",
+      "url": "https://api.groq.com",
+      "type": "inference_api",
+      "free_tier": true
+    },
+    {
+      "name": "fireworks",
+      "source": "provider_docs",
+      "url": "https://api.fireworks.ai",
+      "type": "inference_api",
+      "free_tier": true
+    },
+    {
+      "name": "cerebras",
+      "source": "provider_docs",
+      "url": "https://api.cerebras.ai",
+      "type": "inference_api",
+      "free_tier": true
+    },
+    {
+      "name": "novita",
+      "source": "provider_docs",
+      "url": "https://api.novita.ai",
+      "type": "inference_api",
+      "free_tier": true
+    },
+    {
+      "name": "openrouter",
+      "source": "provider_docs",
+      "url": "https://openrouter.ai",
+      "type": "router",
+      "free_tier": true
+    }
+  ],
+  "sources": [
+    {
+      "source": "github",
+      "url": "https://github.com",
+      "type": "code",
+      "focus": "new providers and models"
+    },
+    {
+      "source": "huggingface",
+      "url": "https://huggingface.co",
+      "type": "models",
+      "focus": "model releases and spaces"
+    },
+    {
+      "source": "arxiv",
+      "url": "https://arxiv.org",
+      "type": "papers",
+      "focus": "new research and architectures"
+    },
+    {
+      "source": "provider_docs",
+      "url": "",
+      "type": "documentation",
+      "focus": "API changes and new features"
+    },
+    {
+      "source": "changelogs",
+      "url": "",
+      "type": "releases",
+      "focus": "version updates and deprecations"
+    },
+    {
+      "source": "mcp_ecosystem",
+      "url": "",
+      "type": "tools",
+      "focus": "new MCP servers and connectors"
+    },
+    {
+      "source": "engineering_blogs",
+      "url": "",
+      "type": "blogs",
+      "focus": "technical deep dives and announcements"
+    },
+    {
+      "source": "model_registries",
+      "url": "https://huggingface.co/models",
+      "type": "models",
+      "focus": "open-weight model releases"
+    }
+  ],
+  "updated_at": "2026-07-27T20:26:29.885891"
+}
