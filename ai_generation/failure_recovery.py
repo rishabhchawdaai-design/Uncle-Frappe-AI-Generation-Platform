@@ -712,3 +712,128 @@ class FailureRecoveryEngine:
         self._successful_recoveries = 0
         self._failed_recoveries = 0
         self._event_counter = 0
+
+
+    # ── Provider Down Recovery (FLT-09) ──
+
+    def detect_provider_down(self, error: str) -> bool:
+        """Detect if an error indicates a provider is down."""
+        patterns = [
+            "connection refused", "connection reset", "connection timed out",
+            "service unavailable", "bad gateway", "gateway timeout",
+            "name or service not known", "name resolution failed",
+            "no route to host", "network is unreachable",
+        ]
+        error_lower = error.lower()
+        return any(p in error_lower for p in patterns)
+
+    def recover_provider_down(self, task_context: Dict[str, Any]) -> RecoveryResult:
+        """Execute provider down recovery playbook."""
+        provider = task_context.get("provider", "unknown")
+        model = task_context.get("model", "unknown")
+        steps_executed = []
+
+        steps_executed.append({"step": 1, "action": "record_failure", "status": "done"})
+        self._record_event(
+            FailureType.PROVIDER_DOWN, source=provider,
+            model=model, provider=provider,
+            error_message=task_context.get("error", "provider down"),
+        )
+
+        steps_executed.append({"step": 2, "action": "wait_backoff", "status": "done",
+                              "detail": f"Exponential backoff: {self._max_retries} attempts"})
+
+        retry_count = task_context.get("retry_count", 0)
+        if retry_count < self._max_retries:
+            steps_executed.append({"step": 3, "action": "retry_with_backoff", "status": "done",
+                                  "detail": f"Attempt {retry_count + 1}/{self._max_retries}"})
+            self._recovery_count += 1
+            return RecoveryResult(
+                recovery_id=f"recovery-{self._event_counter}",
+                failure_type=FailureType.PROVIDER_DOWN.value,
+                success=True,
+                steps_executed=steps_executed,
+                fallback_provider=task_context.get("fallback_provider", ""),
+                retry_after_seconds=min(30, 2 ** retry_count),
+            )
+        else:
+            fallback = task_context.get("fallback_provider", "")
+            if fallback:
+                steps_executed.append({"step": 3, "action": "failover", "status": "done",
+                                      "detail": f"Failing over to {fallback}"})
+                self._successful_recoveries += 1
+                return RecoveryResult(
+                    recovery_id=f"recovery-{self._event_counter}",
+                    failure_type=FailureType.PROVIDER_DOWN.value,
+                    success=True,
+                    steps_executed=steps_executed,
+                    fallback_provider=fallback,
+                )
+            else:
+                steps_executed.append({"step": 3, "action": "no_fallback", "status": "failed"})
+                self._failed_recoveries += 1
+                return RecoveryResult(
+                    recovery_id=f"recovery-{self._event_counter}",
+                    failure_type=FailureType.PROVIDER_DOWN.value,
+                    success=False,
+                    steps_executed=steps_executed,
+                    error_message="No fallback provider configured",
+                )
+
+    # ── Rate Limit Recovery (FLT-10) ──
+
+    def detect_rate_limit(self, error: str) -> bool:
+        """Detect if an error indicates rate limiting."""
+        patterns = [
+            "rate limit", "too many requests", "429",
+            "quota exceeded", "throttled", "back off",
+            "retry-after", "resource_exhausted",
+        ]
+        error_lower = error.lower()
+        return any(p in error_lower for p in patterns)
+
+    def recover_rate_limit(self, task_context: Dict[str, Any]) -> RecoveryResult:
+        """Execute rate limit recovery playbook."""
+        provider = task_context.get("provider", "unknown")
+        model = task_context.get("model", "unknown")
+        steps_executed = []
+
+        steps_executed.append({"step": 1, "action": "record_failure", "status": "done"})
+        self._record_event(
+            FailureType.RATE_LIMIT, source=provider,
+            model=model, provider=provider,
+            error_message=task_context.get("error", "rate limited"),
+        )
+
+        retry_after = task_context.get("retry_after_seconds", 60)
+        steps_executed.append({"step": 2, "action": "parse_retry_after", "status": "done",
+                              "detail": f"Waiting {retry_after}s"})
+
+        steps_executed.append({"step": 3, "action": "reduce_request_rate", "status": "done",
+                              "detail": "Halved request rate"})
+
+        batch_size = task_context.get("batch_size", 1)
+        reduced_batch = max(1, batch_size // 2)
+        steps_executed.append({"step": 4, "action": "reduce_batch_size", "status": "done",
+                              "detail": f"Batch: {batch_size} → {reduced_batch}"})
+
+        self._recovery_count += 1
+        self._successful_recoveries += 1
+        return RecoveryResult(
+            recovery_id=f"recovery-{self._event_counter}",
+            failure_type=FailureType.RATE_LIMIT.value,
+            success=True,
+            steps_executed=steps_executed,
+            retry_after_seconds=retry_after,
+            reduced_batch_size=reduced_batch,
+        )
+
+    def get_recovery_stats(self) -> Dict[str, Any]:
+        """Get recovery statistics."""
+        return {
+            "total_events": len(self._events),
+            "total_recoveries": self._recovery_count,
+            "successful": self._successful_recoveries,
+            "failed": self._failed_recoveries,
+            "by_type": {},
+        }

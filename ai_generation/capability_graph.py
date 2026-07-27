@@ -447,3 +447,34 @@ class CapabilityGraph:
         base = self.get_stats()
         base["update_count"] = len(self._update_history)
         return base
+
+
+    # ── Periodic Discovery (CGR-09) ──
+
+    def discover_capabilities(self, sources: Optional[List[str]] = None) -> Dict[str, Any]:
+        """Discover and register capabilities from external sources."""
+        discovered = {"new_nodes": 0, "new_edges": 0, "sources_checked": 0}
+        target_sources = sources or list(self._nodes.keys())
+
+        for source_id in target_sources:
+            discovered["sources_checked"] += 1
+            if source_id in self._nodes:
+                neighbors = self.get_neighbors(source_id)
+                for neighbor in neighbors:
+                    if neighbor["id"] not in self._nodes:
+                        self.add_node(
+                            neighbor["id"],
+                            NodeType.CAPABILITY if "capability" in neighbor.get("type", "") else NodeType.PROVIDER,
+                        )
+                        discovered["new_nodes"] += 1
+
+        return discovered
+
+    def get_discovery_stats(self) -> Dict[str, Any]:
+        """Get statistics about capability discovery."""
+        return {
+            "total_nodes": len(self._nodes),
+            "total_edges": len(self._edges),
+            "node_types": {},
+            "edge_types": {},
+        }

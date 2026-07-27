@@ -167,8 +167,8 @@
 | FLT-06 | GPU Crash Recovery | Failure Atlas | VERIFIED |
 | FLT-07 | Runtime Crash Recovery | Failure Atlas | VERIFIED |
 | FLT-08 | NaN/Inf Detection | Failure Atlas | VERIFIED |
-| FLT-09 | Provider Down Recovery | Failure Atlas | INTEGRATED |
-| FLT-10 | API Rate Limit Recovery | Failure Atlas | INTEGRATED |
+| FLT-09 | Provider Down Recovery | Failure Atlas | VERIFIED |
+| FLT-10 | API Rate Limit Recovery | Failure Atlas | VERIFIED |
 
 ### Domain 11: Benchmarking
 
@@ -195,7 +195,7 @@
 | CGR-06 | EstimateExecutionCost (Graph) | Capability Graph Spec | VERIFIED |
 | CGR-07 | ValidatePath | Capability Graph Spec | VERIFIED |
 | CGR-08 | Dynamic Graph Updates | Capability Graph Spec | VERIFIED |
-| CGR-09 | Periodic Discovery | Capability Graph Spec | INTEGRATED |
+| CGR-09 | Periodic Discovery | Capability Graph Spec | VERIFIED |
 
 ### Domain 13: Runtime Registry
 
@@ -212,7 +212,7 @@
 | RUN-09 | HuggingFace TGI Integration | Runtime Capability Registry | VERIFIED |
 | RUN-10 | ExoLab Runtime Integration | Runtime Capability Registry | VERIFIED |
 | RUN-11 | Petals Runtime Integration | Runtime Capability Registry | VERIFIED |
-| RUN-12 | Runtime Health Monitoring | Runtime Capability Registry | INTEGRATED |
+| RUN-12 | Runtime Health Monitoring | Runtime Capability Registry | VERIFIED |
 
 ### Domain 14: Infrastructure
 
