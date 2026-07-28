@@ -725,6 +725,72 @@
         "version": 1
       },
       "completed_at": "2026-07-28T09:17:26.378893+00:00"
+    },
+    {
+      "provider": "test_provider",
+      "schema_type": "json_schema",
+      "status": "integrated",
+      "started_at": "2026-07-28T09:21:45.129106+00:00",
+      "adapter": {
+        "provider": "test_provider",
+        "schema_type": "json_schema",
+        "endpoints": [
+          {
+            "name": "generate",
+            "type": "string"
+          }
+        ],
+        "auth": {
+          "type": "api_key"
+        },
+        "compiled_at": "2026-07-28T09:21:45.129115+00:00",
+        "version": 1
+      },
+      "completed_at": "2026-07-28T09:21:45.129121+00:00"
+    },
+    {
+      "provider": "test_provider",
+      "schema_type": "json_schema",
+      "status": "integrated",
+      "started_at": "2026-07-28T09:23:52.045990+00:00",
+      "adapter": {
+        "provider": "test_provider",
+        "schema_type": "json_schema",
+        "endpoints": [
+          {
+            "name": "generate",
+            "type": "string"
+          }
+        ],
+        "auth": {
+          "type": "api_key"
+        },
+        "compiled_at": "2026-07-28T09:23:52.046001+00:00",
+        "version": 1
+      },
+      "completed_at": "2026-07-28T09:23:52.046006+00:00"
+    },
+    {
+      "provider": "test_provider",
+      "schema_type": "json_schema",
+      "status": "integrated",
+      "started_at": "2026-07-28T09:26:17.203217+00:00",
+      "adapter": {
+        "provider": "test_provider",
+        "schema_type": "json_schema",
+        "endpoints": [
+          {
+            "name": "generate",
+            "type": "string"
+          }
+        ],
+        "auth": {
+          "type": "api_key"
+        },
+        "compiled_at": "2026-07-28T09:26:17.203227+00:00",
+        "version": 1
+      },
+      "completed_at": "2026-07-28T09:26:17.203232+00:00"
     }
   ],
   "adapter_cache": {
@@ -740,9 +806,9 @@
       "auth": {
         "type": "api_key"
       },
-      "compiled_at": "2026-07-28T09:17:26.378888+00:00",
+      "compiled_at": "2026-07-28T09:26:17.203227+00:00",
       "version": 1
     }
   },
-  "updated_at": "2026-07-28T09:17:26.380545+00:00"
+  "updated_at": "2026-07-28T09:26:17.203856+00:00"
 }

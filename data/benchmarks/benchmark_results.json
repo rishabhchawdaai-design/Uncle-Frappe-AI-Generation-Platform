@@ -1286,12 +1286,129 @@
       "success": true,
       "error": "",
       "timestamp": "2026-07-28T09:17:26.600244+00:00"
+    },
+    {
+      "benchmark_id": "4fa9f918",
+      "provider": "test",
+      "model": "m1",
+      "category": "realism",
+      "prompt": "test",
+      "quality_score": 0.8,
+      "prompt_adherence": 0.9,
+      "latency_ms": 1000,
+      "success": true,
+      "error": "",
+      "timestamp": "2026-07-28T09:21:45.296319+00:00"
+    },
+    {
+      "benchmark_id": "c279304e",
+      "provider": "a",
+      "model": "m1",
+      "category": "realism",
+      "prompt": "t",
+      "quality_score": 0.9,
+      "prompt_adherence": 0.8,
+      "latency_ms": 500,
+      "success": true,
+      "error": "",
+      "timestamp": "2026-07-28T09:21:45.307084+00:00"
+    },
+    {
+      "benchmark_id": "48c12032",
+      "provider": "b",
+      "model": "m2",
+      "category": "realism",
+      "prompt": "t",
+      "quality_score": 0.7,
+      "prompt_adherence": 0.6,
+      "latency_ms": 2000,
+      "success": true,
+      "error": "",
+      "timestamp": "2026-07-28T09:21:45.309990+00:00"
+    },
+    {
+      "benchmark_id": "ca55fa2e",
+      "provider": "test",
+      "model": "m1",
+      "category": "realism",
+      "prompt": "test",
+      "quality_score": 0.8,
+      "prompt_adherence": 0.9,
+      "latency_ms": 1000,
+      "success": true,
+      "error": "",
+      "timestamp": "2026-07-28T09:23:52.301486+00:00"
+    },
+    {
+      "benchmark_id": "2117a76a",
+      "provider": "a",
+      "model": "m1",
+      "category": "realism",
+      "prompt": "t",
+      "quality_score": 0.9,
+      "prompt_adherence": 0.8,
+      "latency_ms": 500,
+      "success": true,
+      "error": "",
+      "timestamp": "2026-07-28T09:23:52.316290+00:00"
+    },
+    {
+      "benchmark_id": "6b0a73f9",
+      "provider": "b",
+      "model": "m2",
+      "category": "realism",
+      "prompt": "t",
+      "quality_score": 0.7,
+      "prompt_adherence": 0.6,
+      "latency_ms": 2000,
+      "success": true,
+      "error": "",
+      "timestamp": "2026-07-28T09:23:52.321110+00:00"
+    },
+    {
+      "benchmark_id": "7ccbde01",
+      "provider": "test",
+      "model": "m1",
+      "category": "realism",
+      "prompt": "test",
+      "quality_score": 0.8,
+      "prompt_adherence": 0.9,
+      "latency_ms": 1000,
+      "success": true,
+      "error": "",
+      "timestamp": "2026-07-28T09:26:17.574861+00:00"
+    },
+    {
+      "benchmark_id": "88c67cd4",
+      "provider": "a",
+      "model": "m1",
+      "category": "realism",
+      "prompt": "t",
+      "quality_score": 0.9,
+      "prompt_adherence": 0.8,
+      "latency_ms": 500,
+      "success": true,
+      "error": "",
+      "timestamp": "2026-07-28T09:26:17.583635+00:00"
+    },
+    {
+      "benchmark_id": "486a45fe",
+      "provider": "b",
+      "model": "m2",
+      "category": "realism",
+      "prompt": "t",
+      "quality_score": 0.7,
+      "prompt_adherence": 0.6,
+      "latency_ms": 2000,
+      "success": true,
+      "error": "",
+      "timestamp": "2026-07-28T09:26:17.586427+00:00"
     }
   ],
   "scores": [
     {
       "provider": "test",
-      "total_benchmarks": 33,
+      "total_benchmarks": 36,
       "avg_quality": 0.8,
       "avg_prompt_adherence": 0.9,
       "avg_latency_ms": 1000.0,
@@ -1303,7 +1420,7 @@
     },
     {
       "provider": "a",
-      "total_benchmarks": 33,
+      "total_benchmarks": 36,
       "avg_quality": 0.9,
       "avg_prompt_adherence": 0.8,
       "avg_latency_ms": 500.0,
@@ -1315,7 +1432,7 @@
     },
     {
       "provider": "b",
-      "total_benchmarks": 33,
+      "total_benchmarks": 36,
       "avg_quality": 0.7,
       "avg_prompt_adherence": 0.6,
       "avg_latency_ms": 2000.0,
@@ -1326,5 +1443,5 @@
       }
     }
   ],
-  "updated_at": "2026-07-28T09:17:26.600531+00:00"
+  "updated_at": "2026-07-28T09:26:17.586688+00:00"
 }
