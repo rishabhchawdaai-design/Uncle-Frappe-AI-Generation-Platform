@@ -703,6 +703,28 @@
         "version": 1
       },
       "completed_at": "2026-07-28T09:12:55.935809+00:00"
+    },
+    {
+      "provider": "test_provider",
+      "schema_type": "json_schema",
+      "status": "integrated",
+      "started_at": "2026-07-28T09:17:26.378878+00:00",
+      "adapter": {
+        "provider": "test_provider",
+        "schema_type": "json_schema",
+        "endpoints": [
+          {
+            "name": "generate",
+            "type": "string"
+          }
+        ],
+        "auth": {
+          "type": "api_key"
+        },
+        "compiled_at": "2026-07-28T09:17:26.378888+00:00",
+        "version": 1
+      },
+      "completed_at": "2026-07-28T09:17:26.378893+00:00"
     }
   ],
   "adapter_cache": {
@@ -718,9 +740,9 @@
       "auth": {
         "type": "api_key"
       },
-      "compiled_at": "2026-07-28T09:12:55.935803+00:00",
+      "compiled_at": "2026-07-28T09:17:26.378888+00:00",
       "version": 1
     }
   },
-  "updated_at": "2026-07-28T09:12:55.936376+00:00"
+  "updated_at": "2026-07-28T09:17:26.380545+00:00"
 }

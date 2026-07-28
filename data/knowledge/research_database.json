@@ -334,6 +334,11 @@
       "name": "test_provider",
       "type": "image",
       "discovered_at": "2026-07-28T09:12:55.898770+00:00"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-28T09:17:26.328775+00:00"
     }
   ],
   "providers": [
@@ -493,5 +498,5 @@
       "focus": "open-weight model releases"
     }
   ],
-  "updated_at": "2026-07-28T09:12:55.899498+00:00"
+  "updated_at": "2026-07-28T09:17:26.331267+00:00"
 }
