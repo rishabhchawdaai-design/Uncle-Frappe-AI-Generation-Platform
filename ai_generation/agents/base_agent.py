@@ -6,7 +6,7 @@ import logging
 import time
 import uuid
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Callable, Dict, List, Optional
 
@@ -43,7 +43,7 @@ class AgentTask:
         if not self.task_id:
             self.task_id = str(uuid.uuid4())[:8]
         if not self.created_at:
-            self.created_at = datetime.utcnow().isoformat()
+            self.created_at = datetime.now(timezone.utc).isoformat()
 
 
 @dataclass
@@ -58,7 +58,7 @@ class AgentResult:
 
     def __post_init__(self):
         if not self.timestamp:
-            self.timestamp = datetime.utcnow().isoformat()
+            self.timestamp = datetime.now(timezone.utc).isoformat()
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -128,7 +128,7 @@ class BaseAgent:
             result.duration_ms = (time.time() - start) * 1000
             self._success_count += 1
             self._task_history.append(result)
-            self._last_run = datetime.utcnow().isoformat()
+            self._last_run = datetime.now(timezone.utc).isoformat()
             self._status = AgentStatus.IDLE
             self._log_event("task_completed", {"task_id": task.task_id, "success": result.success})
             return result
@@ -168,6 +168,6 @@ class BaseAgent:
         self._event_log.append({
             "event": event_type,
             "agent": self.agent_name,
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "data": data or {},
         })

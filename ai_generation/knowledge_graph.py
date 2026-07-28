@@ -6,7 +6,7 @@ import json
 import os
 import time
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Set, Tuple
 
 
@@ -21,7 +21,7 @@ class GraphNode:
 
     def __post_init__(self):
         if not self.created_at:
-            self.created_at = datetime.utcnow().isoformat()
+            self.created_at = datetime.now(timezone.utc).isoformat()
         if not self.updated_at:
             self.updated_at = self.created_at
 
@@ -75,7 +75,7 @@ class KnowledgeGraph:
         data = {
             "nodes": [n.to_dict() for n in self._nodes.values()],
             "edges": [e.to_dict() for e in self._edges],
-            "updated_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.now(timezone.utc).isoformat(),
         }
         with open(path, "w") as f:
             json.dump(data, f, indent=2)
@@ -84,7 +84,7 @@ class KnowledgeGraph:
         existing = self._nodes.get(node.node_id)
         if existing:
             existing.properties.update(node.properties)
-            existing.updated_at = datetime.utcnow().isoformat()
+            existing.updated_at = datetime.now(timezone.utc).isoformat()
             self._save()
             return existing
         self._nodes[node.node_id] = node

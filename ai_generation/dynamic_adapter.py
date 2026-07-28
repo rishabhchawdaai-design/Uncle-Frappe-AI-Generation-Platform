@@ -7,7 +7,7 @@ import json
 import logging
 import time
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Callable, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
@@ -24,7 +24,7 @@ class AdapterSchema:
 
     def __post_init__(self):
         if not self.parsed_at:
-            self.parsed_at = datetime.utcnow().isoformat()
+            self.parsed_at = datetime.now(timezone.utc).isoformat()
 
     def schema_hash(self) -> str:
         return hashlib.md5(json.dumps(self.schema_data, sort_keys=True).encode()).hexdigest()[:12]
@@ -44,7 +44,7 @@ class CompiledAdapter:
 
     def __post_init__(self):
         if not self.compiled_at:
-            self.compiled_at = datetime.utcnow().isoformat()
+            self.compiled_at = datetime.now(timezone.utc).isoformat()
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -134,7 +134,7 @@ class AdapterCompiler:
             "description": endpoint.get("summary", endpoint.get("description", "")),
             "parameters": endpoint.get("parameters", []),
             "input_schema": endpoint.get("input_schema", {}),
-            "compiled_at": datetime.utcnow().isoformat(),
+            "compiled_at": datetime.now(timezone.utc).isoformat(),
         }
         return handler
 

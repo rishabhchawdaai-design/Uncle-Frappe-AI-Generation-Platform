@@ -4,7 +4,7 @@ Tests: connectivity, authentication, capabilities, resolution, editing, video,
 error handling, stability, latency, retry behavior.
 """
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from .base_agent import BaseAgent, AgentTask, AgentResult
@@ -26,7 +26,7 @@ class VerificationSuite:
         self.results[check_name] = {
             "passed": passed, "details": details,
             "latency_ms": round(latency_ms, 1),
-            "checked_at": datetime.utcnow().isoformat(),
+            "checked_at": datetime.now(timezone.utc).isoformat(),
         }
 
     def get_score(self) -> float:
@@ -86,7 +86,7 @@ class VerificationAgent(BaseAgent):
         self._verified_providers[provider] = result
         self._verification_history.append({
             "provider": provider, "score": result["score"],
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
         })
 
         return AgentResult(data=result)

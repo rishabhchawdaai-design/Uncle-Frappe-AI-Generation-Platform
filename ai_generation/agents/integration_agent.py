@@ -5,7 +5,7 @@ Uses the Dynamic Adapter System for schema-driven integration.
 """
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from .base_agent import BaseAgent, AgentTask, AgentResult
@@ -40,7 +40,7 @@ class IntegrationAgent(BaseAgent):
             json.dump({
                 "integrations": self._integrations,
                 "adapter_cache": self._adapter_cache,
-                "updated_at": datetime.utcnow().isoformat(),
+                "updated_at": datetime.now(timezone.utc).isoformat(),
             }, f, indent=2)
 
     def _execute_task(self, task: AgentTask) -> AgentResult:
@@ -64,14 +64,14 @@ class IntegrationAgent(BaseAgent):
 
         integration = {
             "provider": provider, "schema_type": schema_type,
-            "status": "integrating", "started_at": datetime.utcnow().isoformat(),
+            "status": "integrating", "started_at": datetime.now(timezone.utc).isoformat(),
         }
 
         adapter = self._compile_adapter(provider, schema_type, schema_data)
         if adapter:
             integration["status"] = "integrated"
             integration["adapter"] = adapter
-            integration["completed_at"] = datetime.utcnow().isoformat()
+            integration["completed_at"] = datetime.now(timezone.utc).isoformat()
             self._adapter_cache[provider] = adapter
         else:
             integration["status"] = "failed"
@@ -111,7 +111,7 @@ class IntegrationAgent(BaseAgent):
         return {
             "provider": provider, "schema_type": schema_type,
             "endpoints": endpoints, "auth": auth,
-            "compiled_at": datetime.utcnow().isoformat(),
+            "compiled_at": datetime.now(timezone.utc).isoformat(),
             "version": 1,
         }
 

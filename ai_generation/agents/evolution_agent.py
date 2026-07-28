@@ -3,7 +3,7 @@ Evolution Agent — continuously improves the platform.
 Re-runs discovery, benchmarks, detects provider improvements/new models,
 detects deprecated models, suggests integrations, refreshes routing tables.
 """
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from .base_agent import BaseAgent, AgentTask, AgentResult
@@ -40,17 +40,17 @@ class EvolutionAgent(BaseAgent):
 
     def _run_evolution(self, task: AgentTask) -> AgentResult:
         actions = []
-        actions.append({"action": "discovery_refresh", "status": "completed", "timestamp": datetime.utcnow().isoformat()})
-        actions.append({"action": "benchmark_refresh", "status": "completed", "timestamp": datetime.utcnow().isoformat()})
-        actions.append({"action": "routing_optimization", "status": "completed", "timestamp": datetime.utcnow().isoformat()})
+        actions.append({"action": "discovery_refresh", "status": "completed", "timestamp": datetime.now(timezone.utc).isoformat()})
+        actions.append({"action": "benchmark_refresh", "status": "completed", "timestamp": datetime.now(timezone.utc).isoformat()})
+        actions.append({"action": "routing_optimization", "status": "completed", "timestamp": datetime.now(timezone.utc).isoformat()})
 
         self._suggestions.append({
             "type": "evolution_complete", "version": self._version,
-            "actions": len(actions), "timestamp": datetime.utcnow().isoformat(),
+            "actions": len(actions), "timestamp": datetime.now(timezone.utc).isoformat(),
         })
         self._evolution_log.append({
             "version": self._version, "actions": actions,
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
         })
         self._version += 1
         return AgentResult(data={"version": self._version, "actions": actions})

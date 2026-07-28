@@ -3,7 +3,7 @@ Recovery Agent — detects dead providers, broken APIs, schema changes,
 authentication failures, and rate limits. Automatically retries, switches
 providers, rebuilds adapters, and removes unhealthy providers from routing.
 """
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from .base_agent import BaseAgent, AgentTask, AgentResult
@@ -47,7 +47,7 @@ class RecoveryAgent(BaseAgent):
 
         incident = {
             "provider": provider, "error": error, "failure_type": failure_type,
-            "reported_at": datetime.utcnow().isoformat(),
+            "reported_at": datetime.now(timezone.utc).isoformat(),
         }
         self._incidents.append(incident)
 
@@ -55,7 +55,7 @@ class RecoveryAgent(BaseAgent):
         if self._consecutive_failures[provider] >= 5:
             self._blacklisted[provider] = {
                 "reason": "consecutive_failures",
-                "blacklisted_at": datetime.utcnow().isoformat(),
+                "blacklisted_at": datetime.now(timezone.utc).isoformat(),
             }
             incident["action"] = "blacklisted"
         else:
@@ -79,7 +79,7 @@ class RecoveryAgent(BaseAgent):
         strategy = task.payload.get("strategy", "retry")
         recovery = {
             "provider": provider, "strategy": strategy,
-            "recovered_at": datetime.utcnow().isoformat(),
+            "recovered_at": datetime.now(timezone.utc).isoformat(),
         }
         if strategy == "reset":
             self._consecutive_failures[provider] = 0
@@ -96,7 +96,7 @@ class RecoveryAgent(BaseAgent):
         provider = task.payload.get("provider", "")
         reason = task.payload.get("reason", "manual")
         self._blacklisted[provider] = {
-            "reason": reason, "blacklisted_at": datetime.utcnow().isoformat(),
+            "reason": reason, "blacklisted_at": datetime.now(timezone.utc).isoformat(),
         }
         return AgentResult(data={"provider": provider, "blacklisted": True, "reason": reason})
 

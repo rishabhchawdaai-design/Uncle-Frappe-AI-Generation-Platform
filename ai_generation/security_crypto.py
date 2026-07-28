@@ -15,7 +15,7 @@ import logging
 import os
 import time
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -318,7 +318,7 @@ class EncryptionInTransit:
                         if cert.get("notAfter"):
                             result.certificate_expired = datetime.strptime(
                                 cert["notAfter"], "%b %d %H:%M:%S %Y %Z"
-                            ) < datetime.utcnow()
+                            ) < datetime.now(timezone.utc)
                     result.fingerprint_sha256 = hashlib.sha256(
                         ssock.getpeercert(binary_form=True) or b""
                     ).hexdigest()

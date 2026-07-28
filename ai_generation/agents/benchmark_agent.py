@@ -3,7 +3,7 @@ Benchmark Agent — benchmarks every provider across standardized categories.
 Measures quality, prompt adherence, latency, reliability, and cost.
 Updates the Benchmark Lab and Knowledge Graph with results.
 """
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from .base_agent import BaseAgent, AgentTask, AgentResult
@@ -45,7 +45,7 @@ class BenchmarkAgent(BaseAgent):
                 "prompt_adherence": task.payload.get("adherence", 0.7),
                 "latency_ms": task.payload.get("latency_ms", 1500.0),
                 "success": True,
-                "benchmarked_at": datetime.utcnow().isoformat(),
+                "benchmarked_at": datetime.now(timezone.utc).isoformat(),
             }
             results.append(score)
 
@@ -53,11 +53,11 @@ class BenchmarkAgent(BaseAgent):
         self._provider_benchmarks[provider] = {
             "results": results, "composite_score": round(composite, 2),
             "total_benchmarks": len(results),
-            "last_benchmarked": datetime.utcnow().isoformat(),
+            "last_benchmarked": datetime.now(timezone.utc).isoformat(),
         }
         self._benchmark_history.append({
             "provider": provider, "score": round(composite, 2),
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
         })
         return AgentResult(data=self._provider_benchmarks[provider])
 

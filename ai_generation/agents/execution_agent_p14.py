@@ -4,7 +4,7 @@ Supports parallel execution, automatic retries, failover, multi-provider ranking
 dynamic routing, capability negotiation, and schema-based execution.
 """
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from .base_agent import BaseAgent, AgentTask, AgentResult
@@ -42,14 +42,14 @@ class ExecutionAgentV2(BaseAgent):
         self._active_executions[execution_id] = {
             "prompt": prompt, "task_type": task_type_str,
             "providers_attempted": [], "status": "executing",
-            "started_at": datetime.utcnow().isoformat(),
+            "started_at": datetime.now(timezone.utc).isoformat(),
         }
 
         errors = []
         for provider in providers[:max_retries]:
             attempt = {
                 "provider": provider, "attempt": len(errors) + 1,
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": datetime.now(timezone.utc).isoformat(),
             }
             self._active_executions[execution_id]["providers_attempted"].append(provider)
 
@@ -60,7 +60,7 @@ class ExecutionAgentV2(BaseAgent):
                     self._execution_log.append({
                         "execution_id": execution_id, "provider": provider,
                         "task_type": task_type_str, "success": True,
-                        "timestamp": datetime.utcnow().isoformat(),
+                        "timestamp": datetime.now(timezone.utc).isoformat(),
                     })
                     return AgentResult(data={
                         "execution_id": execution_id, "provider": provider,
@@ -74,7 +74,7 @@ class ExecutionAgentV2(BaseAgent):
         self._active_executions[execution_id]["status"] = "failed"
         self._execution_log.append({
             "execution_id": execution_id, "success": False,
-            "errors": errors, "timestamp": datetime.utcnow().isoformat(),
+            "errors": errors, "timestamp": datetime.now(timezone.utc).isoformat(),
         })
         return AgentResult(success=False, data={"execution_id": execution_id, "errors": errors})
 

@@ -269,6 +269,71 @@
       "name": "test_provider",
       "type": "image",
       "discovered_at": "2026-07-27T20:26:29.881476"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T20:42:42.626665"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T20:44:53.869747"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T20:49:25.105838"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T20:56:41.292945"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T20:59:46.718820"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T21:05:58.664452"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T21:10:51.674999"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-27T21:21:09.802513"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-28T08:12:45.627881"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-28T08:22:00.327685"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-28T09:05:29.278106"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-28T09:10:17.029167"
+    },
+    {
+      "name": "test_provider",
+      "type": "image",
+      "discovered_at": "2026-07-28T09:12:55.898770+00:00"
     }
   ],
   "providers": [
@@ -428,5 +493,5 @@
       "focus": "open-weight model releases"
     }
   ],
-  "updated_at": "2026-07-27T20:26:29.885891"
+  "updated_at": "2026-07-28T09:12:55.899498+00:00"
 }

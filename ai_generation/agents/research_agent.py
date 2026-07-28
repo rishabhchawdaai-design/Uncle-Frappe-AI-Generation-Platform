@@ -6,7 +6,7 @@ Builds the Provider Knowledge Graph.
 import json
 import os
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from .base_agent import BaseAgent, AgentTask, AgentResult
@@ -74,7 +74,7 @@ class ResearchAgent(BaseAgent):
                 "discoveries": self._research_db[-200:],
                 "providers": self._providers,
                 "sources": KNOWN_RESEARCH_SOURCES,
-                "updated_at": datetime.utcnow().isoformat(),
+                "updated_at": datetime.now(timezone.utc).isoformat(),
             }, f, indent=2)
 
     def _execute_task(self, task: AgentTask) -> AgentResult:
@@ -95,14 +95,14 @@ class ResearchAgent(BaseAgent):
         provider_name = task.payload.get("name", "")
         existing = next((p for p in self._providers if p["name"] == provider_name), None)
         if existing:
-            existing["last_researched"] = datetime.utcnow().isoformat()
+            existing["last_researched"] = datetime.now(timezone.utc).isoformat()
             self._save()
             return AgentResult(data={"provider": existing, "status": "updated"})
         new_provider = {
             "name": provider_name, "source": task.payload.get("source", "manual"),
             "url": task.payload.get("url", ""), "type": task.payload.get("type", "unknown"),
             "free_tier": task.payload.get("free_tier", False),
-            "discovered_at": datetime.utcnow().isoformat(),
+            "discovered_at": datetime.now(timezone.utc).isoformat(),
         }
         self._providers.append(new_provider)
         self._save()
@@ -124,7 +124,7 @@ class ResearchAgent(BaseAgent):
 
     def _add_discovery(self, task: AgentTask) -> AgentResult:
         discovery = task.payload.copy()
-        discovery["discovered_at"] = datetime.utcnow().isoformat()
+        discovery["discovered_at"] = datetime.now(timezone.utc).isoformat()
         self._research_db.append(discovery)
         self._save()
         return AgentResult(data={"discovery": discovery, "total_discoveries": len(self._research_db)})

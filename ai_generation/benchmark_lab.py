@@ -7,7 +7,7 @@ import os
 import time
 import uuid
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 
@@ -64,7 +64,7 @@ class BenchmarkResult:
         if not self.benchmark_id:
             self.benchmark_id = str(uuid.uuid4())[:8]
         if not self.timestamp:
-            self.timestamp = datetime.utcnow().isoformat()
+            self.timestamp = datetime.now(timezone.utc).isoformat()
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -126,7 +126,7 @@ class BenchmarkLab:
         data = {
             "results": [r.to_dict() for r in self._results[-500:]],
             "scores": [s.to_dict() for s in self._scores.values()],
-            "updated_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.now(timezone.utc).isoformat(),
         }
         with open(path, "w") as f:
             json.dump(data, f, indent=2)

@@ -2,7 +2,7 @@
 Planner Agent — coordinates all agents. Determines what to research,
 benchmark, integrate, remove, execute, and retry. Central coordinator for AIG-OS.
 """
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from .base_agent import BaseAgent, AgentTask, AgentResult
@@ -38,7 +38,7 @@ class PlannerAgent(BaseAgent):
 
         workflow = {
             "request": request, "plan": plan,
-            "status": "planned", "timestamp": datetime.utcnow().isoformat(),
+            "status": "planned", "timestamp": datetime.now(timezone.utc).isoformat(),
         }
         self._workflow_history.append(workflow)
 
@@ -75,7 +75,7 @@ class PlannerAgent(BaseAgent):
         return {
             "request": request, "task_type": task_type,
             "steps": steps, "total_steps": len(steps),
-            "created_at": datetime.utcnow().isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat(),
         }
 
     def _create_plan(self, task: AgentTask) -> AgentResult:

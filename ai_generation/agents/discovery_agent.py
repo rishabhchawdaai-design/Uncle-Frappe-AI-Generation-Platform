@@ -5,7 +5,7 @@ public inference endpoints, and community execution services.
 """
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from .base_agent import BaseAgent, AgentTask, AgentResult
@@ -59,7 +59,7 @@ class DiscoveryAgent(BaseAgent):
             json.dump({
                 "endpoints": self._endpoints,
                 "history": self._discovery_history[-200:],
-                "updated_at": datetime.utcnow().isoformat(),
+                "updated_at": datetime.now(timezone.utc).isoformat(),
             }, f, indent=2)
 
     def _execute_task(self, task: AgentTask) -> AgentResult:
@@ -83,7 +83,7 @@ class DiscoveryAgent(BaseAgent):
         ]
         self._discovery_history.append({
             "action": "discover", "type": endpoint_type, "found": len(found),
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
         })
         self._save()
         return AgentResult(data={"endpoints": found, "total": len(found), "type": endpoint_type})
@@ -95,7 +95,7 @@ class DiscoveryAgent(BaseAgent):
             "type": task.payload.get("type", "rest_api"),
             "auth": task.payload.get("auth", "api_key"),
             "tasks": task.payload.get("tasks", []),
-            "discovered_at": datetime.utcnow().isoformat(),
+            "discovered_at": datetime.now(timezone.utc).isoformat(),
         }
         existing = next((e for e in self._endpoints if e["name"] == endpoint["name"]), None)
         if existing:

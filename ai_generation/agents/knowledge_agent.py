@@ -3,7 +3,7 @@ Knowledge Agent — maintains provider graph, capability graph, benchmark histor
 routing history, adapter cache, execution history, and health history.
 Everything is searchable.
 """
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from .base_agent import BaseAgent, AgentTask, AgentResult
@@ -70,7 +70,7 @@ class KnowledgeAgent(BaseAgent):
                 searchable = f"{key} {str(value)}".lower()
                 if query in searchable:
                     results.setdefault(dom, {})[key] = value
-        self._query_log.append({"query": query, "results": sum(len(v) for v in results.values()), "timestamp": datetime.utcnow().isoformat()})
+        self._query_log.append({"query": query, "results": sum(len(v) for v in results.values()), "timestamp": datetime.now(timezone.utc).isoformat()})
         return AgentResult(data={"results": results, "total_matches": sum(len(v) for v in results.values())})
 
     def _get_graph(self, task: AgentTask) -> AgentResult:
@@ -98,7 +98,7 @@ class KnowledgeAgent(BaseAgent):
         return {
             "knowledge": self._knowledge,
             "stats": self._get_knowledge_stats(),
-            "exported_at": datetime.utcnow().isoformat(),
+            "exported_at": datetime.now(timezone.utc).isoformat(),
         }
 
     def get_stats(self) -> Dict[str, Any]:
