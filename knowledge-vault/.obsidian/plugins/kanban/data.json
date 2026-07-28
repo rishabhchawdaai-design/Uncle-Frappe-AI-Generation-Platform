@@ -1,0 +1,15 @@
+{
+  "new-note-folder": "28-Technical-Debt",
+  "prepend-date-separator": false,
+  "date-separator-format": "YYYY-MM-DD",
+  "link-date-to-daily-note": false,
+  "hide-date-in-title": false,
+  "hide-tags-in-title": true,
+  "tag-colors": [
+    {"tagKey": "#critical", "color": "#ef4444"},
+    {"tagKey": "#high", "color": "#f97316"},
+    {"tagKey": "#medium", "color": "#eab308"},
+    {"tagKey": "#low", "color": "#22c55e"},
+    {"tagKey": "#blocked", "color": "#6b7280"}
+  ]
+}

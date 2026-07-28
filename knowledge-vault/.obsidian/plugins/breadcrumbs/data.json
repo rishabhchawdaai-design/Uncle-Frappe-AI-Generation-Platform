@@ -1,0 +1,9 @@
+{
+  "filterRadios": "all",
+  "defaultView": "trail",
+  "showBCsInSearch": true,
+  "showBCsInFileExplorer": true,
+  "showBCsInPreview": true,
+  "showRefreshNotice": false,
+  "refreshOnSave": true
+}

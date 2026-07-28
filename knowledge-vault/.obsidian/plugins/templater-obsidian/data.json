@@ -1,0 +1,12 @@
+{
+  "templates_folder": "35-Templates",
+  "trigger_on_file_creation": true,
+  "auto_jump_to_cursor": false,
+  "enable_folder_templates": true,
+  "folder_templates": [
+    {"folder": "01-Architecture/Decision-Records", "template": "35-Templates/ADR-Template.md"},
+    {"folder": "26-Project-Journal", "template": "35-Templates/Journal-Entry.md"},
+    {"folder": "25-Meeting-Notes", "template": "35-Templates/Meeting-Note.md"}
+  ],
+  "syntax_highlighting": true
+}

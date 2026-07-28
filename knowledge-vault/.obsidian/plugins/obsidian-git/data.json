@@ -1,0 +1,12 @@
+{
+  "autoSaveMessage": "vault: auto-sync",
+  "autoPullMessage": "vault: auto-pull",
+  "autoPush": false,
+  "autoPull": false,
+  "autoPullOnBoot": false,
+  "autoBackup": true,
+  "autoBackupInterval": 30,
+  "commitMessage": "vault: {{date}}",
+  "listChangedFilesInMessageBody": true,
+  "commitDateFormat": "YYYY-MM-DD HH:mm"
+}
