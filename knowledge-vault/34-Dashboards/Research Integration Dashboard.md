@@ -13,13 +13,13 @@ tags: [dashboard, research, integration, traceability]
 | Metric | Value |
 |--------|-------|
 | Research documents indexed | 57 |
-| Registry capabilities | 251 |
+| Registry capabilities | 252 |
 | Verified (eligible 204/204) | 204 |
 | Blocked (external dependency) | 47 |
 | Modules | 65 |
 | MCP tools | 210 |
 | Tests | 1,156 |
-| Capabilities mapped to research | 251 / 251 |
+| Capabilities mapped to research | 252 / 252 |
 | Research documents with implementation links | 39 |
 | Queue: satisfied / blocked / speculative / implementable | 37 / 19 / 1 / 0 |
 

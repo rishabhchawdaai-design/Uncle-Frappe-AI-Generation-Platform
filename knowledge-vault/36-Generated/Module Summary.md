@@ -1,6 +1,6 @@
 ---
 type: summary
-generated: "2026-07-31 22:34"
+generated: "2026-07-31 22:43"
 total_modules: 67
 total_capabilities: 252
 total_lines: 31304
