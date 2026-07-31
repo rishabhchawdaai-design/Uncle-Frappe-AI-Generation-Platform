@@ -10,6 +10,9 @@ automatically using Kimi K3 through every OFFICIALLY supported execution path:
 3.  SGLang                  — lmsysorg/sglang:kimi-k3 (self-hosted)
 4.  TokenSpeed              — lightseekorg/tokenspeed (per official model card)
 
+Every request publishes Kimi K3 domain events to the platform Event Bus:
+kimi_k3.request.complete, kimi_k3.provider.failed, kimi_k3.request.failed.
+
 Officially UNSUPPORTED runtimes (recorded, never faked):
 TensorRT-LLM, DeepSpeed, llama.cpp, Ollama, HuggingFace Inference/TGI,
 HuggingFace Endpoints, GGUF (Moonshot publishes no official GGUF).
@@ -644,10 +647,11 @@ class KimiK3Manager:
     """
 
     def __init__(self, config: Optional[Dict[str, Any]] = None,
-                 benchmark_lab=None, observability=None):
+                 benchmark_lab=None, observability=None, event_bus=None):
         self.config = config or {}
         self._benchmark_lab = benchmark_lab
         self._observability = observability
+        self._event_bus = event_bus
         self._history: List[Dict[str, Any]] = []
         self._stats: Dict[str, Any] = {
             "total_requests": 0,
@@ -690,6 +694,25 @@ class KimiK3Manager:
             from .failure_recovery import FailureRecoveryEngine
             self._failure_recovery = FailureRecoveryEngine(self.config)
         return self._failure_recovery
+
+    # ── Event Bus integration ──
+
+    def _publish_event(self, subject: str, payload: Dict[str, Any]):
+        """Publish a Kimi K3 domain event to the platform Event Bus.
+
+        Accepts either an EventBus (publish_sync) or an EventDrivenKernel
+        (emit_sync). Event delivery is best-effort; bus failures never
+        break generation.
+        """
+        if self._event_bus is None:
+            return
+        try:
+            if hasattr(self._event_bus, "emit_sync"):
+                self._event_bus.emit_sync(subject, data=payload, source="kimi_k3")
+            else:
+                self._event_bus.publish_sync(subject, payload=payload, publisher="kimi_k3")
+        except Exception as e:
+            logger.debug("event bus publish skipped: %s", e)
 
     # ── Endpoint discovery ──
 
@@ -810,6 +833,12 @@ class KimiK3Manager:
                 last_error = str(e)[:300]
                 self._record(endpoint["name"], latency, success=False, error=last_error)
                 self._record_failure(request, endpoint["name"], last_error, latency)
+                self._publish_event("kimi_k3.provider.failed", {
+                    "provider": endpoint["name"],
+                    "model": "kimi-k3",
+                    "error": last_error,
+                    "latency_ms": latency,
+                })
                 fallbacks.append(endpoint["name"])
                 logger.warning("Kimi K3 provider %s failed: %s", endpoint["name"], last_error)
                 continue
@@ -828,11 +857,25 @@ class KimiK3Manager:
             result.quality_score = quality
             self._record(endpoint["name"], latency, success=True, usage=parsed["usage"])
             self._record_decision(request, result, quality)
+            self._publish_event("kimi_k3.request.complete", {
+                "provider": endpoint["name"],
+                "model": result.model,
+                "latency_ms": latency,
+                "quality_score": quality,
+                "usage": parsed["usage"],
+                "fallbacks": fallbacks,
+                "reasoning_present": bool(result.reasoning),
+            })
             return result
 
         result = KimiK3Result(error=last_error or "all Kimi K3 providers failed",
                               fallbacks=fallbacks, provider=request.provider)
         self._record(request.provider, 0.0, success=False, error=result.error)
+        self._publish_event("kimi_k3.request.failed", {
+            "providers_attempted": fallbacks,
+            "error": result.error,
+            "model": "kimi-k3",
+        })
         return result
 
     def _score_chat(self, prompt: str, result: KimiK3Result) -> float:

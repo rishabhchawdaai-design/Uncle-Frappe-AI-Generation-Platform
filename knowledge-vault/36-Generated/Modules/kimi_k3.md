@@ -3,7 +3,7 @@ module: "kimi_k3"
 type: module-doc
 status: active
 owner: ""
-lines: 1555
+lines: 1594
 classes: 9
 functions: 15
 tags: [module, documentation]
@@ -20,7 +20,7 @@ Kimi K3 is an open-weight multimodal reasoning model (text + image) with a
 ## Overview
 
 - **File**: `ai_generation/kimi_k3.py`
-- **Lines**: 1555
+- **Lines**: 1594
 - **Classes**: 9
 - **Public Functions**: 15
 

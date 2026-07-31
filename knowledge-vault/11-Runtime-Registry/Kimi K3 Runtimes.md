@@ -40,6 +40,17 @@ verified flags via `build_vllm_k8s_yaml()` / `build_sglang_k8s_yaml()`
 (`ai_generation/kimi_k3.py`). No official Moonshot K8s manifest exists;
 multi-node parallelism requires a StatefulSet plus `--dist-init-addr`.
 
+## Platform Integration
+
+- **Event Bus**: every request publishes `kimi_k3.request.complete`,
+  `kimi_k3.provider.failed`, and `kimi_k3.request.failed` domain events
+  (via `KimiK3Manager._publish_event`, wired to the SDK's shared bus).
+- **Observability**: `kimi_k3.requests.total/success/failed` counters and
+  `kimi_k3.latency_ms` histogram (monotonic `perf_counter` timing).
+- **Negotiation**: `chat_negotiated()` selects the optimal path via the
+  Negotiation Engine using `kimi_k3_candidates()`.
+- **Decision Ledger**: every completion records a chat decision entry.
+
 ## Health Checks
 
 - vLLM: `GET /v1/models`

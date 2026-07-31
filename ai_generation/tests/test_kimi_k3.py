@@ -913,3 +913,77 @@ async def test_manager_observability_failure(monkeypatch):
     cloud_labels = {"provider": "kimi_k3_cloud", "model": "kimi-k3"}
     assert obs.get_counter("kimi_k3.requests.total", cloud_labels) == 1
     assert obs.get_counter("kimi_k3.requests.failed", cloud_labels) == 1
+
+
+# ── Event Bus integration ────────────────────────────────────────
+
+@pytest.mark.asyncio
+async def test_manager_event_bus_success(monkeypatch):
+    from ai_generation.event_bus import EventBus
+    from ai_generation.kimi_k3 import KimiK3Manager
+    monkeypatch.setattr("ai_generation.kimi_k3._post_json", make_post())
+    bus = EventBus()
+    received = []
+    bus.subscribe("kimi_k3.request.complete", lambda msg: received.append(msg))
+    manager = KimiK3Manager(event_bus=bus)
+    result = await manager.chat("hello", provider="auto")
+    assert result.error is None
+    assert len(received) == 1
+    payload = received[0].payload
+    assert payload["provider"] == "kimi_k3_vllm"
+    assert payload["quality_score"] > 0
+    assert payload["reasoning_present"] is True
+    # cloud attempt fails (401) -> provider.failed, vLLM -> request.complete
+    assert bus.get_stats()["total_published"] == 2
+
+
+@pytest.mark.asyncio
+async def test_manager_event_bus_failure(monkeypatch):
+    from ai_generation.event_bus import EventBus
+    from ai_generation.kimi_k3 import KimiK3Error, KimiK3Manager
+
+    async def fail(url, api_key, payload, timeout=120.0):
+        raise KimiK3Error("down")
+
+    monkeypatch.setattr("ai_generation.kimi_k3._post_json", fail)
+    bus = EventBus()
+    failed = []
+    bus.subscribe("kimi_k3.provider.failed", lambda msg: failed.append(msg))
+    manager = KimiK3Manager(event_bus=bus)
+    result = await manager.chat("boom")
+    assert result.error is not None
+    assert [m.payload["provider"] for m in failed] == [
+        "kimi_k3_cloud", "kimi_k3_vllm", "kimi_k3_sglang",
+    ]
+    history = bus.get_history("kimi_k3.request.failed")
+    assert len(history) == 1
+    assert history[0]["subject"] == "kimi_k3.request.failed"
+    assert "providers_attempted" in history[0]["payload"]
+
+
+@pytest.mark.asyncio
+async def test_manager_event_bus_kernel(monkeypatch):
+    from ai_generation.event_bus import EventDrivenKernel
+    from ai_generation.kimi_k3 import KimiK3Manager
+    monkeypatch.setattr("ai_generation.kimi_k3._post_json", make_post())
+    kernel = EventDrivenKernel()
+    received = []
+    kernel.subscribe_event("kimi_k3.request.complete", lambda msg: received.append(msg))
+    manager = KimiK3Manager(event_bus=kernel)
+    result = await manager.chat("hello", provider="auto")
+    assert result.error is None
+    assert len(received) == 1
+    assert received[0].headers.get("source") == "kimi_k3"
+    assert kernel.get_stats()["total_events_emitted"] == 2
+
+
+@pytest.mark.asyncio
+async def test_sdk_chat_publishes_event_bus_events(monkeypatch):
+    from ai_generation.sdk import UncleFrappeAI
+    monkeypatch.setattr("ai_generation.kimi_k3._post_json", make_post())
+    ai = UncleFrappeAI()
+    result = await ai.chat("hello", provider="kimi_k3_vllm")
+    assert result.get("error") is None
+    history = ai.event_bus.get_history("kimi_k3.request.complete")
+    assert len(history) == 1
+    assert "kimi_k3_vllm" in history[0]["payload"]
