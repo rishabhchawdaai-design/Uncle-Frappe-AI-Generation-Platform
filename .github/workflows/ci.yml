@@ -1,4 +1,4 @@
-name: Research MCP Stack CI
+name: Uncle Frappe AI Generation Platform CI
 
 on:
   push:
@@ -19,40 +19,50 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install dependencies
+      - name: Install test dependencies
         run: |
-          python -m venv venv
-          source venv/bin/activate
-          pip install --upgrade pip
-          pip install -r core_platform/requirements.txt
-          pip install pytest pytest-asyncio pytest-cov
+          python -m pip install --upgrade pip
+          pip install pytest pytest-asyncio
 
-      - name: Run unit tests
+      - name: Run full platform test suite
         run: |
-          source venv/bin/activate
-          PYTHONPATH=. pytest core_platform/tests/ -v --tb=short
+          PYTHONPATH=. pytest ai_generation/tests/ -q --tb=short
 
-      - name: Run health validation
+      - name: Verify all platform modules import cleanly
         run: |
-          source venv/bin/activate
           PYTHONPATH=. python -c "
-          import asyncio
-          from platform.validation.health_checker import HealthChecker
-          checker = HealthChecker()
-          report = asyncio.run(checker.check_all())
-          print(f'Health Score: {report.overall_score}%')
-          assert report.overall_score > 0, 'Health check failed'
+          import importlib, pkgutil, ai_generation
+          failed = []
+          for m in pkgutil.iter_modules(ai_generation.__path__):
+              try:
+                  importlib.import_module('ai_generation.' + m.name)
+              except Exception as e:
+                  failed.append(m.name + ': ' + type(e).__name__ + ': ' + str(e))
+          assert not failed, 'Module import failures: ' + repr(failed)
+          print('All', sum(1 for _ in pkgutil.iter_modules(ai_generation.__path__)), 'modules imported cleanly')
           "
 
-      - name: Build Docker image
+      - name: Smoke test unified SDK
         run: |
-          docker build -t research-mcp-stack -f core_platform/deployment/Dockerfile .
+          PYTHONPATH=. python -c "
+          import asyncio
+          from ai_generation import UncleFrappeAI
+          ai = UncleFrappeAI()
+          stats = ai.get_stats()
+          print('SDK stats keys:', len(stats))
+          print('Providers:', stats['generation']['provider_summary']['total_providers'])
+          print('SDK smoke test passed')
+          "
 
-  deploy:
+  docker:
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
-      - name: Deploy
-        run: echo "Production deployment step"
+      - name: Build Docker image
+        run: docker build -t uncle-frappe-ai-generation-platform .
+      - name: Verify Docker image
+        run: docker run --rm uncle-frappe-ai-generation-platform python -c "
+          import ai_generation
+          print('Docker image OK, version', ai_generation.__version__)
+          "

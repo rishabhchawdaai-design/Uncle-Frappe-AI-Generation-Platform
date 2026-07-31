@@ -34,6 +34,8 @@ Usage:
 __version__ = "1.0.0"
 __author__ = "Uncle Frappe"
 
+from ai_generation.sdk import UncleFrappeAI
+
 __all__ = [
     "UncleFrappeAI",
 ]
