@@ -1097,6 +1097,25 @@ MCP_GENERATION_TOOLS = {
         "description": "Return Kimi K3 configuration state (configured endpoints, keys, supported paths).",
         "inputSchema": {"type": "object", "properties": {}},
     },
+    "kimi_k3_health": {
+        "name": "kimi_k3_health",
+        "description": "Health-check every configured Kimi K3 execution path (cloud API, vLLM, SGLang).",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+    "kimi_k3_benchmark": {
+        "name": "kimi_k3_benchmark",
+        "description": "Benchmark Kimi K3 chat latency and quality across the configured execution path.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "prompt": {"type": "string", "default": "Explain the theory of relativity"},
+                "runs": {"type": "integer", "default": 2},
+                "provider": {"type": "string", "enum": ["auto", "kimi_k3_cloud", "kimi_k3_vllm", "kimi_k3_sglang"], "default": "auto"},
+                "reasoning_effort": {"type": "string", "enum": ["low", "high", "max"], "default": "low"},
+            },
+            "required": [],
+        },
+    },
 
 }
 class MCPGenerationTools:
@@ -1323,6 +1342,8 @@ class MCPGenerationTools:
             "kimi_k3_chat": self._handle_kimi_k3_chat,
             "kimi_k3_spec": self._handle_kimi_k3_spec,
             "kimi_k3_info": self._handle_kimi_k3_info,
+            "kimi_k3_health": self._handle_kimi_k3_health,
+            "kimi_k3_benchmark": self._handle_kimi_k3_benchmark,
         }
         handler = handlers.get(tool_name)
         if not handler:
@@ -2736,6 +2757,19 @@ class MCPGenerationTools:
     async def _handle_kimi_k3_spec(self, args):
         """Return the canonical verified Kimi K3 specification"""
         return {"spec": self.sdk.kimi_k3_info()["spec"]}
+
+    async def _handle_kimi_k3_health(self, args):
+        """Health-check every configured Kimi K3 execution path"""
+        return {"health": await self.sdk.kimi_k3_health()}
+
+    async def _handle_kimi_k3_benchmark(self, args):
+        """Benchmark Kimi K3 chat latency and quality"""
+        return await self.sdk.kimi_k3_benchmark(
+            args.get("prompt", "Explain the theory of relativity"),
+            runs=args.get("runs", 2),
+            provider=args.get("provider", "auto"),
+            reasoning_effort=args.get("reasoning_effort", "low"),
+        )
 
     async def _handle_kimi_k3_info(self, args):
         """Return Kimi K3 configuration state and supported paths"""
