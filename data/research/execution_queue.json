@@ -4,8 +4,8 @@
     "topic": "ACOS Research Corpus V2.1 \u2014 Completion Report",
     "source_research": "COMPLETION_REPORT_V2.1",
     "classification": "speculative",
-    "reason": "Research status: emerging",
-    "created_at": "2026-07-31T16:29:14.546613+00:00"
+    "reason": "Meta/index document \u2014 reference only, no implementation action",
+    "created_at": "2026-07-31T17:07:45.666398+00:00"
   },
   {
     "item_id": "rq-69e27356ef",
@@ -13,47 +13,55 @@
     "source_research": "README",
     "classification": "blocked",
     "reason": "External dependency (credentials/licensing)",
-    "created_at": "2026-07-31T16:29:14.548616+00:00"
+    "created_at": "2026-07-31T17:07:45.668299+00:00"
+  },
+  {
+    "item_id": "rq-69e27356ef",
+    "topic": "ACOS Data\\nThis directory contains runtime data (checkpoints, model registry, etc.).",
+    "source_research": "README",
+    "classification": "speculative",
+    "reason": "Meta/index document \u2014 reference only, no implementation action",
+    "created_at": "2026-07-31T17:07:45.670052+00:00"
   },
   {
     "item_id": "rq-a98d2502c9",
     "topic": "ACOS Engineering Specification \u2014 Master Index",
     "source_research": "ACOS_SPECIFICATION_INDEX",
     "classification": "speculative",
-    "reason": "Research status: active",
-    "created_at": "2026-07-31T16:29:14.551433+00:00"
+    "reason": "Meta/index document \u2014 reference only, no implementation action",
+    "created_at": "2026-07-31T17:07:45.671946+00:00"
   },
   {
     "item_id": "rq-e6d54f23cd",
     "topic": "ACOS Engineering Specification V2 \u2014 Master Index",
     "source_research": "ACOS_V2_SPECIFICATION_INDEX",
-    "classification": "implementable",
-    "reason": "Immediately implementable capability",
-    "created_at": "2026-07-31T16:29:14.554461+00:00"
+    "classification": "speculative",
+    "reason": "Meta/index document \u2014 reference only, no implementation action",
+    "created_at": "2026-07-31T17:07:45.674013+00:00"
   },
   {
     "item_id": "rq-1b096a1268",
     "topic": "Execution Graph Schema (IDL)",
     "source_research": "EXECUTION_GRAPH_SCHEMA",
-    "classification": "implementable",
-    "reason": "Immediately implementable capability",
-    "created_at": "2026-07-31T16:29:14.557374+00:00"
+    "classification": "satisfied",
+    "reason": "Implemented by 6 verified capabilities",
+    "created_at": "2026-07-31T17:07:45.675861+00:00"
   },
   {
     "item_id": "rq-175239560b",
     "topic": "Scheduling Policy Specification",
     "source_research": "SCHEDULING_POLICY_SPECIFICATION",
-    "classification": "implementable",
-    "reason": "Immediately implementable capability",
-    "created_at": "2026-07-31T16:29:14.560013+00:00"
+    "classification": "satisfied",
+    "reason": "Implemented by 4 verified capabilities",
+    "created_at": "2026-07-31T17:07:45.677770+00:00"
   },
   {
     "item_id": "rq-b79470258e",
     "topic": "ACOS Security Threat Model",
     "source_research": "SECURITY_THREAT_MODEL",
-    "classification": "implementable",
-    "reason": "Immediately implementable capability",
-    "created_at": "2026-07-31T16:29:14.562502+00:00"
+    "classification": "satisfied",
+    "reason": "Implemented by 7 verified capabilities",
+    "created_at": "2026-07-31T17:07:45.679595+00:00"
   },
   {
     "item_id": "rq-f63d27243c",
@@ -61,15 +69,15 @@
     "source_research": "VOLUME_III_SCHEDULER_PLANNER_AND_EXECUTION_ENGINE",
     "classification": "blocked",
     "reason": "External dependency (credentials/licensing)",
-    "created_at": "2026-07-31T16:29:14.565084+00:00"
+    "created_at": "2026-07-31T17:07:45.682236+00:00"
   },
   {
     "item_id": "rq-e9ef4ca74c",
     "topic": "VOLUME II: KERNEL ARCHITECTURE & UNIVERSAL AGENT",
     "source_research": "VOLUME_II_KERNEL_ARCHITECTURE_AND_UNIVERSAL_AGENT",
-    "classification": "blocked",
-    "reason": "External dependency (credentials/licensing)",
-    "created_at": "2026-07-31T16:29:14.568007+00:00"
+    "classification": "satisfied",
+    "reason": "Implemented by 20 verified capabilities",
+    "created_at": "2026-07-31T17:07:45.684858+00:00"
   },
   {
     "item_id": "rq-2d5f23564f",
@@ -77,7 +85,7 @@
     "source_research": "VOLUME_IV_DISCOVERY_REGISTRY_AND_WORKFLOW_ENGINE",
     "classification": "blocked",
     "reason": "External dependency (credentials/licensing)",
-    "created_at": "2026-07-31T16:29:14.570838+00:00"
+    "created_at": "2026-07-31T17:07:45.687624+00:00"
   },
   {
     "item_id": "rq-512b3612b4",
@@ -85,7 +93,7 @@
     "source_research": "VOLUME_V_SECURITY_OBSERVABILITY_TESTING_AND_ROADMAP",
     "classification": "blocked",
     "reason": "External dependency (credentials/licensing)",
-    "created_at": "2026-07-31T16:29:14.573715+00:00"
+    "created_at": "2026-07-31T17:07:45.690347+00:00"
   },
   {
     "item_id": "rq-e5194c74bc",
@@ -93,7 +101,7 @@
     "source_research": "CHAPTER_01_UNIVERSAL_COMPUTE_GRAPH",
     "classification": "blocked",
     "reason": "External dependency (credentials/licensing)",
-    "created_at": "2026-07-31T16:29:14.576229+00:00"
+    "created_at": "2026-07-31T17:07:45.692909+00:00"
   },
   {
     "item_id": "rq-ba266d35c8",
@@ -101,15 +109,15 @@
     "source_research": "CHAPTER_02_UNIVERSAL_COMPUTE_MARKETPLACE",
     "classification": "blocked",
     "reason": "External dependency (credentials/licensing)",
-    "created_at": "2026-07-31T16:29:14.578679+00:00"
+    "created_at": "2026-07-31T17:07:45.695208+00:00"
   },
   {
     "item_id": "rq-63dadcd48a",
     "topic": "Chapter 3: Universal Workflow Compiler",
     "source_research": "CHAPTER_03_UNIVERSAL_WORKFLOW_COMPILER",
-    "classification": "implementable",
-    "reason": "Immediately implementable capability",
-    "created_at": "2026-07-31T16:29:14.581142+00:00"
+    "classification": "satisfied",
+    "reason": "Implemented by 5 verified capabilities",
+    "created_at": "2026-07-31T17:07:45.697120+00:00"
   },
   {
     "item_id": "rq-7f28fc482d",
@@ -117,7 +125,7 @@
     "source_research": "CHAPTER_04_DISTRIBUTED_EXECUTION_FABRIC",
     "classification": "speculative",
     "reason": "Research status: experimental",
-    "created_at": "2026-07-31T16:29:14.583586+00:00"
+    "created_at": "2026-07-31T17:07:45.699136+00:00"
   },
   {
     "item_id": "rq-ddf6966f27",
@@ -125,23 +133,23 @@
     "source_research": "CHAPTER_05_MEMORY_VIRTUALIZATION_STRATEGY",
     "classification": "speculative",
     "reason": "Research status: experimental",
-    "created_at": "2026-07-31T16:29:14.586264+00:00"
+    "created_at": "2026-07-31T17:07:45.701034+00:00"
   },
   {
     "item_id": "rq-e0708df389",
     "topic": "Chapter 6: Adaptive Scheduler",
     "source_research": "CHAPTER_06_ADAPTIVE_SCHEDULER",
-    "classification": "implementable",
-    "reason": "Immediately implementable capability",
-    "created_at": "2026-07-31T16:29:14.588739+00:00"
+    "classification": "satisfied",
+    "reason": "Implemented by 7 verified capabilities",
+    "created_at": "2026-07-31T17:07:45.702901+00:00"
   },
   {
     "item_id": "rq-02f4188cab",
     "topic": "Chapter 7: Universal Agent Kernel",
     "source_research": "CHAPTER_07_UNIVERSAL_AGENT_KERNEL",
-    "classification": "implementable",
-    "reason": "Immediately implementable capability",
-    "created_at": "2026-07-31T16:29:14.591226+00:00"
+    "classification": "satisfied",
+    "reason": "Implemented by 6 verified capabilities",
+    "created_at": "2026-07-31T17:07:45.704571+00:00"
   },
   {
     "item_id": "rq-9d909fa961",
@@ -149,47 +157,47 @@
     "source_research": "CHAPTER_08_PLUGIN_OPERATING_SYSTEM",
     "classification": "blocked",
     "reason": "External dependency (credentials/licensing)",
-    "created_at": "2026-07-31T16:29:14.593764+00:00"
+    "created_at": "2026-07-31T17:07:45.706522+00:00"
   },
   {
     "item_id": "rq-6fc4ede9b8",
     "topic": "Chapter 9: Knowledge & Decision Ledger",
     "source_research": "CHAPTER_09_KNOWLEDGE_AND_DECISION_LEDGER",
-    "classification": "implementable",
-    "reason": "Immediately implementable capability",
-    "created_at": "2026-07-31T16:29:14.596288+00:00"
+    "classification": "satisfied",
+    "reason": "Implemented by 1 verified capabilities",
+    "created_at": "2026-07-31T17:07:45.708365+00:00"
   },
   {
     "item_id": "rq-6fd831ae6e",
     "topic": "Chapter 10: Global Benchmark Intelligence",
     "source_research": "CHAPTER_10_GLOBAL_BENCHMARK_INTELLIGENCE",
-    "classification": "implementable",
-    "reason": "Immediately implementable capability",
-    "created_at": "2026-07-31T16:29:14.599298+00:00"
+    "classification": "satisfied",
+    "reason": "Implemented by 9 verified capabilities",
+    "created_at": "2026-07-31T17:07:45.710478+00:00"
   },
   {
     "item_id": "rq-8c01ae297b",
     "topic": "Chapter 11: Multi-Stage Generation Engine",
     "source_research": "CHAPTER_11_MULTI_STAGE_GENERATION_ENGINE",
-    "classification": "implementable",
-    "reason": "Immediately implementable capability",
-    "created_at": "2026-07-31T16:29:14.601876+00:00"
+    "classification": "satisfied",
+    "reason": "Implemented by 5 verified capabilities",
+    "created_at": "2026-07-31T17:07:45.712418+00:00"
   },
   {
     "item_id": "rq-411d719e07",
     "topic": "Chapter 12: Autonomous Optimization Loop",
     "source_research": "CHAPTER_12_AUTONOMOUS_OPTIMIZATION_LOOP",
-    "classification": "implementable",
-    "reason": "Immediately implementable capability",
-    "created_at": "2026-07-31T16:29:14.604778+00:00"
+    "classification": "satisfied",
+    "reason": "Implemented by 6 verified capabilities",
+    "created_at": "2026-07-31T17:07:45.714588+00:00"
   },
   {
     "item_id": "rq-d6da4b7151",
     "topic": "Chapter 13: Observability Digital Twin",
     "source_research": "CHAPTER_13_OBSERVABILITY_DIGITAL_TWIN",
-    "classification": "implementable",
-    "reason": "Immediately implementable capability",
-    "created_at": "2026-07-31T16:29:14.607338+00:00"
+    "classification": "satisfied",
+    "reason": "Implemented by 8 verified capabilities",
+    "created_at": "2026-07-31T17:07:45.716312+00:00"
   },
   {
     "item_id": "rq-df8236f892",
@@ -197,15 +205,15 @@
     "source_research": "CHAPTER_14_GOVERNANCE",
     "classification": "blocked",
     "reason": "External dependency (credentials/licensing)",
-    "created_at": "2026-07-31T16:29:14.609888+00:00"
+    "created_at": "2026-07-31T17:07:45.718764+00:00"
   },
   {
     "item_id": "rq-5a4db1f730",
     "topic": "ACOS Research Canon v1.0 \u2014 Master Index",
     "source_research": "RESEARCH_CORPUS_INDEX",
     "classification": "speculative",
-    "reason": "Research status: emerging",
-    "created_at": "2026-07-31T16:29:14.612376+00:00"
+    "reason": "Meta/index document \u2014 reference only, no implementation action",
+    "created_at": "2026-07-31T17:07:45.720880+00:00"
   },
   {
     "item_id": "rq-d0805d4f7d",
@@ -213,31 +221,31 @@
     "source_research": "ADR_CATALOG",
     "classification": "blocked",
     "reason": "External dependency (credentials/licensing)",
-    "created_at": "2026-07-31T16:29:14.614943+00:00"
+    "created_at": "2026-07-31T17:07:45.722944+00:00"
   },
   {
     "item_id": "rq-e7f791833d",
     "topic": "Benchmark Knowledge Base",
     "source_research": "BENCHMARK_KNOWLEDGE_BASE",
-    "classification": "speculative",
-    "reason": "Research status: emerging",
-    "created_at": "2026-07-31T16:29:14.617465+00:00"
+    "classification": "satisfied",
+    "reason": "Implemented by 8 verified capabilities",
+    "created_at": "2026-07-31T17:07:45.725004+00:00"
   },
   {
     "item_id": "rq-e729e765b5",
     "topic": "Capability Graph Specification",
     "source_research": "CAPABILITY_GRAPH_SPECIFICATION",
-    "classification": "blocked",
-    "reason": "External dependency (credentials/licensing)",
-    "created_at": "2026-07-31T16:29:14.620115+00:00"
+    "classification": "satisfied",
+    "reason": "Implemented by 9 verified capabilities",
+    "created_at": "2026-07-31T17:07:45.726829+00:00"
   },
   {
     "item_id": "rq-0acee9a894",
     "topic": "Compatibility Matrix",
     "source_research": "COMPATIBILITY_MATRIX",
-    "classification": "implementable",
-    "reason": "Immediately implementable capability",
-    "created_at": "2026-07-31T16:29:14.622756+00:00"
+    "classification": "satisfied",
+    "reason": "Implemented by 14 verified capabilities",
+    "created_at": "2026-07-31T17:07:45.728488+00:00"
   },
   {
     "item_id": "rq-8c71763a17",
@@ -245,23 +253,23 @@
     "source_research": "EVIDENCE_CATALOG",
     "classification": "blocked",
     "reason": "External dependency (credentials/licensing)",
-    "created_at": "2026-07-31T16:29:14.625327+00:00"
+    "created_at": "2026-07-31T17:07:45.731180+00:00"
   },
   {
     "item_id": "rq-eb2f3b3316",
     "topic": "Execution Strategy Library",
     "source_research": "EXECUTION_STRATEGY_LIBRARY",
-    "classification": "speculative",
-    "reason": "Research status: emerging",
-    "created_at": "2026-07-31T16:29:14.627973+00:00"
+    "classification": "satisfied",
+    "reason": "Implemented by 10 verified capabilities",
+    "created_at": "2026-07-31T17:07:45.733443+00:00"
   },
   {
     "item_id": "rq-1393bd4a50",
     "topic": "Failure Atlas",
     "source_research": "FAILURE_ATLAS",
-    "classification": "blocked",
-    "reason": "External dependency (credentials/licensing)",
-    "created_at": "2026-07-31T16:29:14.630624+00:00"
+    "classification": "satisfied",
+    "reason": "Implemented by 10 verified capabilities",
+    "created_at": "2026-07-31T17:07:45.735760+00:00"
   },
   {
     "item_id": "rq-2ed7baec03",
@@ -269,15 +277,15 @@
     "source_research": "FUTURE_OPPORTUNITIES",
     "classification": "speculative",
     "reason": "Research status: emerging",
-    "created_at": "2026-07-31T16:29:14.633214+00:00"
+    "created_at": "2026-07-31T17:07:45.738096+00:00"
   },
   {
     "item_id": "rq-9468fd6a62",
     "topic": "Infrastructure Capability Registry",
     "source_research": "INFRASTRUCTURE_CAPABILITY_REGISTRY",
-    "classification": "blocked",
-    "reason": "External dependency (credentials/licensing)",
-    "created_at": "2026-07-31T16:29:14.635901+00:00"
+    "classification": "satisfied",
+    "reason": "Implemented by 4 verified capabilities; 6 blocked tracked in registry",
+    "created_at": "2026-07-31T17:07:45.740054+00:00"
   },
   {
     "item_id": "rq-642283e5ea",
@@ -285,15 +293,15 @@
     "source_research": "MODEL_CAPABILITY_REGISTRY",
     "classification": "blocked",
     "reason": "External dependency (credentials/licensing)",
-    "created_at": "2026-07-31T16:29:14.638500+00:00"
+    "created_at": "2026-07-31T17:07:45.742061+00:00"
   },
   {
     "item_id": "rq-e9ee53f2d0",
     "topic": "Capability Negotiation Engine Specification",
     "source_research": "NEGOTIATION_ENGINE_SPECIFICATION",
-    "classification": "blocked",
-    "reason": "External dependency (credentials/licensing)",
-    "created_at": "2026-07-31T16:29:14.641049+00:00"
+    "classification": "satisfied",
+    "reason": "Implemented by 8 verified capabilities",
+    "created_at": "2026-07-31T17:07:45.743992+00:00"
   },
   {
     "item_id": "rq-ec45bb9190",
@@ -301,23 +309,23 @@
     "source_research": "OPEN_PROBLEMS",
     "classification": "speculative",
     "reason": "Research status: emerging",
-    "created_at": "2026-07-31T16:29:14.644031+00:00"
+    "created_at": "2026-07-31T17:07:45.745941+00:00"
   },
   {
     "item_id": "rq-f60ff1e688",
     "topic": "Runtime Capability Registry",
     "source_research": "RUNTIME_CAPABILITY_REGISTRY",
-    "classification": "blocked",
-    "reason": "External dependency (credentials/licensing)",
-    "created_at": "2026-07-31T16:29:14.647092+00:00"
+    "classification": "satisfied",
+    "reason": "Implemented by 12 verified capabilities",
+    "created_at": "2026-07-31T17:07:45.747910+00:00"
   },
   {
     "item_id": "rq-0c2cab3172",
     "topic": "Security Canon",
     "source_research": "SECURITY_CANON",
-    "classification": "blocked",
-    "reason": "External dependency (credentials/licensing)",
-    "created_at": "2026-07-31T16:29:14.649788+00:00"
+    "classification": "satisfied",
+    "reason": "Implemented by 9 verified capabilities; 3 blocked tracked in registry",
+    "created_at": "2026-07-31T17:07:45.749756+00:00"
   },
   {
     "item_id": "rq-bf4c489a5b",
@@ -325,7 +333,7 @@
     "source_research": "TECHNOLOGY_ATLAS",
     "classification": "blocked",
     "reason": "External dependency (credentials/licensing)",
-    "created_at": "2026-07-31T16:29:14.653708+00:00"
+    "created_at": "2026-07-31T17:07:45.752245+00:00"
   },
   {
     "item_id": "rq-c57a4579cf",
@@ -333,31 +341,31 @@
     "source_research": "WORKFLOW_CAPABILITY_REGISTRY",
     "classification": "blocked",
     "reason": "External dependency (credentials/licensing)",
-    "created_at": "2026-07-31T16:29:14.656630+00:00"
+    "created_at": "2026-07-31T17:07:45.754087+00:00"
   },
   {
     "item_id": "rq-7e5a7acfce",
     "topic": "Agent Frameworks Research",
     "source_research": "AGENT_FRAMEWORKS_RESEARCH",
-    "classification": "blocked",
-    "reason": "External dependency (credentials/licensing)",
-    "created_at": "2026-07-31T16:29:14.659572+00:00"
+    "classification": "satisfied",
+    "reason": "Implemented by 12 verified capabilities; 4 blocked tracked in registry",
+    "created_at": "2026-07-31T17:07:45.755862+00:00"
   },
   {
     "item_id": "rq-c2ff2e2339",
     "topic": "Audio & Speech Research",
     "source_research": "AUDIO_SPEECH_RESEARCH",
-    "classification": "blocked",
-    "reason": "External dependency (credentials/licensing)",
-    "created_at": "2026-07-31T16:29:14.662262+00:00"
+    "classification": "satisfied",
+    "reason": "Implemented by 9 verified capabilities; 1 blocked tracked in registry",
+    "created_at": "2026-07-31T17:07:45.757721+00:00"
   },
   {
     "item_id": "rq-3dd488875b",
     "topic": "Browser AI Research",
     "source_research": "BROWSER_AI_RESEARCH",
-    "classification": "blocked",
-    "reason": "External dependency (credentials/licensing)",
-    "created_at": "2026-07-31T16:29:14.664884+00:00"
+    "classification": "satisfied",
+    "reason": "Implemented by 8 verified capabilities; 1 blocked tracked in registry",
+    "created_at": "2026-07-31T17:07:45.759638+00:00"
   },
   {
     "item_id": "rq-ccfbca7bca",
@@ -365,31 +373,31 @@
     "source_research": "DISTRIBUTED_AI_RESEARCH",
     "classification": "blocked",
     "reason": "External dependency (credentials/licensing)",
-    "created_at": "2026-07-31T16:29:14.667666+00:00"
+    "created_at": "2026-07-31T17:07:45.761853+00:00"
   },
   {
     "item_id": "rq-b8648b1dfe",
     "topic": "Edge AI Hardware Research",
     "source_research": "EDGE_AI_RESEARCH",
-    "classification": "blocked",
-    "reason": "External dependency (credentials/licensing)",
-    "created_at": "2026-07-31T16:29:14.670668+00:00"
+    "classification": "satisfied",
+    "reason": "Implemented by 10 verified capabilities",
+    "created_at": "2026-07-31T17:07:45.763703+00:00"
   },
   {
     "item_id": "rq-84f0886a45",
     "topic": "Image Generation Ecosystem Research",
     "source_research": "IMAGE_GENERATION_RESEARCH",
-    "classification": "blocked",
-    "reason": "External dependency (credentials/licensing)",
-    "created_at": "2026-07-31T16:29:14.676675+00:00"
+    "classification": "satisfied",
+    "reason": "Implemented by 28 verified capabilities; 2 blocked tracked in registry",
+    "created_at": "2026-07-31T17:07:45.769281+00:00"
   },
   {
     "item_id": "rq-1ea29d9027",
     "topic": "Messaging & Events Research",
     "source_research": "MESSAGING_EVENTS_RESEARCH",
-    "classification": "blocked",
-    "reason": "External dependency (credentials/licensing)",
-    "created_at": "2026-07-31T16:29:14.679947+00:00"
+    "classification": "satisfied",
+    "reason": "Implemented by 3 verified capabilities; 4 blocked tracked in registry",
+    "created_at": "2026-07-31T17:07:45.771620+00:00"
   },
   {
     "item_id": "rq-7e655fe6ef",
@@ -397,54 +405,54 @@
     "source_research": "NETWORKING_MESH_RESEARCH",
     "classification": "blocked",
     "reason": "External dependency (credentials/licensing)",
-    "created_at": "2026-07-31T16:29:14.683139+00:00"
+    "created_at": "2026-07-31T17:07:45.774095+00:00"
   },
   {
     "item_id": "rq-fb1e3100c8",
     "topic": "Observability Research",
     "source_research": "OBSERVABILITY_RESEARCH",
-    "classification": "blocked",
-    "reason": "External dependency (credentials/licensing)",
-    "created_at": "2026-07-31T16:29:14.686417+00:00"
+    "classification": "satisfied",
+    "reason": "Implemented by 7 verified capabilities; 4 blocked tracked in registry",
+    "created_at": "2026-07-31T17:07:45.778215+00:00"
   },
   {
     "item_id": "rq-09593c0145",
     "topic": "OCR & Document Intelligence Research",
     "source_research": "OCR_DOCUMENTS_RESEARCH",
-    "classification": "blocked",
-    "reason": "External dependency (credentials/licensing)",
-    "created_at": "2026-07-31T16:29:14.689571+00:00"
+    "classification": "satisfied",
+    "reason": "Implemented by 10 verified capabilities",
+    "created_at": "2026-07-31T17:07:45.781272+00:00"
   },
   {
     "item_id": "rq-602ae94f48",
     "topic": "Plugin & Skills Ecosystem Research",
     "source_research": "PLUGIN_ECOSYSTEM_RESEARCH",
-    "classification": "speculative",
-    "reason": "Research status: emerging",
-    "created_at": "2026-07-31T16:29:14.692745+00:00"
+    "classification": "satisfied",
+    "reason": "Implemented by 10 verified capabilities",
+    "created_at": "2026-07-31T17:07:45.783846+00:00"
   },
   {
     "item_id": "rq-7ac64e27e6",
     "topic": "Search Systems Research",
     "source_research": "SEARCH_SYSTEMS_RESEARCH",
-    "classification": "blocked",
-    "reason": "External dependency (credentials/licensing)",
-    "created_at": "2026-07-31T16:29:14.696463+00:00"
+    "classification": "satisfied",
+    "reason": "Implemented by 11 verified capabilities",
+    "created_at": "2026-07-31T17:07:45.786532+00:00"
   },
   {
     "item_id": "rq-01ceb7d08c",
     "topic": "Storage & Databases Research",
     "source_research": "STORAGE_DATABASES_RESEARCH",
-    "classification": "blocked",
-    "reason": "External dependency (credentials/licensing)",
-    "created_at": "2026-07-31T16:29:14.699368+00:00"
+    "classification": "satisfied",
+    "reason": "Implemented by 2 verified capabilities; 6 blocked tracked in registry",
+    "created_at": "2026-07-31T17:07:45.789488+00:00"
   },
   {
     "item_id": "rq-6b20d8773d",
     "topic": "Workflow & Orchestration Research",
     "source_research": "WORKFLOW_ORCHESTRATION_RESEARCH",
-    "classification": "blocked",
-    "reason": "External dependency (credentials/licensing)",
-    "created_at": "2026-07-31T16:29:14.702362+00:00"
+    "classification": "satisfied",
+    "reason": "Implemented by 3 verified capabilities; 4 blocked tracked in registry",
+    "created_at": "2026-07-31T17:07:45.791524+00:00"
   }
 ]

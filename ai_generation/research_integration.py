@@ -77,6 +77,65 @@ DOMAIN_ALIASES = {
 }
 
 
+# Evidence-based cross-references: research documents whose implementation
+# lives under registry domains with a different canonical source. These do
+# not change the canonical 1:1 capability -> research mapping; they add
+# backlinks so every research document knows which capabilities implement it.
+DOC_CAPABILITY_REFERENCES = {
+    "EXECUTION_GRAPH_SCHEMA": {
+        "capabilities": ["PLT-20", "WFL-01", "WFL-03", "PLT-16", "PLT-09", "EXE-01"],
+        "note": "ExecutionTask/WorkflowStep graphs plus 4-layer execution routing",
+    },
+    "SCHEDULING_POLICY_SPECIFICATION": {
+        "capabilities": ["EXE-01", "EXE-02", "RUN-12", "PLT-06"],
+        "note": "Execution layer selection, resource strategies, runtime health",
+    },
+    "SECURITY_THREAT_MODEL": {
+        "capabilities": ["SEC-03", "SEC-04", "SEC-05", "SEC-06", "SEC-07", "SEC-12", "RTG-05"],
+        "note": "Authentication, RBAC, encryption, sandboxing, model checksum, privacy routing",
+    },
+    "CHAPTER_03_UNIVERSAL_WORKFLOW_COMPILER": {
+        "capabilities": ["WFL-01", "WFL-03", "PLT-16", "PLT-19", "PLT-20"],
+        "note": "Intent decomposition, workflow DAG compilation, generation chaining",
+    },
+    "CHAPTER_06_ADAPTIVE_SCHEDULER": {
+        "capabilities": ["EXE-01", "EXE-02", "EXE-03", "EXE-04", "EXE-10", "RUN-12", "PLT-06"],
+        "note": "Layer-based selection, offload strategies, runtime health scheduling",
+    },
+    "CHAPTER_07_UNIVERSAL_AGENT_KERNEL": {
+        "capabilities": ["PLT-01", "PLT-08", "PLT-16", "PLT-17", "RTG-08", "OBS-02"],
+        "note": "Unified SDK, event bus, supervisor, agent ecosystem, knowledge graph",
+    },
+    "CHAPTER_10_GLOBAL_BENCHMARK_INTELLIGENCE": {
+        "capabilities": [
+            "BMK-01", "BMK-02", "BMK-03", "BMK-04", "BMK-05",
+            "BMK-06", "BMK-07", "BMK-08", "PLT-15",
+        ],
+        "note": "Benchmark engine, standardized suites, composite scoring, provider intelligence",
+    },
+    "CHAPTER_11_MULTI_STAGE_GENERATION_ENGINE": {
+        "capabilities": ["PLT-11", "PLT-18", "PLT-20", "WFL-01", "WFL-03"],
+        "note": "Cinematic 14-stage pipeline, generation chaining, quality evaluation",
+    },
+    "CHAPTER_12_AUTONOMOUS_OPTIMIZATION_LOOP": {
+        "capabilities": ["PLT-18", "BMK-04", "BMK-06", "BMK-07", "BMK-08", "PLT-15"],
+        "note": "Quality engine, regression detection, provider intelligence feedback",
+    },
+    "CHAPTER_13_OBSERVABILITY_DIGITAL_TWIN": {
+        "capabilities": ["OBS-01", "OBS-02", "OBS-03", "OBS-04", "OBS-05", "OBS-06", "OBS-07", "PLT-06"],
+        "note": "Metrics, tracing, logging, request tracking, OTel export, health monitoring",
+    },
+    "COMPATIBILITY_MATRIX": {
+        "capabilities": [
+            "CGR-03", "CGR-04", "CGR-07",
+            "RUN-01", "RUN-02", "RUN-03", "RUN-04", "RUN-05", "RUN-06",
+            "RUN-07", "RUN-08", "RUN-09", "RUN-10", "RUN-11",
+        ],
+        "note": "Capability matrix lookup, path validation, runtime registry",
+    },
+}
+
+
 # ── Data models ───────────────────────────────────────────────────
 
 
@@ -311,6 +370,26 @@ class ResearchIntegrationEngine:
         except Exception:
             return []
 
+    # ── Satisfaction cross-references ───────────────────────────────
+
+    def _satisfaction_references(self) -> Dict[str, List[str]]:
+        """research_id -> capability ids that implement the document."""
+        registry_ids = {r["capability_id"] for r in self._load_registry()}
+        return {
+            rid: [cap for cap in ref.get("capabilities", []) if cap in registry_ids]
+            for rid, ref in DOC_CAPABILITY_REFERENCES.items()
+        }
+
+    def _build_satisfaction(self, registry: List[Dict[str, str]]) -> Dict[str, Dict[str, Any]]:
+        registry_ids = {r["capability_id"] for r in registry}
+        result: Dict[str, Dict[str, Any]] = {}
+        for rid, ref in DOC_CAPABILITY_REFERENCES.items():
+            caps = [cap for cap in ref.get("capabilities", []) if cap in registry_ids]
+            if not caps:
+                continue
+            result[rid] = {"capabilities": caps, "note": ref.get("note", "")}
+        return result
+
     # ── Index building ────────────────────────────────────────────
 
     def build_index(self) -> Dict[str, Any]:
@@ -349,6 +428,7 @@ class ResearchIntegrationEngine:
             "capabilities": len(registry),
             "modules": modules,
             "capability_links": capability_links,
+            "document_satisfaction": self._build_satisfaction(registry),
             "documents": [d.to_dict() for d in documents],
         }
         (self.data_dir / "research_index.json").write_text(
@@ -525,7 +605,10 @@ class ResearchIntegrationEngine:
         if not doc:
             return None
         index = self._load_index()
-        affected_caps = doc.related_capabilities
+        satisfaction = index.get("document_satisfaction", {})
+        affected_caps = list(dict.fromkeys(
+            doc.related_capabilities + satisfaction.get(research_id, {}).get("capabilities", [])
+        ))
         modules: Set[str] = set()
         tests: Set[str] = set()
         sdk: Set[str] = set()
@@ -615,8 +698,22 @@ class ResearchIntegrationEngine:
         except Exception:
             content = ""
         lower = content.lower()
-        if any(k in lower for k in ("requires api key", "requires credentials", "proprietary", "license")):
+        registry_ids = {r["capability_id"]: r["status"] for r in self._load_registry()}
+        cap_ids = list(dict.fromkeys(
+            doc.related_capabilities + self._satisfaction_references().get(doc.research_id, [])
+        ))
+        verified = [c for c in cap_ids if registry_ids.get(c) == "VERIFIED"]
+        if verified:
+            blocked = [c for c in cap_ids if registry_ids.get(c) == "BLOCKED"]
+            suffix = f"; {len(blocked)} blocked tracked in registry" if blocked else ""
+            classification, reason = (
+                "satisfied",
+                f"Implemented by {len(verified)} verified capabilities{suffix}",
+            )
+        elif any(k in lower for k in ("requires api key", "requires credentials", "proprietary", "license")):
             classification, reason = "blocked", "External dependency (credentials/licensing)"
+        elif doc.category in ("index", "document"):
+            classification, reason = "speculative", "Meta/index document — reference only, no implementation action"
         elif doc.status in ("emerging", "speculative", "experimental") or "timeline" in lower:
             classification, reason = "speculative", f"Research status: {doc.status}"
         else:
@@ -658,12 +755,15 @@ class ResearchIntegrationEngine:
         documents = self.discover_documents()
         nodes: List[Dict[str, Any]] = []
         edges: List[Dict[str, Any]] = []
+        satisfaction_refs = self._satisfaction_references()
         for doc in documents:
             nodes.append({
                 "id": f"research:{doc.research_id}", "type": "research", "label": doc.title,
                 "category": doc.category, "status": doc.status,
             })
             for cap in doc.related_capabilities:
+                edges.append({"from": f"research:{doc.research_id}", "to": f"capability:{cap}"})
+            for cap in satisfaction_refs.get(doc.research_id, []):
                 edges.append({"from": f"research:{doc.research_id}", "to": f"capability:{cap}"})
         for row in self._load_registry():
             cap_id = row["capability_id"]
@@ -702,11 +802,17 @@ class ResearchIntegrationEngine:
         registry = self._load_registry()
         index = self._load_index()
         changes = self.detect_changes()
+        satisfaction = index.get("document_satisfaction", {})
+        mapped_docs = sum(
+            1 for d in documents
+            if d.related_capabilities or satisfaction.get(d.research_id, {}).get("capabilities")
+        )
         return {
             "research_documents": len(documents),
             "capabilities": len(registry),
             "modules": len(index.get("modules", [])),
             "linked_capabilities": sum(1 for links in index.get("capability_links", {}).values() if links.get("modules")),
+            "mapped_documents": mapped_docs,
             "pending_changes": len(changes),
             "queue_items": len(self.execution_queue()),
             "live_research_repo": self.research_repo.exists(),

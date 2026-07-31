@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-31T16:35:20.471235+00:00",
+  "generated_at": "2026-07-31T17:14:46.491475+00:00",
   "research_documents": 57,
   "capabilities": 251,
   "modules": [
@@ -4691,6 +4691,140 @@
         "get_video_capabilities"
       ],
       "benchmarks": []
+    }
+  },
+  "document_satisfaction": {
+    "EXECUTION_GRAPH_SCHEMA": {
+      "capabilities": [
+        "PLT-20",
+        "WFL-01",
+        "WFL-03",
+        "PLT-16",
+        "PLT-09",
+        "EXE-01"
+      ],
+      "note": "ExecutionTask/WorkflowStep graphs plus 4-layer execution routing"
+    },
+    "SCHEDULING_POLICY_SPECIFICATION": {
+      "capabilities": [
+        "EXE-01",
+        "EXE-02",
+        "RUN-12",
+        "PLT-06"
+      ],
+      "note": "Execution layer selection, resource strategies, runtime health"
+    },
+    "SECURITY_THREAT_MODEL": {
+      "capabilities": [
+        "SEC-03",
+        "SEC-04",
+        "SEC-05",
+        "SEC-06",
+        "SEC-07",
+        "SEC-12",
+        "RTG-05"
+      ],
+      "note": "Authentication, RBAC, encryption, sandboxing, model checksum, privacy routing"
+    },
+    "CHAPTER_03_UNIVERSAL_WORKFLOW_COMPILER": {
+      "capabilities": [
+        "WFL-01",
+        "WFL-03",
+        "PLT-16",
+        "PLT-19",
+        "PLT-20"
+      ],
+      "note": "Intent decomposition, workflow DAG compilation, generation chaining"
+    },
+    "CHAPTER_06_ADAPTIVE_SCHEDULER": {
+      "capabilities": [
+        "EXE-01",
+        "EXE-02",
+        "EXE-03",
+        "EXE-04",
+        "EXE-10",
+        "RUN-12",
+        "PLT-06"
+      ],
+      "note": "Layer-based selection, offload strategies, runtime health scheduling"
+    },
+    "CHAPTER_07_UNIVERSAL_AGENT_KERNEL": {
+      "capabilities": [
+        "PLT-01",
+        "PLT-08",
+        "PLT-16",
+        "PLT-17",
+        "RTG-08",
+        "OBS-02"
+      ],
+      "note": "Unified SDK, event bus, supervisor, agent ecosystem, knowledge graph"
+    },
+    "CHAPTER_10_GLOBAL_BENCHMARK_INTELLIGENCE": {
+      "capabilities": [
+        "BMK-01",
+        "BMK-02",
+        "BMK-03",
+        "BMK-04",
+        "BMK-05",
+        "BMK-06",
+        "BMK-07",
+        "BMK-08",
+        "PLT-15"
+      ],
+      "note": "Benchmark engine, standardized suites, composite scoring, provider intelligence"
+    },
+    "CHAPTER_11_MULTI_STAGE_GENERATION_ENGINE": {
+      "capabilities": [
+        "PLT-11",
+        "PLT-18",
+        "PLT-20",
+        "WFL-01",
+        "WFL-03"
+      ],
+      "note": "Cinematic 14-stage pipeline, generation chaining, quality evaluation"
+    },
+    "CHAPTER_12_AUTONOMOUS_OPTIMIZATION_LOOP": {
+      "capabilities": [
+        "PLT-18",
+        "BMK-04",
+        "BMK-06",
+        "BMK-07",
+        "BMK-08",
+        "PLT-15"
+      ],
+      "note": "Quality engine, regression detection, provider intelligence feedback"
+    },
+    "CHAPTER_13_OBSERVABILITY_DIGITAL_TWIN": {
+      "capabilities": [
+        "OBS-01",
+        "OBS-02",
+        "OBS-03",
+        "OBS-04",
+        "OBS-05",
+        "OBS-06",
+        "OBS-07",
+        "PLT-06"
+      ],
+      "note": "Metrics, tracing, logging, request tracking, OTel export, health monitoring"
+    },
+    "COMPATIBILITY_MATRIX": {
+      "capabilities": [
+        "CGR-03",
+        "CGR-04",
+        "CGR-07",
+        "RUN-01",
+        "RUN-02",
+        "RUN-03",
+        "RUN-04",
+        "RUN-05",
+        "RUN-06",
+        "RUN-07",
+        "RUN-08",
+        "RUN-09",
+        "RUN-10",
+        "RUN-11"
+      ],
+      "note": "Capability matrix lookup, path validation, runtime registry"
     }
   },
   "documents": [

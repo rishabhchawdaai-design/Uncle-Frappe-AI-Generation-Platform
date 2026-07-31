@@ -68,6 +68,28 @@ python -m ai_generation.cli research-graph
 `research_index`, `trace_capability`, `research_impact_analysis`,
 `research_sync_status`, `research_graph`.
 
+## Cross-References & Satisfaction
+
+Every research document knows which capabilities implement it. Registry
+capabilities keep exactly one canonical research source (`DOMAIN_ALIASES`);
+documents whose implementation lives under a different domain additionally
+reference those capabilities via the satisfaction table:
+
+- `CHAPTER_10_GLOBAL_BENCHMARK_INTELLIGENCE` -> `BMK-01..BMK-08`, `PLT-15`
+- `COMPATIBILITY_MATRIX` -> `CGR-03/CGR-04/CGR-07`, `RUN-01..RUN-11`
+- `SECURITY_THREAT_MODEL` -> `SEC-03..SEC-07`, `SEC-12`, `RTG-05`
+- `CHAPTER_03_UNIVERSAL_WORKFLOW_COMPILER` -> `WFL-01/WFL-03`, `PLT-16/19/20`
+- `CHAPTER_06_ADAPTIVE_SCHEDULER` -> `EXE-01..EXE-04/EXE-10`, `RUN-12`, `PLT-06`
+- `CHAPTER_07_UNIVERSAL_AGENT_KERNEL` -> `PLT-01/08/16/17`, `RTG-08`, `OBS-02`
+- `CHAPTER_11_MULTI_STAGE_GENERATION_ENGINE` -> `PLT-11/18/20`, `WFL-01/03`
+- `CHAPTER_12_AUTONOMOUS_OPTIMIZATION_LOOP` -> `PLT-18`, `BMK-04/06/07/08`, `PLT-15`
+- `CHAPTER_13_OBSERVABILITY_DIGITAL_TWIN` -> `OBS-01..OBS-07`, `PLT-06`
+- `EXECUTION_GRAPH_SCHEMA` -> `PLT-20`, `WFL-01/03`, `PLT-16/09`, `EXE-01`
+- `SCHEDULING_POLICY_SPECIFICATION` -> `EXE-01/02`, `RUN-12`, `PLT-06`
+
+Impact analysis (`research-impact`) unions both directions, so changing any
+research document reports the complete implementation blast radius.
+
 ## Synchronization Policy
 
 - Research content is never copied into this repository — only hashes and metadata.

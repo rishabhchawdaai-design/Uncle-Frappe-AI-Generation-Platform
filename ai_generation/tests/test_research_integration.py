@@ -85,6 +85,49 @@ def test_build_index_and_trace(tmp_path):
     assert engine.trace_capability("ZZZ-99") is None
 
 
+def test_research_impact_for_cross_referenced_documents(tmp_path):
+    engine = _engine_with_manifest(tmp_path)
+    index = engine.build_index()
+    satisfaction = index["document_satisfaction"]
+    assert "CHAPTER_10_GLOBAL_BENCHMARK_INTELLIGENCE" in satisfaction
+    assert "BMK-01" in satisfaction["CHAPTER_10_GLOBAL_BENCHMARK_INTELLIGENCE"]["capabilities"]
+    assert "COMPATIBILITY_MATRIX" in satisfaction
+    assert "CGR-03" in satisfaction["COMPATIBILITY_MATRIX"]["capabilities"]
+    assert "RUN-01" in satisfaction["COMPATIBILITY_MATRIX"]["capabilities"]
+
+    impact = engine.research_impact("CHAPTER_10_GLOBAL_BENCHMARK_INTELLIGENCE")
+    assert impact is not None
+    assert "BMK-01" in impact.affected_capabilities
+    assert "BMK-02" in impact.affected_capabilities
+    assert impact.affected_modules
+    assert impact.affected_tests
+
+    threat = engine.research_impact("SECURITY_THREAT_MODEL")
+    assert threat is not None
+    assert "SEC-03" in threat.affected_capabilities
+    assert "security" in threat.affected_modules
+
+    scheduler = engine.research_impact("SCHEDULING_POLICY_SPECIFICATION")
+    assert scheduler is not None
+    assert scheduler.affected_capabilities
+
+
+def test_sync_classifies_satisfied_research(tmp_path):
+    repo = tmp_path / "repo"
+    (repo / "docs" / "supporting").mkdir(parents=True)
+    (repo / "docs" / "supporting" / "SECURITY_THREAT_MODEL.md").write_text(
+        "# ACOS Security Threat Model\n\nNew threat categories added.\n"
+    )
+    engine = ResearchIntegrationEngine(
+        research_repo=str(repo), data_dir=str(tmp_path / "data")
+    )
+    engine.sync()
+    items = engine.execution_queue()
+    item = next(i for i in items if i["source_research"] == "SECURITY_THREAT_MODEL")
+    assert item["classification"] == "satisfied"
+    assert "verified capabilities" in item["reason"]
+
+
 def test_research_impact(tmp_path):
     engine = _engine_with_manifest(tmp_path)
     impact = engine.research_impact("SECURITY_CANON")
@@ -161,6 +204,7 @@ def test_cache_only_mode_when_research_repo_missing(tmp_path):
     stats = engine.get_stats()
     assert stats["live_research_repo"] is False
     assert stats["research_documents"] == 1
+    assert "mapped_documents" in stats
 
 
 # ── Implementation graph ─────────────────────────────────────────
@@ -177,6 +221,8 @@ def test_implementation_graph_and_neighbors(tmp_path):
     neighbors = engine.neighbors("research:SECURITY_CANON")
     assert "capability:SEC-01" in neighbors
     assert "capability:SEC-05" in neighbors
+    threat_neighbors = engine.neighbors("research:SECURITY_THREAT_MODEL")
+    assert "capability:SEC-03" in threat_neighbors
 
 
 # ── Unified SDK integration ──────────────────────────────────────

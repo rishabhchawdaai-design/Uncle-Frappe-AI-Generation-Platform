@@ -3,7 +3,7 @@ module: "research_integration"
 type: module-doc
 status: active
 owner: ""
-lines: 713
+lines: 819
 classes: 5
 functions: 0
 tags: [module, documentation]
@@ -21,7 +21,7 @@ The research repository remains
 ## Overview
 
 - **File**: `ai_generation/research_integration.py`
-- **Lines**: 713
+- **Lines**: 819
 - **Classes**: 5
 - **Public Functions**: 0
 
