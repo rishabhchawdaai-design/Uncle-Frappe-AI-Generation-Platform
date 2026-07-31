@@ -636,8 +636,10 @@ class KimiK3Manager:
     evaluates quality, tracks benchmarks, and reports failures.
     """
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None):
+    def __init__(self, config: Optional[Dict[str, Any]] = None,
+                 benchmark_lab=None):
         self.config = config or {}
+        self._benchmark_lab = benchmark_lab
         self._history: List[Dict[str, Any]] = []
         self._stats: Dict[str, Any] = {
             "total_requests": 0,
@@ -901,6 +903,22 @@ class KimiK3Manager:
                 ))
             except Exception:
                 pass
+            if self._benchmark_lab is not None:
+                try:
+                    from .benchmark_lab import BenchmarkResult as LabBenchmarkResult
+                    self._benchmark_lab.record_result(LabBenchmarkResult(
+                        provider=result.provider,
+                        model=result.model,
+                        category="chat",
+                        prompt=prompt[:200],
+                        quality_score=result.quality_score,
+                        prompt_adherence=result.quality_score,
+                        latency_ms=latency,
+                        success=entry["success"],
+                        error=entry["error"],
+                    ))
+                except Exception:
+                    pass
         return {
             "prompt": prompt[:200],
             "runs": results,
@@ -1210,3 +1228,103 @@ def kimi_k3_candidates() -> List[Any]:
                       "capabilities": ["chat"]},
         ))
     return candidates
+
+
+def build_vllm_docker_run(model: str = "moonshotai/Kimi-K3", hardware: str = "blackwell",
+                          tensor_parallel: int = 8, expert_parallel: int = 16,
+                          port: int = 8000, spec_decode: bool = False,
+                          language_model_only: bool = False) -> Dict[str, Any]:
+    """Return an official `docker run` command for a Kimi K3 vLLM server.
+
+    Uses the official image (`vllm/vllm-openai:kimi-k3` or `-rocm`) with the
+    verified launch flags from the official vLLM recipe.
+    """
+    plan = build_vllm_command(
+        model=model, hardware=hardware, tensor_parallel=tensor_parallel,
+        expert_parallel=expert_parallel, spec_decode=spec_decode,
+        language_model_only=language_model_only,
+    )
+    env_args = " ".join(f"-e {k}={v}" for k, v in plan["env"].items())
+    gpus = tensor_parallel * expert_parallel
+    run = (
+        f"docker run --gpus all --shm-size 64g "
+        f"{env_args} -p {port}:8000 "
+        f"--ipc=host {plan['image']} "
+        + " ".join(plan["command"][2:])
+    )
+    return {
+        "engine": "vllm",
+        "image": plan["image"],
+        "docker_run": run,
+        "requires_gpus": gpus,
+        "min_vram_gb": plan["min_vram_gb"],
+        "env": plan["env"],
+        "notes": plan["notes"],
+    }
+
+
+def build_sglang_docker_run(model: str = "moonshotai/Kimi-K3", hardware: str = "b200",
+                            port: int = 30000, tp: Optional[int] = None,
+                            dp: Optional[int] = None, nnodes: int = 1) -> Dict[str, Any]:
+    """Return an official `docker run` command for a Kimi K3 SGLang server.
+
+    Uses the official images (`lmsysorg/sglang:kimi-k3` family) with the
+    verified flags from the official SGLang recipe.
+    """
+    plan = build_sglang_command(
+        model=model, hardware=hardware, tp=tp, dp=dp, nnodes=nnodes,
+    )
+    env_args = " ".join(f"-e {k}={v}" for k, v in plan["env"].items())
+    gpus = (tp or plan["parallelism"]["tensor_parallel"]) * (dp or plan["parallelism"]["data_parallel"])
+    run = (
+        f"docker run --gpus all --shm-size 64g "
+        f"{env_args} -p {port}:30000 "
+        f"--ipc=host {plan['image']} "
+        + " ".join(plan["command"][2:])
+    )
+    return {
+        "engine": "sglang",
+        "image": plan["image"],
+        "docker_run": run,
+        "requires_gpus": gpus,
+        "min_vram_gb": plan["min_vram_gb"],
+        "env": plan["env"],
+        "notes": plan["notes"],
+    }
+
+
+def register_kimi_k3_capability_graph(graph) -> int:
+    """Add Kimi K3 nodes/edges to a CapabilityGraph (idempotent).
+
+    The default CapabilityGraph already contains K3; this helper extends any
+    dynamic/graph instance with the same canonical nodes and edges.
+    """
+    from .capability_graph import EdgeType, NodeType
+
+    added = 0
+    providers = {
+        "kimi_k3_cloud": ("Kimi K3 Cloud API", {"tier": "paid", "type": "text", "context_length": 1048576}),
+        "kimi_k3_vllm": ("Kimi K3 vLLM", {"tier": "paid", "type": "text", "runtime": "vllm", "context_length": 1048576}),
+        "kimi_k3_sglang": ("Kimi K3 SGLang", {"tier": "paid", "type": "text", "runtime": "sglang", "context_length": 1048576}),
+    }
+    for pid, (name, attrs) in providers.items():
+        if graph.get_node(pid) is None:
+            graph.add_node(pid, NodeType.PROVIDER, name, attrs)
+            added += 1
+    if graph.get_node("chat") is None:
+        graph.add_node("chat", NodeType.CAPABILITY, "Chat / Text Reasoning")
+        added += 1
+
+    existing_edges = set()
+    for edges in graph._edges.values():
+        for e in edges:
+            existing_edges.add((e.source_id, e.target_id, e.edge_type))
+    for pid in providers:
+        if (pid, "chat", EdgeType.SUPPORTS) not in existing_edges:
+            graph.add_edge(pid, "chat", EdgeType.SUPPORTS)
+            added += 1
+    for src, tgt in (("kimi_k3_cloud", "kimi_k3_vllm"), ("kimi_k3_vllm", "kimi_k3_sglang")):
+        if (src, tgt, EdgeType.FALLBACK_TO) not in existing_edges:
+            graph.add_edge(src, tgt, EdgeType.FALLBACK_TO, weight=0.9)
+            added += 1
+    return added

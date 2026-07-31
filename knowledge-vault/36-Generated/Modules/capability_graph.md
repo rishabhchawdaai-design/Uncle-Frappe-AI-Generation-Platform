@@ -3,7 +3,7 @@ module: "capability_graph"
 type: module-doc
 status: active
 owner: ""
-lines: 480
+lines: 494
 classes: 6
 functions: 0
 tags: [module, documentation]
@@ -20,7 +20,7 @@ Provides graph operations for finding execution paths, fall
 ## Overview
 
 - **File**: `ai_generation/capability_graph.py`
-- **Lines**: 480
+- **Lines**: 494
 - **Classes**: 6
 - **Public Functions**: 0
 
