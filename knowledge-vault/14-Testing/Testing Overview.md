@@ -10,8 +10,8 @@ tags: [testing, overview]
 ## Test Suite Summary
 
 - **Total Test Files**: 32
-- **Total Tests**: 1,128
-- **Passing**: 1,128
+- **Total Tests**: 1,306
+- **Passing**: 1,306
 - **Failing**: 0
 - **Skipped**: 1
 
@@ -33,8 +33,8 @@ tags: [testing, overview]
 
 ```dataview
 TABLE WITHOUT ID
-  "1,128" AS "Total Tests",
-  "1,128" AS "Passing",
+  "1,306" AS "Total Tests",
+  "1,306" AS "Passing",
   "0" AS "Failing"
 FROM "14-Testing"
 LIMIT 1

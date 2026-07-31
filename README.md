@@ -227,7 +227,7 @@ ai_generation/          # Single canonical platform package
   research_integration.py # Research <-> implementation traceability
   providers/            # Provider implementations
   agents/               # Autonomous agent system
-  tests/                # 1,152 tests
+  tests/                # 1,306 tests
 configs/                # Canonical configuration (env template, MCP server registry)
 data/                   # Runtime registries and benchmarks
 knowledge-vault/        # Obsidian knowledge system (37 sections)
@@ -265,7 +265,7 @@ docker build -t uncle-frappe-ai-generation-platform .
 docker run --rm uncle-frappe-ai-generation-platform
 ```
 
-CI runs the full `ai_generation/tests/` suite (1,152 tests), verifies every
+CI runs the full `ai_generation/tests/` suite (1,306 tests), verifies every
 module imports cleanly, smoke-tests the unified SDK, and builds the Docker
 image on every push to `main` (`.github/workflows/ci.yml`).
 
