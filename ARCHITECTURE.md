@@ -85,3 +85,17 @@ Removed parallel implementations (history preserved in git):
 - `browser_agents/` — legacy browser agent stack (superseded by `ai_generation/browser_ai.py`)
 - `health_checks/` — superseded by `ai_generation/health_monitor.py`
 - `main.py` — legacy entry point (superseded by `ai_generation/cli.py`)
+
+## Repository Topology
+
+| Role | Canonical home | Status |
+|---|---|---|
+| Production implementation (this repo) | `rishabhchawdaai-design/Uncle-Frappe-AI-Generation-Platform` | canonical `main`, no forks, single branch |
+| Research canon (source of ideas) | `rishabhchawdaai-design/ACOS-Research` | upstream knowledge source, mirrored into `knowledge-vault/` |
+| Research working notes | `rishabhchawdaai-design/Uncle-Frapp-` | upstream knowledge source |
+| Obsidian knowledge system | `knowledge-vault/` inside this repo | generated from code + research |
+
+No forks exist. Every GitHub repository has exactly one branch (`main`).
+External MCP servers: `configs/mcp_servers.json`. Reference repositories used
+for quality-engineering pattern extraction live outside the canonical tree and
+are never imported.
