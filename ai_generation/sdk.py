@@ -111,6 +111,8 @@ class UncleFrappeAI:
         self._otel_exporter = None
         self._encryption_in_transit = None
         self._model_security = None
+        # Research Integration Layer
+        self._research_integration = None
         # Phase 15 — Negotiation Engine & Supervisor Tree
         self._negotiation_engine = None
         self._supervisor = None
@@ -540,6 +542,17 @@ class UncleFrappeAI:
         return self._model_security
 
     @property
+    def research_integration(self):
+        """Research Integration Layer — links ACOS-Research to implementation."""
+        if self._research_integration is None:
+            from .research_integration import ResearchIntegrationEngine
+            self._research_integration = ResearchIntegrationEngine(
+                research_repo=self.config.get("acos_research_repo"),
+                data_dir=self.config.get("research_data_dir"),
+            )
+        return self._research_integration
+
+    @property
     def event_bus(self):
         if self._event_bus is None:
             from .event_bus import EventBus
@@ -667,7 +680,29 @@ class UncleFrappeAI:
             "quality_dashboard": self.quality_dashboard.get_stats(),
             "orchestration_pipeline": self.orchestration_pipeline.get_stats(),
             "knowledge_base": self.knowledge_base.get_stats(),
+            "research_integration": self.research_integration.get_stats(),
         }
+
+    # ── Research Integration Convenience Methods ──
+
+    def trace_capability(self, capability_id: str):
+        """Return full research-to-implementation traceability for a capability."""
+        return self.research_integration.trace_capability(capability_id)
+
+    def research_impact(self, research_id: str):
+        """Return the implementation blast radius of a research document."""
+        return self.research_integration.research_impact(research_id)
+
+    def research_sync_status(self) -> dict:
+        """Detect research changes and return sync state (no mutation)."""
+        return {
+            "changes": self.research_integration.detect_changes(),
+            "stats": self.research_integration.get_stats(),
+        }
+
+    def research_graph(self) -> dict:
+        """Return the traversable research <-> implementation graph."""
+        return self.research_integration.implementation_graph()
 
     # ── Phase 11 Convenience Methods ──
 

@@ -3,7 +3,7 @@ module: "mcp_tools"
 type: module-doc
 status: active
 owner: ""
-lines: 2627
+lines: 2691
 classes: 1
 functions: 1
 tags: [module, documentation]
@@ -17,7 +17,7 @@ generated: "2026-07-31"
 ## Overview
 
 - **File**: `ai_generation/mcp_tools.py`
-- **Lines**: 2627
+- **Lines**: 2691
 - **Classes**: 1
 - **Public Functions**: 1
 

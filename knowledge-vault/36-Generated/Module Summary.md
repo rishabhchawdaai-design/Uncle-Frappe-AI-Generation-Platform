@@ -1,11 +1,11 @@
 ---
 type: summary
-generated: "2026-07-31 15:20"
-total_modules: 64
+generated: "2026-07-31 16:29"
+total_modules: 65
 total_capabilities: 251
-total_lines: 27798
-total_classes: 374
-total_functions: 50
+total_lines: 28710
+total_classes: 379
+total_functions: 55
 tags: [summary, generated]
 ---
 
@@ -13,10 +13,10 @@ tags: [summary, generated]
 
 ## Statistics
 
-- **Total Modules**: 64
-- **Total Lines**: 27,798
-- **Total Classes**: 374
-- **Total Public Functions**: 50
+- **Total Modules**: 65
+- **Total Lines**: 28,710
+- **Total Classes**: 379
+- **Total Public Functions**: 55
 - **Total Capabilities**: 251
 
 ## Modules by Size
@@ -30,13 +30,13 @@ SORT line_count DESC
 
 ## Largest Modules
 
-- **mcp_tools**: 2,627 lines, 1 classes
-- **sdk**: 1,576 lines, 1 classes
+- **mcp_tools**: 2,691 lines, 1 classes
+- **sdk**: 1,611 lines, 1 classes
 - **negotiation_engine**: 1,065 lines, 12 classes
 - **video_editing**: 921 lines, 7 classes
 - **code_analysis**: 916 lines, 19 classes
+- **cli**: 903 lines, 0 classes
 - **quality_engineering**: 864 lines, 18 classes
 - **failure_recovery**: 839 lines, 5 classes
-- **cli**: 803 lines, 0 classes
+- **research_integration**: 713 lines, 5 classes
 - **edge_ai**: 661 lines, 5 classes
-- **browser_ai**: 621 lines, 5 classes

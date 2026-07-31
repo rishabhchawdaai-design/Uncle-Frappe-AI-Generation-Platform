@@ -605,6 +605,89 @@ async def cmd_orchestrate(file_path=""):
     print(f"    Total Findings: {result['total_findings']}")
 
 
+# ── Research Integration Commands ───────────────────────────────
+
+async def cmd_research_index():
+    """Show the research <-> implementation integration index."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    index = ai.research_integration.build_index()
+    print(f"\n  Research Integration Index\n")
+    print(f"  Research Documents: {index['research_documents']}")
+    print(f"  Capabilities:       {index['capabilities']}")
+    print(f"  Modules:            {len(index['modules'])}")
+    linked = sum(1 for v in index["capability_links"].values() if v.get("modules"))
+    print(f"  Capabilities Linked: {linked}")
+
+
+async def cmd_research_trace(capability_id):
+    """Trace a capability to its research source and implementation."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    trace = ai.trace_capability(capability_id)
+    if trace is None:
+        print(f"\n  Capability {capability_id} not found")
+        return
+    print(f"\n  Traceability: {trace.capability_id} — {trace.name} [{trace.status}]")
+    print(f"  Research:    {', '.join(r['research_id'] for r in trace.research_documents) or 'none'}")
+    print(f"  Modules:     {', '.join(trace.modules) or 'none'}")
+    print(f"  Tests:       {', '.join(trace.tests) or 'none'}")
+    print(f"  SDK:         {', '.join(trace.sdk_interfaces) or 'none'}")
+    print(f"  MCP:         {', '.join(trace.mcp_tools) or 'none'}")
+    print(f"  Benchmarks:  {', '.join(trace.benchmarks) or 'none'}")
+    print(f"  Introduced:  {trace.introduced_commit or 'unknown'}")
+    print(f"  Vault:       {trace.vault_page}")
+
+
+async def cmd_research_impact(research_id):
+    """Show the implementation blast radius of a research document."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    impact = ai.research_impact(research_id)
+    if impact is None:
+        print(f"\n  Research document {research_id} not found")
+        return
+    print(f"\n  Impact Analysis: {impact.research_id} — {impact.title}")
+    print(f"  Capabilities: {len(impact.affected_capabilities)}")
+    print(f"  Modules:      {', '.join(impact.affected_modules) or 'none'}")
+    print(f"  Tests:        {', '.join(impact.affected_tests) or 'none'}")
+    print(f"  SDK:          {', '.join(impact.affected_sdk_interfaces) or 'none'}")
+    print(f"  MCP Tools:    {', '.join(impact.affected_mcp_tools) or 'none'}")
+    print(f"\n  Recommendations:")
+    for rec in impact.recommendations:
+        print(f"    → {rec}")
+
+
+async def cmd_research_sync():
+    """Detect research changes and refresh the index."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    report = ai.research_integration.sync()
+    print(f"\n  Research Sync\n")
+    print(f"  Documents Indexed: {report['documents_indexed']}")
+    print(f"  Changes Detected: {len(report['changes'])}")
+    for change in report["changes"][:10]:
+        print(f"    [{change['type']}] {change['research_id']} — {change.get('title', '')}")
+    if report["queue_added"]:
+        print(f"\n  Queue Additions:")
+        for item in report["queue_added"]:
+            print(f"    [{item['classification']}] {item['topic']} ({item['reason']})")
+
+
+async def cmd_research_graph():
+    """Show the traversable research <-> implementation graph."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    graph = ai.research_graph()
+    print(f"\n  Research Implementation Graph\n")
+    print(f"  Nodes: {graph['node_count']}  Edges: {graph['edge_count']}")
+    by_type = {}
+    for node in graph["nodes"]:
+        by_type[node["type"]] = by_type.get(node["type"], 0) + 1
+    for t, count in sorted(by_type.items()):
+        print(f"    {t:12s} {count}")
+
+
 async def main():
     """Dispatch CLI subcommands to their handlers."""
     args = sys.argv[1:]
@@ -642,6 +725,13 @@ async def main():
     python -m ai_generation.cli refactor [file]        Refactoring suggestions
     python -m ai_generation.cli quality-report [file]  Quality dashboard
     python -m ai_generation.cli orchestrate [file]     Orchestration pipeline
+
+    Research Integration:
+    python -m ai_generation.cli research-index       Research integration index
+    python -m ai_generation.cli research-trace ID    Trace a capability
+    python -m ai_generation.cli research-impact ID   Research impact analysis
+    python -m ai_generation.cli research-sync        Detect and sync research
+    python -m ai_generation.cli research-graph       Implementation graph
 
     Phase 14 — AIG-OS Autonomous Agents:
     aigos-status             Show AIG-OS orchestrator status
@@ -797,6 +887,16 @@ async def main():
         await cmd_quality_report(args[1] if len(args) > 1 else "")
     elif args[0] == "orchestrate":
         await cmd_orchestrate(args[1] if len(args) > 1 else "")
+    elif args[0] == "research-index":
+        await cmd_research_index()
+    elif args[0] == "research-trace":
+        await cmd_research_trace(args[1] if len(args) > 1 else "IMG-01")
+    elif args[0] == "research-impact":
+        await cmd_research_impact(args[1] if len(args) > 1 else "SECURITY_CANON")
+    elif args[0] == "research-sync":
+        await cmd_research_sync()
+    elif args[0] == "research-graph":
+        await cmd_research_graph()
 
 
 if __name__ == "__main__":
