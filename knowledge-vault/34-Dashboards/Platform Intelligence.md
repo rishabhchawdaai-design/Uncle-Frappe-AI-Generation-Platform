@@ -10,7 +10,7 @@ tags: [dashboard, intelligence, system]
 ```dataview
 TABLE WITHOUT ID
   "66" AS "Modules",
-  "1,232" AS "Tests",
+  "1,235" AS "Tests",
   "208" AS "MCP Tools",
   "204" AS "Verified Capabilities",
   "47" AS "Blocked (External)"
@@ -37,7 +37,7 @@ LIMIT 15
 | Quality Gates | ✅ Swiss Cheese Model (8 gates) |
 | Refactoring | ✅ 20 smell types + techniques |
 | Tech Debt | ✅ Tracked in registry |
-| Testing | ✅ 1,232 tests passing |
+| Testing | ✅ 1,235 tests passing |
 
 ## Capability Status by Domain
 

@@ -3,7 +3,7 @@ module: "local_runtimes"
 type: module-doc
 status: active
 owner: ""
-lines: 546
+lines: 594
 classes: 9
 functions: 0
 tags: [module, documentation]
@@ -20,7 +20,7 @@ Provides detection, routing, profiling, and fallback for local inf
 ## Overview
 
 - **File**: `ai_generation/local_runtimes.py`
-- **Lines**: 546
+- **Lines**: 594
 - **Classes**: 9
 - **Public Functions**: 0
 

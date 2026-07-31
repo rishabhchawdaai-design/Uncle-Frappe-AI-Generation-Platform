@@ -1033,3 +1033,45 @@ async def test_agent_interface_event_bus_events(monkeypatch):
     history = agent.event_bus.get_history("kimi_k3.request.complete")
     assert len(history) == 1
     assert "kimi_k3_vllm" in history[0]["payload"]
+
+
+# ── Local Runtime Registry (Kimi K3 awareness) ───────────────────
+
+def test_local_runtimes_kimi_k3_vllm_plan():
+    from ai_generation.local_runtimes import LocalRuntimeManager, RuntimeType
+    mgr = LocalRuntimeManager()
+    plan = mgr.configure_kimi_k3_runtime(
+        RuntimeType.VLLM, url="http://gpu-01:8000", hardware="blackwell",
+        tensor_parallel=8, expert_parallel=16, spec_decode=True,
+    )
+    assert plan["model"] == "kimi-k3"
+    assert plan["model_id"] == "moonshotai/Kimi-K3"
+    assert plan["context_length"] == 1048576
+    assert plan["min_gpus"] == 8
+    assert plan["min_vram_gb"] == 1680
+    assert plan["launch"]["engine"] == "vllm"
+    assert "kimi-k3" in plan["launch"]["image"]
+    assert "--tensor-parallel-size" in plan["launch"]["command"]
+    cmd = plan["launch"]["command"]
+    spec_idx = cmd.index("--speculative-config")
+    assert "Inferact/Kimi-K3-DSpark" in cmd[spec_idx + 1]
+    assert mgr.get_kimi_k3_plans()["vllm"]["model"] == "kimi-k3"
+
+
+def test_local_runtimes_kimi_k3_sglang_plan():
+    from ai_generation.local_runtimes import LocalRuntimeManager, RuntimeType
+    mgr = LocalRuntimeManager()
+    plan = mgr.configure_kimi_k3_runtime(
+        RuntimeType.SGLANG, url="http://gpu-01:30000", hardware="b200",
+    )
+    assert plan["launch"]["engine"] == "sglang"
+    assert "lmsysorg/sglang:kimi-k3" in plan["launch"]["image"]
+    assert "--reasoning-parser" in plan["launch"]["command"]
+    assert set(mgr.get_kimi_k3_plans()) == {"sglang"}
+
+
+def test_local_runtimes_kimi_k3_invalid_runtime():
+    from ai_generation.local_runtimes import LocalRuntimeManager, RuntimeType
+    mgr = LocalRuntimeManager()
+    with pytest.raises(ValueError):
+        mgr.configure_kimi_k3_runtime(RuntimeType.OLLAMA, url="http://x:11434")
