@@ -81,3 +81,16 @@ graph TB
 - [[01-Architecture/Decision-Records/ADR Index|ADRs]]
 - [[03-Execution-Engine/Execution Engine Overview|Execution Engine]]
 - [[05-SDK/SDK Overview|SDK]]
+
+## Single Canonical Architecture (Consolidation)
+
+The platform is a single engineering system. All implementation lives in
+`ai_generation/`; the authoritative architecture, ownership map, dependency
+graph, and consolidation record live in the repository root:
+
+- `ARCHITECTURE.md` — layer map, ownership, verified acyclic dependency graph
+  (66 nodes, 14 edges, no cycles), repository topology, consolidation record
+
+Parallel legacy stacks (`core_platform/`, `sections/`, `wrappers/`,
+`mcp_adapters/`, `docker/`, `browser_agents/`, `health_checks/`, `main.py`)
+were removed from the tree; history is preserved in git.
