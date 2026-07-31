@@ -658,6 +658,15 @@ class UncleFrappeAI:
             "provider_discovery": self.provider_discovery_engine.get_stats(),
             "health_monitor": self.health_monitor.get_stats(),
             "auto_router": self.auto_router.get_stats(),
+            "secret_scanner": self.secret_scanner.get_stats() if hasattr(self.secret_scanner, 'get_stats') else {},
+            "static_analyzer": self.static_analyzer.get_stats() if hasattr(self.static_analyzer, 'get_stats') else {},
+            "structural_analyzer": self.structural_analyzer.get_stats() if hasattr(self.structural_analyzer, 'get_stats') else {},
+            "multi_agent_review": self.multi_agent_review.get_stats(),
+            "debt_tracker": self.debt_tracker.get_stats(),
+            "refactoring_engine": {"available": True, "note": "Run analyze() to get suggestions stats"},
+            "quality_dashboard": self.quality_dashboard.get_stats(),
+            "orchestration_pipeline": self.orchestration_pipeline.get_stats(),
+            "knowledge_base": self.knowledge_base.get_stats(),
         }
 
     # ── Phase 11 Convenience Methods ──
