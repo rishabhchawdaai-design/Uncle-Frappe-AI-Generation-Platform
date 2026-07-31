@@ -23,7 +23,7 @@
       "related_capabilities": []
     },
     {
-      "research_id": "README",
+      "research_id": "README_DATA",
       "title": "ACOS Data\\nThis directory contains runtime data (checkpoints, model registry, etc.).",
       "path": "data/README.md",
       "category": "document",

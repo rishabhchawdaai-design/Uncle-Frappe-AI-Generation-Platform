@@ -304,6 +304,7 @@ class ResearchIntegrationEngine:
         except Exception:
             pass
 
+        used_ids: Set[str] = set()
         for md in sorted(repo.rglob("*.md")):
             rel = md.relative_to(repo).as_posix()
             if ".git" in rel:
@@ -315,8 +316,11 @@ class ResearchIntegrationEngine:
                     break
             content = md.read_text(errors="ignore")
             title = self._extract_title(content, md.stem)
+            stem_id = self._research_id_from_path(rel, md.stem)
+            research_id = self._research_id_disambiguate(rel, stem_id, used_ids)
+            used_ids.add(research_id)
             doc = ResearchDocument(
-                research_id=self._research_id_from_path(rel, md.stem),
+                research_id=research_id,
                 title=title,
                 path=rel,
                 category=category,
@@ -338,6 +342,15 @@ class ResearchIntegrationEngine:
     @staticmethod
     def _research_id_from_path(rel: str, stem: str) -> str:
         return stem.upper().replace(" ", "_")
+
+    @staticmethod
+    def _research_id_disambiguate(rel: str, stem_id: str, used: Set[str]) -> str:
+        """Guarantee unique research ids when two paths share a stem."""
+        research_id = stem_id
+        if research_id in used:
+            parent = re.sub(r"[^a-z0-9]", "_", rel.rsplit("/", 1)[0]).strip("_").upper()
+            research_id = f"{stem_id}_{parent}" if parent else f"{stem_id}_2"
+        return research_id
 
     @staticmethod
     def _detect_doc_status(content: str) -> str:
@@ -710,14 +723,28 @@ class ResearchIntegrationEngine:
                 "satisfied",
                 f"Implemented by {len(verified)} verified capabilities{suffix}",
             )
-        elif any(k in lower for k in ("requires api key", "requires credentials", "proprietary", "license")):
-            classification, reason = "blocked", "External dependency (credentials/licensing)"
-        elif doc.category in ("index", "document"):
+        elif doc.category in ("index", "document", "volume"):
             classification, reason = "speculative", "Meta/index document — reference only, no implementation action"
+        elif any(k in lower for k in (
+            "requires api key", "requires credentials", "requires authentication",
+            "api key required", "authentication required",
+            "proprietary model", "proprietary software", "closed-source", "closed source",
+            "commercial license", "commercially licensed",
+        )):
+            classification, reason = "blocked", "External dependency (credentials/licensing)"
         elif doc.status in ("emerging", "speculative", "experimental") or "timeline" in lower:
             classification, reason = "speculative", f"Research status: {doc.status}"
+        elif cap_ids:
+            blocked_caps = [c for c in cap_ids if registry_ids.get(c) == "BLOCKED"]
+            if blocked_caps:
+                classification, reason = (
+                    "blocked",
+                    f"{len(blocked_caps)}/{len(cap_ids)} registered capabilities blocked by external dependencies",
+                )
+            else:
+                classification, reason = "implementable", "Capabilities registered but not yet verified"
         else:
-            classification, reason = "implementable", "Immediately implementable capability"
+            classification, reason = "speculative", "No registered capability — evaluate as future opportunity"
         return QueueItem(
             item_id=f"rq-{hashlib.sha1(doc.research_id.encode()).hexdigest()[:10]}",
             topic=doc.title,
