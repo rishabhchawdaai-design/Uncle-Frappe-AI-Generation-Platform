@@ -731,6 +731,39 @@ async def cmd_kimi_info():
     print(f"\n  Unsupported paths (officially):")
     for path in info["unsupported_paths"]:
         print(f"    NO {path['name']}: {path['reason']}")
+
+
+async def cmd_kimi_health():
+    """Health-check every configured Kimi K3 execution path."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    health = await ai.kimi_k3_health()
+    print("\n  Kimi K3 endpoint health:")
+    for name, h in health.items():
+        status = "OK" if h.get("healthy") else "FAIL"
+        print(f"    {name:18s} {status}  {h.get('url', '')}")
+        if h.get("models"):
+            print(f"      models: {', '.join(h['models'][:5])}")
+        if h.get("error"):
+            print(f"      error:  {h['error']}")
+    return health
+
+
+async def cmd_kimi_benchmark(prompt="Explain Mixture of Experts.", runs=2,
+                             provider="auto", reasoning_effort="low"):
+    """Benchmark Kimi K3 chat latency and quality."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    result = await ai.kimi_k3_benchmark(
+        prompt, runs=runs, provider=provider, reasoning_effort=reasoning_effort,
+    )
+    print("\n  Kimi K3 benchmark:")
+    for i, r in enumerate(result.get("runs", []), 1):
+        status = "OK" if r.get("success") else "FAIL"
+        print(f"    run {i}: {status}  {r.get('provider', '')}  "
+              f"{r.get('latency_ms', 0)}ms  quality {r.get('quality_score', 0)}")
+    print(f"    summary: {result.get('stats', {})}")
+    return result
     print(f"\n  Configured endpoints:")
     for ep in info["configured_endpoints"]:
         key = "key set" if ep["api_key_set"] else "no key"
@@ -973,6 +1006,25 @@ async def main():
                             strategy=strategy)
     elif args[0] == "kimi-info":
         await cmd_kimi_info()
+    elif args[0] == "kimi-health":
+        await cmd_kimi_health()
+    elif args[0] == "kimi-benchmark":
+        prompt = args[1] if len(args) > 1 else "Explain Mixture of Experts."
+        runs = 2
+        provider = "auto"
+        effort = "low"
+        i = 2
+        while i < len(args):
+            if args[i] == "--runs" and i + 1 < len(args):
+                runs = int(args[i + 1]); i += 2
+            elif args[i] == "--provider" and i + 1 < len(args):
+                provider = args[i + 1]; i += 2
+            elif args[i] == "--effort" and i + 1 < len(args):
+                effort = args[i + 1]; i += 2
+            else:
+                i += 1
+        await cmd_kimi_benchmark(prompt, runs=runs, provider=provider,
+                                 reasoning_effort=effort)
 
 
 if __name__ == "__main__":

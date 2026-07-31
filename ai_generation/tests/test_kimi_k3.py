@@ -1212,3 +1212,29 @@ async def test_generation_manager_generate_text(monkeypatch):
     assert result.metadata["text"] == "Hello from Kimi K3"
     assert result.metadata["reasoning"]
     assert result.latency_ms >= 0
+
+
+# ── CLI health + benchmark commands ──────────────────────────────
+
+def test_cli_kimi_health(capsys, monkeypatch):
+    from ai_generation.cli import cmd_kimi_health
+
+    async def fake_get(url, api_key="", timeout=15.0):
+        return {"data": [{"id": "moonshotai/Kimi-K3"}]}
+
+    monkeypatch.setattr("ai_generation.kimi_k3._get_json", fake_get)
+    asyncio.run(cmd_kimi_health())
+    out = capsys.readouterr().out
+    assert "Kimi K3 endpoint health" in out
+    assert "kimi_k3_cloud" in out
+    assert "OK" in out
+
+
+def test_cli_kimi_benchmark(capsys, monkeypatch):
+    from ai_generation.cli import cmd_kimi_benchmark
+    monkeypatch.setattr("ai_generation.kimi_k3._post_json", make_post())
+    asyncio.run(cmd_kimi_benchmark("hi", runs=1, provider="kimi_k3_vllm",
+                                   reasoning_effort="low"))
+    out = capsys.readouterr().out
+    assert "run 1: OK" in out
+    assert "kimi_k3_vllm" in out
