@@ -967,6 +967,43 @@ MCP_GENERATION_TOOLS = {
         "description": "Get event bus statistics.",
         "inputSchema": {"type": "object", "properties": {}},
     },
+    "research_index": {
+        "name": "research_index",
+        "description": "Get the research integration index: research documents, capabilities, and module links.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+    "trace_capability": {
+        "name": "trace_capability",
+        "description": "Trace a capability back to its research source, modules, tests, SDK, MCP tools, and commit.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "capability_id": {"type": "string", "description": "Capability id, e.g. IMG-01 or SEC-05"},
+            },
+            "required": ["capability_id"],
+        },
+    },
+    "research_impact_analysis": {
+        "name": "research_impact_analysis",
+        "description": "Analyze the implementation blast radius of a research document change.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "research_id": {"type": "string", "description": "Research document id, e.g. SECURITY_CANON"},
+            },
+            "required": ["research_id"],
+        },
+    },
+    "research_sync_status": {
+        "name": "research_sync_status",
+        "description": "Detect pending research changes and report synchronization state.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+    "research_graph": {
+        "name": "research_graph",
+        "description": "Get the traversable research <-> implementation graph.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
     "emit_event": {
         "name": "emit_event",
         "description": "Emit a kernel event.",
@@ -1228,6 +1265,11 @@ class MCPGenerationTools:
             "event_bus_get_history": self._handle_event_bus_get_history,
             "event_bus_get_subscriptions": self._handle_event_bus_get_subscriptions,
             "get_event_bus_stats": self._handle_get_event_bus_stats,
+            "research_index": self._handle_research_index,
+            "trace_capability": self._handle_trace_capability,
+            "research_impact_analysis": self._handle_research_impact,
+            "research_sync_status": self._handle_research_sync_status,
+            "research_graph": self._handle_research_graph,
             "emit_event": self._handle_emit_event,
             "get_event_kernel_stats": self._handle_get_event_kernel_stats,
             "otel_start": self._handle_otel_start,
@@ -2478,6 +2520,28 @@ class MCPGenerationTools:
     async def _handle_get_event_bus_stats(self, args):
         """Get event bus statistics"""
         return self.sdk.get_event_bus_stats()
+
+    async def _handle_research_index(self, args):
+        """Get the research integration index"""
+        return self.sdk.research_integration.build_index()
+
+    async def _handle_trace_capability(self, args):
+        """Trace a capability to its research and implementation links"""
+        trace = self.sdk.trace_capability(args["capability_id"])
+        return trace.to_dict() if trace is not None else {"error": f"Capability {args['capability_id']} not found"}
+
+    async def _handle_research_impact(self, args):
+        """Analyze the blast radius of a research document change"""
+        impact = self.sdk.research_impact(args["research_id"])
+        return impact.to_dict() if impact is not None else {"error": f"Research document {args['research_id']} not found"}
+
+    async def _handle_research_sync_status(self, args):
+        """Report pending research changes and sync state"""
+        return self.sdk.research_sync_status()
+
+    async def _handle_research_graph(self, args):
+        """Get the traversable research <-> implementation graph"""
+        return self.sdk.research_graph()
 
     async def _handle_emit_event(self, args):
         """Emit a kernel event"""

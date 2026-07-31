@@ -66,7 +66,7 @@ async def main():
 asyncio.run(main())
 ```
 
-Run `python -m ai_generation.cli --help` for the CLI, or use the 198 MCP tools
+Run `python -m ai_generation.cli --help` for the CLI, or use the 203 MCP tools
 exposed via `ai_generation.mcp_tools.MCPGenerationTools`.
 
 ## Project Structure
@@ -75,7 +75,7 @@ exposed via `ai_generation.mcp_tools.MCPGenerationTools`.
 ai_generation/          # Single canonical platform package
   sdk.py                # Unified SDK entry point
   cli.py                # CLI interface
-  mcp_tools.py          # 198 MCP tools exposed by the platform
+  mcp_tools.py          # 203 MCP tools exposed by the platform
   generation_manager.py # Orchestration core
   auto_router.py        # Intelligent provider routing
   execution_engine.py   # Task execution
@@ -87,9 +87,10 @@ ai_generation/          # Single canonical platform package
   quality_engineering.py# Quality gates, review, test generation
   security.py           # Security framework
   observability.py      # Metrics & OpenTelemetry
+  research_integration.py # Research <-> implementation traceability
   providers/            # Provider implementations
   agents/               # Autonomous agent system
-  tests/                # 1,141 tests
+  tests/                # 1,152 tests
 configs/                # Canonical configuration (env template, MCP servers)
 data/                   # Runtime registries and benchmarks
 knowledge-vault/        # Obsidian knowledge system (37 sections)
@@ -127,7 +128,7 @@ docker build -t uncle-frappe-ai-generation-platform .
 docker run --rm uncle-frappe-ai-generation-platform
 ```
 
-CI runs the full `ai_generation/tests/` suite (1,141 tests), verifies every
+CI runs the full `ai_generation/tests/` suite (1,152 tests), verifies every
 module imports cleanly, smoke-tests the unified SDK, and builds the Docker
 image on every push to `main` (`.github/workflows/ci.yml`).
 

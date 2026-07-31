@@ -1,0 +1,713 @@
+"""
+Research Integration Layer — unifies ACOS-Research (canonical knowledge)
+with the production platform (canonical implementation) without duplicating
+research content.
+
+The research repository remains the canonical upstream. This layer only
+indexes, references, and links it:
+
+- discover: scan the research repo (or the cached manifest) for documents
+- index: map research documents -> capabilities -> modules -> tests ->
+  SDK -> MCP tools -> benchmarks -> vault pages -> registry entries
+- trace: full traceability for any capability
+- impact: determine what changes when a research document changes
+- sync: detect research changes and refresh the index + execution queue
+- graph: a traversable implementation graph across the whole ecosystem
+"""
+import hashlib
+import json
+import logging
+import os
+import re
+import subprocess
+from dataclasses import dataclass, field, asdict
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Set, Tuple
+
+logger = logging.getLogger(__name__)
+
+
+# ── Configuration ─────────────────────────────────────────────────
+
+DEFAULT_RESEARCH_REPO = os.environ.get(
+    "ACOS_RESEARCH_REPO",
+    str(Path(__file__).resolve().parent.parent.parent / "acos-research"),
+)
+DATA_DIR = Path(__file__).resolve().parent.parent / "data" / "research"
+
+RESEARCH_CATEGORIES = {
+    "research/core_specs": "core_spec",
+    "research/new_areas": "research_area",
+    "docs/volumes/v2_chapters": "chapter",
+    "docs/volumes": "volume",
+    "docs/supporting": "supporting",
+    "docs": "index",
+    "research": "index",
+}
+
+# Registry domain (research source) -> research document id. Authoritative map;
+# every capability row in CAPABILITY_REGISTRY.md resolves to exactly one document.
+DOMAIN_ALIASES = {
+    "agent frameworks research": "AGENT_FRAMEWORKS_RESEARCH",
+    "audio speech research": "AUDIO_SPEECH_RESEARCH",
+    "auto router": "NEGOTIATION_ENGINE_SPECIFICATION",
+    "benchmark knowledge base": "BENCHMARK_KNOWLEDGE_BASE",
+    "browser ai research": "BROWSER_AI_RESEARCH",
+    "capability graph spec": "CAPABILITY_GRAPH_SPECIFICATION",
+    "core platform": "VOLUME_II_KERNEL_ARCHITECTURE_AND_UNIVERSAL_AGENT",
+    "decision ledger": "CHAPTER_09_KNOWLEDGE_AND_DECISION_LEDGER",
+    "distributed ai research": "DISTRIBUTED_AI_RESEARCH",
+    "edge ai research": "EDGE_AI_RESEARCH",
+    "execution strategy library": "EXECUTION_STRATEGY_LIBRARY",
+    "failure atlas": "FAILURE_ATLAS",
+    "image gen research": "IMAGE_GENERATION_RESEARCH",
+    "infrastructure registry": "INFRASTRUCTURE_CAPABILITY_REGISTRY",
+    "messaging research": "MESSAGING_EVENTS_RESEARCH",
+    "negotiation engine spec": "NEGOTIATION_ENGINE_SPECIFICATION",
+    "networking research": "NETWORKING_MESH_RESEARCH",
+    "ocr research": "OCR_DOCUMENTS_RESEARCH",
+    "observability research": "OBSERVABILITY_RESEARCH",
+    "plugin ecosystem research": "PLUGIN_ECOSYSTEM_RESEARCH",
+    "runtime capability registry": "RUNTIME_CAPABILITY_REGISTRY",
+    "search systems research": "SEARCH_SYSTEMS_RESEARCH",
+    "security canon": "SECURITY_CANON",
+    "storage research": "STORAGE_DATABASES_RESEARCH",
+    "workflow research": "WORKFLOW_ORCHESTRATION_RESEARCH",
+}
+
+
+# ── Data models ───────────────────────────────────────────────────
+
+
+@dataclass
+class ResearchDocument:
+    """Metadata for one research document. Content is never copied."""
+
+    research_id: str
+    title: str
+    path: str
+    category: str
+    sha256: str
+    status: str = "active"
+    source_url: str = ""
+    commit: str = ""
+    related_capabilities: List[str] = field(default_factory=list)
+
+    def to_dict(self) -> Dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass
+class CapabilityTrace:
+    """Full traceability record for a single capability."""
+
+    capability_id: str
+    name: str
+    status: str
+    research_documents: List[Dict[str, Any]] = field(default_factory=list)
+    modules: List[str] = field(default_factory=list)
+    tests: List[str] = field(default_factory=list)
+    sdk_interfaces: List[str] = field(default_factory=list)
+    mcp_tools: List[str] = field(default_factory=list)
+    benchmarks: List[str] = field(default_factory=list)
+    vault_page: str = ""
+    registry_entry: str = ""
+    introduced_commit: str = ""
+
+    def to_dict(self) -> Dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass
+class ImpactReport:
+    """What changes when a research document changes."""
+
+    research_id: str
+    title: str
+    changed: bool
+    affected_capabilities: List[str] = field(default_factory=list)
+    affected_modules: List[str] = field(default_factory=list)
+    affected_tests: List[str] = field(default_factory=list)
+    affected_sdk_interfaces: List[str] = field(default_factory=list)
+    affected_mcp_tools: List[str] = field(default_factory=list)
+    affected_docs: List[str] = field(default_factory=list)
+    affected_benchmarks: List[str] = field(default_factory=list)
+    recommendations: List[str] = field(default_factory=list)
+
+    def to_dict(self) -> Dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass
+class QueueItem:
+    """Autonomous research evolution item."""
+
+    item_id: str
+    topic: str
+    source_research: str
+    classification: str  # implementable | blocked | speculative
+    reason: str
+    created_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+
+    def to_dict(self) -> Dict[str, Any]:
+        return asdict(self)
+
+
+# ── Engine ────────────────────────────────────────────────────────
+
+
+class ResearchIntegrationEngine:
+    """Structured importer, index, registry, and graph for ACOS-Research."""
+
+    def __init__(self, research_repo: Optional[str] = None, data_dir: Optional[str] = None):
+        self.research_repo = Path(research_repo or DEFAULT_RESEARCH_REPO)
+        self.data_dir = Path(data_dir or DATA_DIR)
+        self.data_dir.mkdir(parents=True, exist_ok=True)
+        self._registry: List[Dict[str, str]] = []
+        self._modules: List[str] = []
+        self._documents: Optional[List[ResearchDocument]] = None
+
+    # ── Registry parsing ──────────────────────────────────────────
+
+    def _load_registry(self) -> List[Dict[str, str]]:
+        if self._registry:
+            return self._registry
+        registry_path = Path(__file__).resolve().parent.parent / "CAPABILITY_REGISTRY.md"
+        if not registry_path.exists():
+            return []
+        pattern = re.compile(r"\|\s*([A-Z]{3}-\d+)\s*\|\s*(.+?)\s*\|\s*(.+?)\s*\|\s*(\w+)\s*\|")
+        rows = []
+        for match in pattern.finditer(registry_path.read_text()):
+            cap_id, name, source, status = match.groups()
+            rows.append({
+                "capability_id": cap_id.strip(),
+                "name": name.strip(),
+                "source": source.strip(),
+                "status": status.strip(),
+            })
+        self._registry = rows
+        return rows
+
+    def _load_modules(self) -> List[str]:
+        if self._modules:
+            return self._modules
+        package = Path(__file__).resolve().parent
+        self._modules = sorted(
+            f[:-3] for f in os.listdir(package)
+            if f.endswith(".py") and not f.startswith("__") and f != "research_integration.py"
+        )
+        return self._modules
+
+    # ── Research discovery ────────────────────────────────────────
+
+    def discover_documents(self, refresh: bool = False) -> List[ResearchDocument]:
+        """Scan the research repo (or cached manifest) for documents."""
+        if self._documents is not None and not refresh:
+            return self._documents
+        if self.research_repo.exists():
+            documents = self._scan_research_repo()
+            self._populate_related(documents)
+            self._documents = documents
+            return documents
+        documents = self._load_manifest_documents()
+        self._populate_related(documents)
+        return documents
+
+    def _populate_related(self, documents: List[ResearchDocument]) -> None:
+        """Attach related capability ids to each research document."""
+        registry = self._load_registry()
+        domain_index: Dict[str, List[str]] = {}
+        for row in registry:
+            domain_index.setdefault(row["source"], []).append(row["capability_id"])
+        for doc in documents:
+            if doc.related_capabilities:
+                continue
+            related: Set[str] = set()
+            for source, caps in domain_index.items():
+                if self._domain_matches_doc(source, doc):
+                    related.update(caps)
+            doc.related_capabilities = sorted(related)
+
+    def _scan_research_repo(self) -> List[ResearchDocument]:
+        repo = self.research_repo
+        documents: List[ResearchDocument] = []
+        source_url = ""
+        try:
+            remote = subprocess.run(
+                ["git", "-C", str(repo), "remote", "get-url", "origin"],
+                capture_output=True, text=True, timeout=10,
+            )
+            if remote.returncode == 0:
+                url = remote.stdout.strip().rstrip(".git")
+                source_url = url.replace("git@github.com:", "https://github.com/")
+                source_url = re.sub(r"https://x-access-token:[^@]+@", "https://", source_url)
+        except Exception:
+            pass
+
+        for md in sorted(repo.rglob("*.md")):
+            rel = md.relative_to(repo).as_posix()
+            if ".git" in rel:
+                continue
+            category = "document"
+            for prefix, cat in RESEARCH_CATEGORIES.items():
+                if rel.startswith(prefix):
+                    category = cat
+                    break
+            content = md.read_text(errors="ignore")
+            title = self._extract_title(content, md.stem)
+            doc = ResearchDocument(
+                research_id=self._research_id_from_path(rel, md.stem),
+                title=title,
+                path=rel,
+                category=category,
+                sha256=hashlib.sha256(content.encode()).hexdigest(),
+                status=self._detect_doc_status(content),
+                source_url=f"{source_url}/blob/main/{rel}" if source_url else "",
+                commit=self._file_commit(md),
+            )
+            documents.append(doc)
+        return documents
+
+    @staticmethod
+    def _extract_title(content: str, fallback: str) -> str:
+        match = re.search(r"^#\s+(.+)$", content, re.MULTILINE)
+        if match:
+            return match.group(1).strip()
+        return fallback.replace("_", " ").title()
+
+    @staticmethod
+    def _research_id_from_path(rel: str, stem: str) -> str:
+        return stem.upper().replace(" ", "_")
+
+    @staticmethod
+    def _detect_doc_status(content: str) -> str:
+        lower = content.lower()
+        if re.search(r"status[:\s]*[🟡🟠🔴]", lower) or "emerging" in lower:
+            return "emerging"
+        if "speculative" in lower:
+            return "speculative"
+        if "experimental" in lower:
+            return "experimental"
+        return "active"
+
+    def _file_commit(self, path: Path) -> str:
+        try:
+            result = subprocess.run(
+                ["git", "-C", str(self.research_repo), "log", "-1", "--format=%h", "--", str(path)],
+                capture_output=True, text=True, timeout=10,
+            )
+            return result.stdout.strip()
+        except Exception:
+            return ""
+
+    def _load_manifest_documents(self) -> List[ResearchDocument]:
+        manifest = self.data_dir / "research_manifest.json"
+        if not manifest.exists():
+            return []
+        try:
+            data = json.loads(manifest.read_text())
+            return [ResearchDocument(**doc) for doc in data.get("documents", [])]
+        except Exception:
+            return []
+
+    # ── Index building ────────────────────────────────────────────
+
+    def build_index(self) -> Dict[str, Any]:
+        """Build the research <-> implementation index and cache it."""
+        documents = self.discover_documents()
+        registry = self._load_registry()
+        modules = self._load_modules()
+
+        doc_by_id = {d.research_id: d for d in documents}
+        cap_by_id: Dict[str, Dict[str, str]] = {}
+        for row in registry:
+            cap_by_id[row["capability_id"]] = row
+
+        sdk_map = self._parse_sdk_interfaces()
+        test_map = self._parse_test_modules()
+        mcp_map = self._parse_mcp_tools()
+        benchmark_map = self._parse_benchmarks()
+
+        # capability -> module/tests via keyword overlap + curated aliases
+        capability_links: Dict[str, Dict[str, Any]] = {}
+        for cap_id, row in cap_by_id.items():
+            modules_for, tests_for, sdk_for, mcp_for, benchmarks_for = self._link_capability(
+                row["name"], modules, sdk_map, mcp_map, test_map, benchmark_map
+            )
+            capability_links[cap_id] = {
+                "modules": modules_for,
+                "tests": tests_for,
+                "sdk_interfaces": sdk_for,
+                "mcp_tools": mcp_for,
+                "benchmarks": benchmarks_for,
+            }
+
+        index = {
+            "generated_at": datetime.now(timezone.utc).isoformat(),
+            "research_documents": len(documents),
+            "capabilities": len(registry),
+            "modules": modules,
+            "capability_links": capability_links,
+            "documents": [d.to_dict() for d in documents],
+        }
+        (self.data_dir / "research_index.json").write_text(
+            json.dumps(index, indent=2, default=str)
+        )
+        return index
+
+    @staticmethod
+    def _normalize(text: str) -> str:
+        return re.sub(r"[^a-z0-9]", "", text.lower())
+
+    def _domain_matches_doc(self, source: str, doc: ResearchDocument) -> bool:
+        alias = DOMAIN_ALIASES.get(source.lower())
+        if alias:
+            return alias == doc.research_id
+        return self._normalize(source) in (
+            self._normalize(doc.research_id.replace("_", " ")),
+            self._normalize(doc.title),
+        )
+
+    def _parse_sdk_interfaces(self) -> Dict[str, Dict[str, Any]]:
+        """sdk property name -> {modules, method names}."""
+        sdk_path = Path(__file__).resolve().parent / "sdk.py"
+        content = sdk_path.read_text()
+        result: Dict[str, Dict[str, Any]] = {}
+        for prop in re.finditer(
+            r"@property\n\s+def (\w+)\(self\):.*?\n(.*?)(?=\n\s{4}(?:@property|async def|def )|\Z)",
+            content, re.DOTALL,
+        ):
+            name = prop.group(1)
+            body = prop.group(2)
+            modules = re.findall(r"from \.(\w+) import", body)
+            methods = re.findall(r"def (\w+)\(", body)
+            result[name] = {"modules": sorted(set(modules)), "methods": sorted(set(methods))}
+        return result
+
+    def _parse_test_modules(self) -> Dict[str, List[str]]:
+        tests_dir = Path(__file__).resolve().parent / "tests"
+        result: Dict[str, List[str]] = {}
+        for test_file in tests_dir.glob("test_*.py"):
+            content = test_file.read_text()
+            modules = sorted(set(
+                m.group(1) for m in re.finditer(r"from ai_generation\.(\w+) import", content)
+            ))
+            result[test_file.stem] = modules
+        return result
+
+    def _parse_mcp_tools(self) -> Dict[str, Dict[str, Any]]:
+        """tool name -> sdk properties used by its handler."""
+        mcp_path = Path(__file__).resolve().parent / "mcp_tools.py"
+        content = mcp_path.read_text()
+        result: Dict[str, Dict[str, Any]] = {}
+        handlers: Dict[str, str] = {}
+        handle_match = re.search(r"async def handle\(self, tool_name, arguments\):(.*?)(?=\n    async def |\Z)", content, re.DOTALL)
+        if handle_match:
+            for m in re.finditer(r'"([a-z0-9_]+)": self\.(_handle_\w+)', handle_match.group(1)):
+                handlers[m.group(2)] = m.group(1)
+        for handler_name, tool in handlers.items():
+            handler_match = re.search(
+                rf"async def {re.escape(handler_name)}\(self, args\):(.*?)(?=\n    async def |\Z)",
+                content, re.DOTALL,
+            )
+            properties = []
+            if handler_match:
+                properties = sorted(set(
+                    m.group(1) for m in re.finditer(r"self\.sdk\.(\w+)", handler_match.group(1))
+                ))
+            result[tool] = {"handler": handler_name, "sdk_properties": properties}
+        return result
+
+    def _parse_benchmarks(self) -> Dict[str, Dict[str, Any]]:
+        result: Dict[str, Dict[str, Any]] = {}
+        for name in ("benchmark_lab", "cinema_benchmark", "benchmark_engine"):
+            path = Path(__file__).resolve().parent / f"{name}.py"
+            if not path.exists():
+                continue
+            content = path.read_text()
+            matches = re.findall(r'"([a-z_]+_suite)"', content) + re.findall(r'"suite":\s*"([a-z_]+)"', content)
+            suites = sorted(set(matches))
+            result[name] = {"suites": suites}
+        return result
+
+    def _link_capability(
+        self,
+        name: str,
+        modules: List[str],
+        sdk_map: Dict[str, Dict[str, Any]],
+        mcp_map: Dict[str, Dict[str, Any]],
+        test_map: Dict[str, List[str]],
+        benchmark_map: Dict[str, Dict[str, Any]],
+    ) -> Tuple[List[str], List[str], List[str], List[str], List[str]]:
+        tokens = set(re.findall(r"[a-z0-9]+", name.lower()))
+        linked_modules = []
+        linked_sdk = []
+        for prop, info in sdk_map.items():
+            prop_tokens = set(re.findall(r"[a-z0-9]+", prop))
+            if tokens & prop_tokens:
+                linked_sdk.append(prop)
+                linked_modules.extend(info["modules"])
+        for module in modules:
+            module_tokens = set(re.findall(r"[a-z0-9]+", module))
+            if tokens & module_tokens:
+                linked_modules.append(module)
+        linked_modules = sorted(set(linked_modules))
+        linked_tests = sorted(
+            t for t, mods in test_map.items() if set(mods) & set(linked_modules)
+        )
+        linked_mcp = sorted(
+            tool for tool, info in mcp_map.items()
+            if set(info.get("sdk_properties", [])) & set(linked_sdk)
+        )
+        linked_benchmarks = sorted(
+            b for b, info in benchmark_map.items() if info.get("suites")
+        )[:3]
+        return linked_modules, linked_tests, linked_sdk, linked_mcp, linked_benchmarks
+
+    # ── Traceability ──────────────────────────────────────────────
+
+    def trace_capability(self, capability_id: str) -> Optional[CapabilityTrace]:
+        """Full traceability for one capability."""
+        index = self._load_index()
+        documents = self.discover_documents()
+        row = next((r for r in self._load_registry() if r["capability_id"] == capability_id), None)
+        if not row:
+            return None
+        links = index.get("capability_links", {}).get(capability_id, {})
+        research = [
+            doc.to_dict() for doc in documents
+            if capability_id in doc.related_capabilities
+        ]
+        trace = CapabilityTrace(
+            capability_id=capability_id,
+            name=row["name"],
+            status=row["status"],
+            research_documents=research,
+            modules=links.get("modules", []),
+            tests=links.get("tests", []),
+            sdk_interfaces=links.get("sdk_interfaces", []),
+            mcp_tools=links.get("mcp_tools", []),
+            benchmarks=links.get("benchmarks", []),
+            vault_page=f"knowledge-vault/36-Generated/Capabilities/{capability_id} - {row['name']}.md",
+            registry_entry=f"CAPABILITY_REGISTRY.md#{capability_id}",
+        )
+        if trace.modules:
+            trace.introduced_commit = self._module_introduced_commit(trace.modules[0])
+        return trace
+
+    def _module_introduced_commit(self, module: str) -> str:
+        repo = Path(__file__).resolve().parent.parent
+        try:
+            result = subprocess.run(
+                ["git", "-C", str(repo), "log", "-1", "--format=%h", "--", f"ai_generation/{module}.py"],
+                capture_output=True, text=True, timeout=10,
+            )
+            return result.stdout.strip()
+        except Exception:
+            return ""
+
+    def _load_index(self) -> Dict[str, Any]:
+        index_path = self.data_dir / "research_index.json"
+        if not index_path.exists():
+            return self.build_index()
+        try:
+            return json.loads(index_path.read_text())
+        except Exception:
+            return self.build_index()
+
+    # ── Impact analysis ───────────────────────────────────────────
+
+    def research_impact(self, research_id: str) -> Optional[ImpactReport]:
+        """Determine the implementation blast radius of a research document."""
+        documents = self.discover_documents()
+        doc = next((d for d in documents if d.research_id == research_id), None)
+        if not doc:
+            return None
+        index = self._load_index()
+        affected_caps = doc.related_capabilities
+        modules: Set[str] = set()
+        tests: Set[str] = set()
+        sdk: Set[str] = set()
+        mcp: Set[str] = set()
+        for cap in affected_caps:
+            links = index.get("capability_links", {}).get(cap, {})
+            modules.update(links.get("modules", []))
+            tests.update(links.get("tests", []))
+            sdk.update(links.get("sdk_interfaces", []))
+            mcp.update(links.get("mcp_tools", []))
+        docs = sorted({f"knowledge-vault/36-Generated/Capabilities/{cap} - *.md" for cap in affected_caps})
+        report = ImpactReport(
+            research_id=research_id,
+            title=doc.title,
+            changed=False,
+            affected_capabilities=affected_caps,
+            affected_modules=sorted(modules),
+            affected_tests=sorted(tests),
+            affected_sdk_interfaces=sorted(sdk),
+            affected_mcp_tools=sorted(mcp),
+            affected_docs=docs,
+            affected_benchmarks=["benchmark_lab", "cinema_benchmark"],
+            recommendations=self._recommendations(doc, affected_caps),
+        )
+        return report
+
+    @staticmethod
+    def _recommendations(doc: ResearchDocument, affected_caps: List[str]) -> List[str]:
+        recs = [f"Verify {len(affected_caps)} linked capabilities after research change"]
+        if doc.status in ("emerging", "speculative", "experimental"):
+            recs.append(f"Document as future opportunity (status: {doc.status}) — no implementation action")
+        else:
+            recs.append("Re-run linked test suites and regenerate the knowledge vault")
+        return recs
+
+    # ── Change detection & sync ───────────────────────────────────
+
+    def detect_changes(self) -> List[Dict[str, Any]]:
+        """Compare the live research repo against the cached manifest."""
+        if not self.research_repo.exists():
+            return []
+        live = {d.research_id: d for d in self._scan_research_repo()}
+        cached = {d.research_id: d for d in self._load_manifest_documents()}
+        changes = []
+        for research_id, doc in live.items():
+            if research_id not in cached:
+                changes.append({"type": "new", "research_id": research_id, "title": doc.title})
+            elif cached[research_id].sha256 != doc.sha256:
+                changes.append({"type": "modified", "research_id": research_id, "title": doc.title})
+        for research_id in cached:
+            if research_id not in live:
+                changes.append({"type": "removed", "research_id": research_id})
+        return changes
+
+    def sync(self) -> Dict[str, Any]:
+        """Detect research changes, refresh the index, and update the queue."""
+        changes = self.detect_changes()
+        documents = self.discover_documents(refresh=True)
+        self._write_manifest(documents)
+        self.build_index()
+        queue_added = []
+        for change in changes:
+            if change["type"] != "new":
+                continue
+            doc = next((d for d in documents if d.research_id == change["research_id"]), None)
+            if doc is None:
+                continue
+            item = self._classify_new_research(doc)
+            if item:
+                queue_added.append(item.to_dict())
+                self._append_queue_item(item)
+        return {
+            "changes": changes,
+            "queue_added": queue_added,
+            "documents_indexed": len(documents),
+            "synced_at": datetime.now(timezone.utc).isoformat(),
+        }
+
+    def _write_manifest(self, documents: List[ResearchDocument]) -> None:
+        (self.data_dir / "research_manifest.json").write_text(
+            json.dumps({"documents": [d.to_dict() for d in documents]}, indent=2, default=str)
+        )
+
+    def _classify_new_research(self, doc: ResearchDocument) -> Optional[QueueItem]:
+        try:
+            content = (self.research_repo / doc.path).read_text(errors="ignore")
+        except Exception:
+            content = ""
+        lower = content.lower()
+        if any(k in lower for k in ("requires api key", "requires credentials", "proprietary", "license")):
+            classification, reason = "blocked", "External dependency (credentials/licensing)"
+        elif doc.status in ("emerging", "speculative", "experimental") or "timeline" in lower:
+            classification, reason = "speculative", f"Research status: {doc.status}"
+        else:
+            classification, reason = "implementable", "Immediately implementable capability"
+        return QueueItem(
+            item_id=f"rq-{hashlib.sha1(doc.research_id.encode()).hexdigest()[:10]}",
+            topic=doc.title,
+            source_research=doc.research_id,
+            classification=classification,
+            reason=reason,
+        )
+
+    def _append_queue_item(self, item: QueueItem) -> None:
+        queue_path = self.data_dir / "execution_queue.json"
+        items = []
+        if queue_path.exists():
+            try:
+                items = json.loads(queue_path.read_text())
+            except Exception:
+                items = []
+        if not any(i.get("item_id") == item.item_id for i in items):
+            items.append(item.to_dict())
+            queue_path.write_text(json.dumps(items, indent=2, default=str))
+
+    def execution_queue(self) -> List[Dict[str, Any]]:
+        queue_path = self.data_dir / "execution_queue.json"
+        if not queue_path.exists():
+            return []
+        try:
+            return json.loads(queue_path.read_text())
+        except Exception:
+            return []
+
+    # ── Implementation graph ──────────────────────────────────────
+
+    def implementation_graph(self) -> Dict[str, Any]:
+        """Traversable graph across the whole research <-> implementation ecosystem."""
+        index = self._load_index()
+        documents = self.discover_documents()
+        nodes: List[Dict[str, Any]] = []
+        edges: List[Dict[str, Any]] = []
+        for doc in documents:
+            nodes.append({
+                "id": f"research:{doc.research_id}", "type": "research", "label": doc.title,
+                "category": doc.category, "status": doc.status,
+            })
+            for cap in doc.related_capabilities:
+                edges.append({"from": f"research:{doc.research_id}", "to": f"capability:{cap}"})
+        for row in self._load_registry():
+            cap_id = row["capability_id"]
+            nodes.append({"id": f"capability:{cap_id}", "type": "capability", "label": row["name"]})
+            links = index.get("capability_links", {}).get(cap_id, {})
+            for module in links.get("modules", []):
+                edges.append({"from": f"capability:{cap_id}", "to": f"module:{module}"})
+            for test in links.get("tests", []):
+                edges.append({"from": f"capability:{cap_id}", "to": f"test:{test}"})
+        for module in index.get("modules", []):
+            nodes.append({"id": f"module:{module}", "type": "module", "label": module})
+        for test in index.get("capability_links", {}).values():
+            for t in test.get("tests", []):
+                nodes.append({"id": f"test:{t}", "type": "test", "label": t})
+        return {
+            "nodes": nodes,
+            "edges": edges,
+            "node_count": len(nodes),
+            "edge_count": len(edges),
+        }
+
+    def neighbors(self, node_id: str) -> List[str]:
+        graph = self.implementation_graph()
+        return sorted(
+            set(
+                edge["to"] for edge in graph["edges"] if edge["from"] == node_id
+            ) | set(
+                edge["from"] for edge in graph["edges"] if edge["to"] == node_id
+            )
+        )
+
+    # ── Stats ─────────────────────────────────────────────────────
+
+    def get_stats(self) -> Dict[str, Any]:
+        documents = self.discover_documents()
+        registry = self._load_registry()
+        index = self._load_index()
+        changes = self.detect_changes()
+        return {
+            "research_documents": len(documents),
+            "capabilities": len(registry),
+            "modules": len(index.get("modules", [])),
+            "linked_capabilities": sum(1 for links in index.get("capability_links", {}).values() if links.get("modules")),
+            "pending_changes": len(changes),
+            "queue_items": len(self.execution_queue()),
+            "live_research_repo": self.research_repo.exists(),
+        }

@@ -1,30 +1,37 @@
 ---
-module: "sdk"
+module: "research_integration"
 type: module-doc
 status: active
 owner: ""
-lines: 1611
-classes: 1
+lines: 713
+classes: 5
 functions: 0
 tags: [module, documentation]
 generated: "2026-07-31"
 ---
 
-# sdk
+# research_integration
 
-> SDK — Python SDK for the AI Generation Platform.
-High-level API for consumers.
+> Research Integration Layer — unifies ACOS-Research (canonical knowledge)
+with the production platform (canonical implementation) without duplicating
+research content.
+
+The research repository remains 
 
 ## Overview
 
-- **File**: `ai_generation/sdk.py`
-- **Lines**: 1611
-- **Classes**: 1
+- **File**: `ai_generation/research_integration.py`
+- **Lines**: 713
+- **Classes**: 5
 - **Public Functions**: 0
 
 ## Classes
 
-- `{{UncleFrappeAI}}`
+- `{{ResearchDocument}}`
+- `{{CapabilityTrace}}`
+- `{{ImpactReport}}`
+- `{{QueueItem}}`
+- `{{ResearchIntegrationEngine}}`
 
 ## Integration
 
