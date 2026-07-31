@@ -24,7 +24,7 @@ canonical upstream; the platform only indexes, references, and links it.
 |-----------|----------------|--------|
 | Structured importer | `ai_generation/research_integration.py` | `data/research/research_manifest.json` |
 | Structured index | `ResearchIntegrationEngine.build_index()` | `data/research/research_index.json` |
-| Capability mapping | `DOMAIN_ALIASES` + registry parsing | 253 capabilities → 57 research docs |
+| Capability mapping | `DOMAIN_ALIASES` + registry parsing | 254 capabilities → 57 research docs |
 | Traceability | `trace_capability(capability_id)` | Capability → research/modules/tests/SDK/MCP/commit |
 | Impact analysis | `research_impact(research_id)` | Affected capabilities, modules, tests, docs |
 | Change detection | `detect_changes()` | new / modified / removed research |

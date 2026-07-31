@@ -1165,6 +1165,29 @@ MCP_GENERATION_TOOLS = {
             "required": ["skill_id"],
         },
     },
+    "validate_mcp_server": {
+        "name": "validate_mcp_server",
+        "description": "Offline static validation of one MCP server entry (command resolvable, env documented).",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "server_id": {"type": "string", "description": "Registry id, e.g. postgres, firecrawl"},
+            },
+            "required": ["server_id"],
+        },
+    },
+    "check_mcp_server_health": {
+        "name": "check_mcp_server_health",
+        "description": "Live probe: spawn an MCP server command and report whether it stays up (requires network for npx packages).",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "server_id": {"type": "string", "description": "Registry id, e.g. ollama, comfyui"},
+                "timeout": {"type": "number", "description": "Probe window in seconds", "default": 5.0},
+            },
+            "required": ["server_id"],
+        },
+    },
 
 }
 class MCPGenerationTools:
@@ -1395,6 +1418,8 @@ class MCPGenerationTools:
             "get_mcp_server": self._handle_get_mcp_server,
             "list_skills": self._handle_list_skills,
             "get_skill": self._handle_get_skill,
+            "validate_mcp_server": self._handle_validate_mcp_server,
+            "check_mcp_server_health": self._handle_check_mcp_server_health,
             "kimi_k3_health": self._handle_kimi_k3_health,
             "kimi_k3_benchmark": self._handle_kimi_k3_benchmark,
         }
@@ -1473,6 +1498,17 @@ class MCPGenerationTools:
         if skill is None:
             return {"error": f"unknown skill: {args.get('skill_id', '')}"}
         return {"skill": skill}
+
+    async def _handle_validate_mcp_server(self, args):
+        """Offline static validation of one MCP server entry."""
+        return self.sdk.validate_mcp_server(args.get("server_id", ""))
+
+    async def _handle_check_mcp_server_health(self, args):
+        """Live probe of one MCP server."""
+        return self.sdk.check_mcp_server_health(
+            args.get("server_id", ""),
+            timeout=float(args.get("timeout", 5.0)),
+        )
 
     async def _handle_list_styles(self, args):
         """List all available style presets for image generation"""

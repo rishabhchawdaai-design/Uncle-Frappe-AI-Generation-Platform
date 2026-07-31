@@ -602,6 +602,18 @@ class UncleFrappeAI:
         """Get unified MCP registry statistics."""
         return self.mcp_registry.stats()
 
+    def validate_mcp_server(self, server_id: str) -> dict:
+        """Offline static validation of one MCP server entry."""
+        return self.mcp_registry.validate_config(server_id)
+
+    def check_mcp_server_health(self, server_id: str, timeout: float = 5.0) -> dict:
+        """Live probe: spawn the server command and report whether it stays up."""
+        return self.mcp_registry.health_check(server_id, timeout=timeout)
+
+    def run_mcp_validation(self, live: bool = False) -> list:
+        """Validate all servers (offline config checks by default)."""
+        return self.mcp_registry.run_validation(live=live)
+
     @property
     def skill_registry(self):
         """Unified Skill Registry (canonical: configs/skills.json)."""

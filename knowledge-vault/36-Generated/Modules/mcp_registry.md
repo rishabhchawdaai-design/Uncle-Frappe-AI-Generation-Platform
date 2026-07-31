@@ -3,7 +3,7 @@ module: "mcp_registry"
 type: module-doc
 status: active
 owner: ""
-lines: 119
+lines: 234
 classes: 1
 functions: 1
 tags: [module, documentation]
@@ -20,7 +20,7 @@ with the platform's original MCP configuration — no parallel r
 ## Overview
 
 - **File**: `ai_generation/mcp_registry.py`
-- **Lines**: 119
+- **Lines**: 234
 - **Classes**: 1
 - **Public Functions**: 1
 

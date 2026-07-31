@@ -115,3 +115,132 @@ def test_cli_mcp_servers_command(capsys):
     out = capsys.readouterr().out
     assert "MCP Server Registry" in out
     assert "firecrawl" in out
+
+
+# ── MCP runtime validation (offline config + live probes) ─────────
+
+FAKE_SERVERS = {
+    "mcp_servers": {
+        "ok_server": {
+            "id": "ok_server", "name": "OK", "category": "test",
+            "status": "ready", "verified": True, "command": "python",
+            "args": ["-c", "import time; time.sleep(30)"],
+            "env": {"TEST_VAR": "${TEST_VAR}"}, "package": "fake-ok",
+        },
+        "exit_server": {
+            "id": "exit_server", "name": "Exits", "category": "test",
+            "status": "ready", "verified": True, "command": "python",
+            "args": ["-c", "import sys; sys.exit(3)"],
+            "env": {}, "package": "fake-exit",
+        },
+        "blocked_server": {
+            "id": "blocked_server", "name": "Blocked", "category": "test",
+            "status": "blocked", "verified": False, "command": "python",
+            "args": ["-c", "pass"], "env": {}, "note": "no stable distribution",
+        },
+    }
+}
+
+
+def _fake_registry(tmp_path, monkeypatch=None, env=None):
+    import json as _json
+    cfg = tmp_path / "mcp_servers.json"
+    cfg.write_text(_json.dumps(FAKE_SERVERS))
+    from ai_generation.mcp_registry import MCPRegistry
+    registry = MCPRegistry(config_path=cfg)
+    if env:
+        for k, v in env.items():
+            monkeypatch.setenv(k, v)
+    return registry
+
+
+def test_validate_config_offline(tmp_path, monkeypatch):
+    registry = _fake_registry(tmp_path, monkeypatch, env={"TEST_VAR": "x"})
+    ok = registry.validate_config("ok_server")
+    assert ok["status"] == "valid" and ok["valid"] is True
+    assert ok["errors"] == []
+
+
+def test_validate_config_missing_env(tmp_path, monkeypatch):
+    registry = _fake_registry(tmp_path, monkeypatch)  # TEST_VAR not set
+    result = registry.validate_config("ok_server")
+    assert result["status"] == "invalid"
+    assert any("TEST_VAR" in e for e in result["errors"])
+
+
+def test_validate_config_unknown_and_blocked(tmp_path):
+    registry = _fake_registry(tmp_path)
+    assert registry.validate_config("nope")["status"] == "error"
+    blocked = registry.validate_config("blocked_server")
+    assert blocked["status"] == "blocked" and blocked["valid"] is False
+    assert "no stable distribution" in blocked["error"]
+
+
+def test_health_check_live_healthy(tmp_path):
+    registry = _fake_registry(tmp_path)
+    report = registry.health_check("ok_server", timeout=1.0)
+    assert report["status"] == "healthy" and report["healthy"] is True
+    assert report.get("running") is True
+
+
+def test_health_check_live_unhealthy(tmp_path):
+    registry = _fake_registry(tmp_path)
+    report = registry.health_check("exit_server", timeout=2.0)
+    assert report["status"] == "unhealthy" and report["healthy"] is False
+    assert report["exit_code"] == 3
+
+
+def test_health_check_unknown_and_blocked(tmp_path):
+    registry = _fake_registry(tmp_path)
+    assert registry.health_check("nope")["status"] == "error"
+    blocked = registry.health_check("blocked_server")
+    assert blocked["status"] == "blocked" and blocked["healthy"] is False
+
+
+def test_run_validation_all(tmp_path, monkeypatch):
+    monkeypatch.setenv("TEST_VAR", "x")
+    registry = _fake_registry(tmp_path)
+    results = registry.run_validation()
+    by_id = {r["server_id"]: r for r in results}
+    assert by_id["ok_server"]["status"] == "valid"
+    assert by_id["blocked_server"]["status"] == "blocked"
+    # live mode probes only launch-ready servers
+    live = registry.run_validation(live=True, timeout=0.5)
+    live_by_id = {r["server_id"]: r for r in live}
+    assert live_by_id["ok_server"]["status"] == "healthy"
+    assert live_by_id["blocked_server"]["status"] == "blocked"
+
+
+def test_sdk_mcp_validation_surface(tmp_path):
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    assert ai.validate_mcp_server("postgres")["server_id"] == "postgres"
+    assert ai.validate_mcp_server("faiss")["status"] == "blocked"
+    assert ai.run_mcp_validation(live=False)
+
+
+@pytest.mark.asyncio
+async def test_mcp_tool_validation_handlers():
+    from ai_generation.mcp_tools import MCPGenerationTools
+    tools = MCPGenerationTools()
+    result = await tools.handle("validate_mcp_server", {"server_id": "ollama"})
+    assert result["server_id"] == "ollama"
+    missing = await tools.handle("validate_mcp_server", {"server_id": "nope"})
+    assert missing["status"] == "error"
+
+
+def test_cli_mcp_check_command(capsys):
+    from ai_generation.cli import cmd_mcp_check
+    import asyncio
+    asyncio.run(cmd_mcp_check(server_id="ollama"))
+    out = capsys.readouterr().out
+    assert "MCP config validation" in out
+
+
+def test_cli_mcp_check_all_command(capsys):
+    from ai_generation.cli import cmd_mcp_check_all
+    import asyncio
+    asyncio.run(cmd_mcp_check_all(live=False))
+    out = capsys.readouterr().out
+    assert "MCP validation — 59 servers" in out
+    assert "[FAIL] faiss: blocked" in out
