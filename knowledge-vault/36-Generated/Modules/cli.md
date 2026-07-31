@@ -3,9 +3,9 @@ module: "cli"
 type: module-doc
 status: active
 owner: ""
-lines: 610
+lines: 778
 classes: 0
-functions: 32
+functions: 40
 tags: [module, documentation]
 generated: "2026-07-31"
 ---
@@ -17,9 +17,9 @@ generated: "2026-07-31"
 ## Overview
 
 - **File**: `ai_generation/cli.py`
-- **Lines**: 610
+- **Lines**: 778
 - **Classes**: 0
-- **Public Functions**: 32
+- **Public Functions**: 40
 
 ## Public API
 
@@ -54,6 +54,14 @@ generated: "2026-07-31"
 - `cmd_aigos_knowledge()`
 - `cmd_aigos_providers()`
 - `cmd_aigos_endpoints()`
+- `cmd_quality_gates()`
+- `cmd_review_code()`
+- `cmd_scan_secrets()`
+- `cmd_analyze_code()`
+- `cmd_debt_scan()`
+- `cmd_refactor_suggest()`
+- `cmd_quality_report()`
+- `cmd_orchestrate()`
 - `main()`
 
 ## Integration
