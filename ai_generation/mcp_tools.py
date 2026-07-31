@@ -1141,6 +1141,30 @@ MCP_GENERATION_TOOLS = {
             "required": ["server_id"],
         },
     },
+    "list_skills": {
+        "name": "list_skills",
+        "description": "List skills from the unified platform skill registry (filter by category, status, search).",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "category": {"type": "string", "description": "Filter by category (e.g. testing, code-review, gpu-optimization)", "default": ""},
+                "status": {"type": "string", "enum": ["ready", "blocked"], "description": "Filter by status", "default": ""},
+                "search": {"type": "string", "description": "Free-text search over id/name/description/category/source", "default": ""},
+            },
+            "required": [],
+        },
+    },
+    "get_skill": {
+        "name": "get_skill",
+        "description": "Get one skill entry (module mapping, usage, source) from the unified registry.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "skill_id": {"type": "string", "description": "Registry id, e.g. quality_gate_runner, pytorch_skill"},
+            },
+            "required": ["skill_id"],
+        },
+    },
 
 }
 class MCPGenerationTools:
@@ -1369,6 +1393,8 @@ class MCPGenerationTools:
             "kimi_k3_info": self._handle_kimi_k3_info,
             "list_mcp_servers": self._handle_list_mcp_servers,
             "get_mcp_server": self._handle_get_mcp_server,
+            "list_skills": self._handle_list_skills,
+            "get_skill": self._handle_get_skill,
             "kimi_k3_health": self._handle_kimi_k3_health,
             "kimi_k3_benchmark": self._handle_kimi_k3_benchmark,
         }
@@ -1432,6 +1458,21 @@ class MCPGenerationTools:
         if server is None:
             return {"error": f"unknown MCP server: {args.get('server_id', '')}"}
         return {"server": server}
+
+    async def _handle_list_skills(self, args):
+        """List skills from the unified registry."""
+        return {"skills": self.sdk.list_skills(
+            category=args.get("category", ""),
+            status=args.get("status", ""),
+            search=args.get("search", ""),
+        )}
+
+    async def _handle_get_skill(self, args):
+        """Get one skill entry from the unified registry."""
+        skill = self.sdk.get_skill(args.get("skill_id", ""))
+        if skill is None:
+            return {"error": f"unknown skill: {args.get('skill_id', '')}"}
+        return {"skill": skill}
 
     async def _handle_list_styles(self, args):
         """List all available style presets for image generation"""

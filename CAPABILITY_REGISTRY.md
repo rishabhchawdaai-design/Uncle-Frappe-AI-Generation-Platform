@@ -394,6 +394,7 @@
 | PLT-02 | CLI Interface | Core Platform | VERIFIED |
 | PLT-03 | MCP Server Tools (210 tools) | Core Platform | VERIFIED |
 | PLT-21 | Unified MCP Server Registry (59 servers) | Core Platform | VERIFIED |
+| PLT-22 | Unified Skill Registry (80 skills) | Plugin Ecosystem Research | VERIFIED |
 | PLT-04 | Provider Auto-Discovery | Core Platform | VERIFIED |
 | PLT-05 | Provider Verification | Core Platform | VERIFIED |
 | PLT-06 | Health Monitoring | Core Platform | VERIFIED |
@@ -437,29 +438,29 @@
 | Networking Research | 6 | 0 | 0 | 0 | 0 | 6 |
 | OCR Research | 10 | 10 | 0 | 0 | 0 | 0 |
 | Observability Research | 11 | 7 | 0 | 0 | 0 | 4 |
-| Plugin Ecosystem Research | 10 | 10 | 0 | 0 | 0 | 0 |
+| Plugin Ecosystem Research | 11 | 11 | 0 | 0 | 0 | 0 |
 | Runtime Capability Registry | 12 | 12 | 0 | 0 | 0 | 0 |
 | Search Systems Research | 11 | 11 | 0 | 0 | 0 | 0 |
 | Security Canon | 12 | 9 | 0 | 0 | 0 | 3 |
 | Storage Research | 8 | 2 | 0 | 0 | 0 | 6 |
 | Workflow Research | 7 | 3 | 0 | 0 | 0 | 4 |
-| **TOTAL** | **252** | **205** | **0** | **0** | **0** | **47** |
+| **TOTAL** | **253** | **206** | **0** | **0** | **0** | **47** |
 
 ## Completion Calculation
 
 ```
-Total capabilities:     252
+Total capabilities:     253
 BLOCKED:                47  (external service dependencies)
-Eligible for completion:205
+Eligible for completion:206
 
-VERIFIED:              205
+VERIFIED:              206
 
-Verified completion = 205 / 205 = 100%
+Verified completion = 206 / 206 = 100%
 ```
 
 ---
 
-All 205 eligible capabilities are VERIFIED. The remaining 47 capabilities are
+All 206 eligible capabilities are VERIFIED. The remaining 47 capabilities are
 BLOCKED by external dependencies (provider credentials, proprietary models,
 licensed services, or unavailable infrastructure) and are tracked with
 justification in the registry rows above.

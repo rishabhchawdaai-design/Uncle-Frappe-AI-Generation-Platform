@@ -1,33 +1,36 @@
 ---
-module: "mcp_tools"
+module: "skill_registry"
 type: module-doc
 status: active
 owner: ""
-lines: 2863
+lines: 97
 classes: 1
 functions: 1
 tags: [module, documentation]
 generated: "2026-07-31"
 ---
 
-# mcp_tools
+# skill_registry
 
-> MCP Tools for AI Generation — expose generation capabilities as MCP tools.
+> Skill Registry — unified registry of skills for the platform.
+
+Single source of truth: ``configs/skills.json`` (canonical — no parallel
+skill registry). Platform-native skills map to verified modules;
 
 ## Overview
 
-- **File**: `ai_generation/mcp_tools.py`
-- **Lines**: 2863
+- **File**: `ai_generation/skill_registry.py`
+- **Lines**: 97
 - **Classes**: 1
 - **Public Functions**: 1
 
 ## Classes
 
-- `{{MCPGenerationTools}}`
+- `{{SkillRegistry}}`
 
 ## Public API
 
-- `get_mcp_generation_tools()`
+- `get_skill_registry()`
 
 ## Integration
 

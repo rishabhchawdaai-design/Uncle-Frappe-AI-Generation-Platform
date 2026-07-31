@@ -766,6 +766,25 @@ async def cmd_kimi_benchmark(prompt="Explain Mixture of Experts.", runs=2,
     return result
 
 
+async def cmd_skills(category="", status="", search=""):
+    """List skills from the unified registry."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    skills = ai.list_skills(category=category, status=status, search=search)
+    stats = ai.get_skill_registry_stats()
+    print(f"\n  Skill Registry — {len(skills)} shown / {stats['total_skills']} total"
+          f" ({stats['ready']} ready, {stats['blocked']} blocked,"
+          f" {stats['verified']} verified)")
+    print(f"  {'ID':<28s} {'STATUS':<8s} {'VERIFIED':<9s} {'CATEGORY':<22s} SOURCE")
+    for sk in skills:
+        verified = "yes" if sk.get("verified") else "no"
+        print(f"  {sk['id']:<28s} {sk.get('status','ready'):<8s} {verified:<9s} "
+              f"{sk.get('category','-'):<22s} {sk.get('source','-')}")
+        if sk.get("note"):
+            print(f"    {sk['note'][:110]}")
+    return {"skills": skills, "stats": stats}
+
+
 async def cmd_mcp_servers(category="", status="", search=""):
     """List MCP servers from the unified registry."""
     from ai_generation.sdk import UncleFrappeAI
@@ -1026,6 +1045,21 @@ async def main():
         await cmd_kimi_info()
     elif args[0] == "kimi-health":
         await cmd_kimi_health()
+    elif args[0] == "skills":
+        category = ""
+        status = ""
+        search = ""
+        i = 1
+        while i < len(args):
+            if args[i] == "--category" and i + 1 < len(args):
+                category = args[i + 1]; i += 2
+            elif args[i] == "--status" and i + 1 < len(args):
+                status = args[i + 1]; i += 2
+            elif args[i] == "--search" and i + 1 < len(args):
+                search = args[i + 1]; i += 2
+            else:
+                i += 1
+        await cmd_skills(category=category, status=status, search=search)
     elif args[0] == "mcp-servers":
         category = ""
         status = ""

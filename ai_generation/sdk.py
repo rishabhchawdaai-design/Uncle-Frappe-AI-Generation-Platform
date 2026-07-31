@@ -106,6 +106,8 @@ class UncleFrappeAI:
         self._kimi_k3 = None
         # Unified MCP Server Registry
         self._mcp_registry = None
+        # Unified Skill Registry
+        self._skill_registry = None
         # Phase 30 — Security Crypto Layer
         self._encryption_at_rest = None
         # Phase 31 — In-Memory Event Bus
@@ -599,6 +601,28 @@ class UncleFrappeAI:
     def get_mcp_registry_stats(self) -> dict:
         """Get unified MCP registry statistics."""
         return self.mcp_registry.stats()
+
+    @property
+    def skill_registry(self):
+        """Unified Skill Registry (canonical: configs/skills.json)."""
+        if self._skill_registry is None:
+            from .skill_registry import SkillRegistry
+            self._skill_registry = SkillRegistry()
+        return self._skill_registry
+
+    def list_skills(self, category: str = "", status: str = "",
+                    search: str = "") -> list:
+        """List skills from the unified registry (filterable)."""
+        return self.skill_registry.list_skills(category=category, status=status,
+                                               search=search)
+
+    def get_skill(self, skill_id: str) -> dict:
+        """Get one skill entry from the unified registry."""
+        return self.skill_registry.get_skill(skill_id)
+
+    def get_skill_registry_stats(self) -> dict:
+        """Get unified skill registry statistics."""
+        return self.skill_registry.stats()
 
     @property
     def event_kernel(self):
