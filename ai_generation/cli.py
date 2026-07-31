@@ -690,7 +690,8 @@ async def cmd_research_graph():
 
 # ── Kimi K3 Commands ──
 
-async def cmd_kimi_chat(prompt, provider="auto", system_prompt="", reasoning_effort="max", max_tokens=0):
+async def cmd_kimi_chat(prompt, provider="auto", system_prompt="", reasoning_effort="max",
+                     max_tokens=0, strategy="auto"):
     """Chat with Kimi K3 through the best available execution path."""
     from ai_generation.sdk import UncleFrappeAI
     ai = UncleFrappeAI()
@@ -698,6 +699,7 @@ async def cmd_kimi_chat(prompt, provider="auto", system_prompt="", reasoning_eff
         prompt, provider=provider, system_prompt=system_prompt,
         reasoning_effort=reasoning_effort,
         max_tokens=int(max_tokens) if max_tokens else None,
+        strategy=strategy,
     )
     print(f"\n  Provider:    {result.get('provider', '')}")
     print(f"  Model:       {result.get('model', 'kimi-k3')}")
@@ -951,6 +953,7 @@ async def main():
         reasoning_effort = "max"
         system_prompt = ""
         max_tokens = 0
+        strategy = "auto"
         i = 2
         while i < len(args):
             if args[i] == "--provider" and i + 1 < len(args):
@@ -961,10 +964,13 @@ async def main():
                 system_prompt = args[i + 1]; i += 2
             elif args[i] == "--max-tokens" and i + 1 < len(args):
                 max_tokens = int(args[i + 1]); i += 2
+            elif args[i] == "--strategy" and i + 1 < len(args):
+                strategy = args[i + 1]; i += 2
             else:
                 i += 1
         await cmd_kimi_chat(prompt, provider=provider, system_prompt=system_prompt,
-                            reasoning_effort=reasoning_effort, max_tokens=max_tokens)
+                            reasoning_effort=reasoning_effort, max_tokens=max_tokens,
+                            strategy=strategy)
     elif args[0] == "kimi-info":
         await cmd_kimi_info()
 

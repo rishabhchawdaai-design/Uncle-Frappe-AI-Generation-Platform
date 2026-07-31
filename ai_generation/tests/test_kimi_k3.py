@@ -767,3 +767,45 @@ async def test_manager_benchmark_lab(monkeypatch, tmp_path):
     score = lab.get_provider_score("kimi_k3_vllm")
     assert score is not None
     assert score["total_benchmarks"] == 2
+
+
+# ── Provider Intelligence ─────────────────────────────────────────
+
+def test_provider_intelligence_has_kimi_k3():
+    from ai_generation.provider_intelligence import ProviderIntelligenceEngine
+    engine = ProviderIntelligenceEngine()
+    intel = engine.get_all(provider_type="text")
+    names = {i["name"] for i in intel}
+    assert "kimi_k3" in names
+    k3 = next(i for i in intel if i["name"] == "kimi_k3")
+    assert k3["verification_status"] == "verified"
+    assert k3["api_key_required"] is True
+    assert "chat" in k3["capabilities"]
+    assert k3["models_count"] == 3
+    recommendations = engine.get_recommendations()
+    rec_names = {r["name"] for r in recommendations}
+    assert "kimi_k3" in rec_names
+
+
+# ── Negotiation-based runtime selection ───────────────────────────
+
+@pytest.mark.asyncio
+async def test_manager_chat_negotiated(monkeypatch):
+    from ai_generation.kimi_k3 import KimiK3Manager
+    monkeypatch.setattr("ai_generation.kimi_k3._post_json", make_post())
+    manager = KimiK3Manager()
+    result = await manager.chat_negotiated("explain transformers",
+                                           quality_priority="high")
+    assert result.error is None
+    assert result.provider.startswith("kimi_k3_")
+    assert result.text == "Hello from Kimi K3"
+
+
+@pytest.mark.asyncio
+async def test_sdk_chat_negotiate_strategy(monkeypatch):
+    from ai_generation.sdk import UncleFrappeAI
+    monkeypatch.setattr("ai_generation.kimi_k3._post_json", make_post())
+    ai = UncleFrappeAI()
+    result = await ai.chat("hello", strategy="negotiate")
+    assert result["text"] == "Hello from Kimi K3"
+    assert result["provider"].startswith("kimi_k3_")

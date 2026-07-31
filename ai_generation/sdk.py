@@ -618,19 +618,28 @@ class UncleFrappeAI:
 
     async def chat(self, prompt, provider="auto", system_prompt="", images=None,
                    history=None, reasoning_effort="max", max_tokens=None,
-                   temperature=None, top_p=None, timeout_secs=120.0):
+                   temperature=None, top_p=None, timeout_secs=120.0,
+                   strategy="auto"):
         """Chat with Kimi K3 through the best available execution path.
 
         provider: "auto" | "kimi_k3_cloud" | "kimi_k3_vllm" | "kimi_k3_sglang"
         reasoning_effort: "low" | "high" | "max" (official Kimi K3 values)
+        strategy: "auto" (priority order + fallback) or "negotiate"
+        (Negotiation Engine selects the optimal path from official candidates).
         Returns a dict with text, reasoning, provider, latency_ms, quality_score.
         """
-        result = await self.kimi_k3.chat(
-            prompt, provider=provider, system_prompt=system_prompt,
-            images=images, history=history, reasoning_effort=reasoning_effort,
-            max_tokens=max_tokens, temperature=temperature, top_p=top_p,
-            timeout_secs=timeout_secs,
-        )
+        if strategy == "negotiate":
+            result = await self.kimi_k3.chat_negotiated(
+                prompt, system_prompt=system_prompt,
+                reasoning_effort=reasoning_effort,
+            )
+        else:
+            result = await self.kimi_k3.chat(
+                prompt, provider=provider, system_prompt=system_prompt,
+                images=images, history=history, reasoning_effort=reasoning_effort,
+                max_tokens=max_tokens, temperature=temperature, top_p=top_p,
+                timeout_secs=timeout_secs,
+            )
         return result.to_dict()
 
     def kimi_k3_info(self):

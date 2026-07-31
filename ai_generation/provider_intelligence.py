@@ -176,6 +176,25 @@ class ProviderIntelligenceEngine:
                 implementation_priority="medium",
                 source="fal.ai/docs",
             ),
+            ProviderIntelligence(
+                name="kimi_k3", url="https://platform.kimi.ai",
+                provider_type="text", license=LicenseType.OPEN,
+                license_notes="Kimi K3 License (open weights); API use subject to Moonshot AI ToS",
+                verification_status=VerificationStatus.VERIFIED,
+                availability_confirmed=True, api_key_required=True,
+                free_tier_available=False,
+                models=[
+                    {"name": "kimi-k3", "type": "text"},
+                    {"name": "kimi-k3", "type": "text", "runtime": "vllm"},
+                    {"name": "kimi-k3", "type": "text", "runtime": "sglang"},
+                ],
+                capabilities=["chat"],
+                media_support={"text": "production", "image": "basic"},
+                benchmark_scores={"reasoning": 92, "quality": 92, "speed": 70},
+                implementation_priority="high",
+                source="platform.kimi.ai/docs + official vLLM/SGLang recipes",
+                notes="1M context, always-on thinking (low/high/max), MXFP4/MXFP8",
+            ),
         ]
         self._discoveries.extend(known)
 
