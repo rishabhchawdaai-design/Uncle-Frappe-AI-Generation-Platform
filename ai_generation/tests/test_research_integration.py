@@ -112,6 +112,25 @@ def test_research_impact_for_cross_referenced_documents(tmp_path):
     assert scheduler is not None
     assert scheduler.affected_capabilities
 
+    plugin_os = engine.research_impact("CHAPTER_08_PLUGIN_OPERATING_SYSTEM")
+    assert plugin_os is not None
+    assert "PLG-01" in plugin_os.affected_capabilities
+    assert "PLG-10" in plugin_os.affected_capabilities
+    assert "SEC-01" in plugin_os.affected_capabilities
+
+    compute_graph = engine.research_impact("CHAPTER_01_UNIVERSAL_COMPUTE_GRAPH")
+    assert compute_graph is not None
+    assert "CGR-01" in compute_graph.affected_capabilities
+    assert "WFL-01" in compute_graph.affected_capabilities
+
+    model_registry = engine.research_impact("MODEL_CAPABILITY_REGISTRY")
+    assert model_registry is not None
+    assert "CGR-03" in model_registry.affected_capabilities
+
+    workflow_registry = engine.research_impact("WORKFLOW_CAPABILITY_REGISTRY")
+    assert workflow_registry is not None
+    assert "WFL-01" in workflow_registry.affected_capabilities
+
 
 def test_sync_classifies_satisfied_research(tmp_path):
     repo = tmp_path / "repo"
