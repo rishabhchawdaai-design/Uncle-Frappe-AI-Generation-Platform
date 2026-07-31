@@ -3,7 +3,7 @@ module: "provider_intelligence"
 type: module-doc
 status: active
 owner: ""
-lines: 231
+lines: 250
 classes: 5
 functions: 0
 tags: [module, documentation]
@@ -19,7 +19,7 @@ Verifies availability, licensing, capabilities, ben
 ## Overview
 
 - **File**: `ai_generation/provider_intelligence.py`
-- **Lines**: 231
+- **Lines**: 250
 - **Classes**: 5
 - **Public Functions**: 0
 

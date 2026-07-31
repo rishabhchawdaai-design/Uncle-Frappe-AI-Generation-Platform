@@ -732,6 +732,51 @@ class KimiK3Manager:
         )
         return await self._execute(request)
 
+    async def chat_negotiated(self, prompt: str, quality_priority: str = "high",
+                              latency_target_ms: Optional[float] = None,
+                              max_cost_usd: Optional[float] = None,
+                              reasoning_effort: str = "max",
+                              system_prompt: str = "") -> KimiK3Result:
+        """Select the optimal Kimi K3 path via the Negotiation Engine, then execute.
+
+        Builds official-path candidates, negotiates with the platform's
+        Negotiation Engine (quality/latency/cost constraints), and executes
+        through the winning provider with automatic fallback.
+        """
+        from .negotiation_engine import (
+            Modality, NegotiationEngine, NegotiationRequest,
+            QualityPriority, TaskType,
+        )
+        request = NegotiationRequest(
+            task_type=TaskType.CHAT,
+            modality=Modality.TEXT,
+            prompt=prompt,
+            required_capabilities=["chat"],
+            quality_priority=QualityPriority(quality_priority),
+            latency_target_ms=latency_target_ms,
+            max_cost_usd=max_cost_usd,
+        )
+        engine = NegotiationEngine()
+        result = engine.negotiate(request, kimi_k3_candidates())
+        if result.status != "success" or result.selected_candidate is None:
+            return KimiK3Result(error=result.suggestion or "no compatible path")
+        provider = result.selected_candidate.provider_name
+        chat_result = await self.chat(
+            prompt, provider=provider, system_prompt=system_prompt,
+            reasoning_effort=reasoning_effort,
+        )
+        if chat_result.error is not None:
+            # Negotiated winner unavailable -> automatic fallback across all paths.
+            fallback = await self.chat(
+                prompt, provider="auto", system_prompt=system_prompt,
+                reasoning_effort=reasoning_effort,
+            )
+            if fallback.error is None:
+                fallback.fallbacks = [provider] + fallback.fallbacks
+                return fallback
+        chat_result.reasoning = chat_result.reasoning or ""
+        return chat_result
+
     async def _execute(self, request: KimiK3Request) -> KimiK3Result:
         fallbacks: List[str] = []
         last_error: Optional[str] = None

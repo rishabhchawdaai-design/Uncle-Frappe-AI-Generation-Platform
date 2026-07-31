@@ -11,9 +11,9 @@ generated: "2026-07-31"
 
 | Module | Classes | Functions | Lines |
 |--------|---------|-----------|-------|
-| `cli` | 0 | 47 | 973 |
+| `cli` | 0 | 47 | 979 |
 | `mcp_tools` | 1 | 1 | 2746 |
-| `sdk` | 1 | 0 | 1654 |
+| `sdk` | 1 | 0 | 1663 |
 
 ## Related
 
