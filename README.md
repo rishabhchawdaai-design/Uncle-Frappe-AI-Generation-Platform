@@ -72,34 +72,29 @@ exposed via `ai_generation.mcp_tools.MCPGenerationTools`.
 ## Project Structure
 
 ```
-ai_generation/          # Core AI generation engine
-  providers/            # Provider implementations
-  agents/               # Autonomous agent system (Phase 14)
-  tests/                # Test suite
-  sdk.py               # Python SDK
-  cli.py               # CLI interface
-  mcp_tools.py         # MCP server tools
+ai_generation/          # Single canonical platform package
+  sdk.py                # Unified SDK entry point
+  cli.py                # CLI interface
+  mcp_tools.py          # 198 MCP tools exposed by the platform
   generation_manager.py # Orchestration core
-  prompt_engine.py     # Prompt optimization
-  workflow_engine.py   # Workflow orchestration
-  benchmark_engine.py  # Provider benchmarking
-  quality_engine.py    # Output quality evaluation
-
-browser_agents/         # Browser-based agent wrappers
-core_platform/          # Platform infrastructure
-  api.py               # REST API
-  rag/                 # RAG system
-  vector_store/        # Vector storage
-  observability/       # Metrics & monitoring
-  deployment/          # Docker & deployment
-
-sections/               # Research section tools
-wrappers/               # Web scraping wrappers
-mcp_adapters/           # MCP protocol adapters
-docker/                 # Container configurations
-configs/                # Configuration files
+  auto_router.py        # Intelligent provider routing
+  execution_engine.py   # Task execution
+  workflow_engine.py    # Multi-step workflows
+  negotiation_engine.py # Capability negotiation
+  capability_registry.py# Capability graph
+  benchmark_engine.py   # Provider benchmarking
+  quality_engine.py     # Output quality evaluation
+  quality_engineering.py# Quality gates, review, test generation
+  security.py           # Security framework
+  observability.py      # Metrics & OpenTelemetry
+  providers/            # Provider implementations
+  agents/               # Autonomous agent system
+  tests/                # 1,141 tests
+configs/                # Canonical configuration (env template, MCP servers)
+data/                   # Runtime registries and benchmarks
+knowledge-vault/        # Obsidian knowledge system (37 sections)
 scripts/                # Setup & utility scripts
-data/                   # Runtime data (registries, benchmarks)
+.github/workflows/      # CI/CD
 ```
 
 ## Providers

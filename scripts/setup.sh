@@ -1,33 +1,37 @@
 #!/bin/bash
-# Research MCP Stack - Setup Script
+# Uncle Frappe AI Generation Platform — Setup Script
 set -e
-echo "=== Research MCP Stack Setup ==="
+
+echo "=== Uncle Frappe AI Generation Platform Setup ==="
 
 # Python venv
-echo "[1/5] Creating Python virtual environment..."
+echo "[1/4] Creating Python virtual environment..."
 python3 -m venv venv
 source venv/bin/activate
 pip install --upgrade pip
 
-echo "[2/5] Installing Python dependencies..."
-pip install beautifulsoup4 httpx aiohttp trafilatura readability-lxml \
-    newspaper3k requests-html scrapy playwright selenium httpx \
-    trafilatura dateparser
+echo "[2/4] Installing test dependencies..."
+pip install pytest pytest-asyncio
 
-echo "[3/5] Installing Playwright browsers..."
-python -m playwright install chromium --with-deps 2>/dev/null || true
+echo "[3/4] Environment config..."
+if [ ! -f .env ]; then
+    cp configs/.env.example .env
+    echo "    Created .env from configs/.env.example (fill in your API keys)"
+fi
 
-echo "[4/5] Environment config..."
-cp configs/.env.example .env 2>/dev/null || true
+echo "[4/4] Verifying the platform..."
+PYTHONPATH=. python -c "
+import importlib, pkgutil, ai_generation
+count = sum(1 for _ in pkgutil.iter_modules(ai_generation.__path__))
+print(f'    All {count} modules import cleanly')
+"
+PYTHONPATH=. pytest ai_generation/tests/ -q
 
-echo "[5/5] Done!"
+echo ""
+echo "=== Setup complete ==="
 echo ""
 echo "Usage:"
 echo "  source venv/bin/activate"
-echo "  python main.py health              # Check tool availability"
-echo "  python main.py collect <url>       # Collect from a URL"
-echo "  python main.py raipur news         # Run Raipur news profile"
-echo "  python main.py mcp-list            # List MCP servers"
-echo ""
-echo "Docker services (optional):"
-echo "  docker compose -f docker/docker-compose.yml up -d"
+echo "  python -m ai_generation.cli --help    # CLI"
+echo "  python -m ai_generation.cli stats     # Platform stats"
+echo "  python -m ai_generation.cli quality-report [file]  # Quality dashboard"
