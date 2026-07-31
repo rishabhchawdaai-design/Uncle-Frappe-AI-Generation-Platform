@@ -105,6 +105,33 @@ stats = ai.get_mcp_registry_stats()                 # totals + categories + env 
 
 MCP tools: `list_mcp_servers`, `get_mcp_server`.
 
+## Unified Skill Registry
+
+The platform ships a canonical, unified skill registry
+(`configs/skills.json`, single source of truth — no parallel skill registries).
+
+- **80 skills catalogued** — 78 ready, 2 blocked (proprietary/no public distribution)
+- 40 platform-native skills map to verified modules (quality gates, code review, test generation, benchmarking, generation, security, runtimes)
+- 38 external skill-pack references (Anthropic/Claude, OpenCode, OpenHands, MCP Market) across all objective categories
+- Categories: architecture, refactoring, testing, TDD, security, benchmarking, profiling, performance, memory/GPU optimization, distributed systems, image/video/audio generation, prompt engineering, research, code review, git, CI/CD, Docker, Kubernetes, Python, TypeScript, FastAPI, PyTorch, Diffusers, Transformers, ONNX, TensorRT, MLX, llama.cpp, ComfyUI, Forge, A1111, SD.Next
+
+```bash
+python -m ai_generation.cli skills --category code-review
+python -m ai_generation.cli skills --search benchmark
+python -m ai_generation.cli skills --status blocked
+```
+
+```python
+from ai_generation import UncleFrappeAI
+
+ai = UncleFrappeAI()
+skills = ai.list_skills(category="testing")     # filtered list
+skill = ai.get_skill("quality_gate_runner")      # one entry (module, usage, source)
+stats = ai.get_skill_registry_stats()            # totals + categories + sources
+```
+
+MCP tools: `list_skills`, `get_skill`.
+
 ## Quick Start
 
 ```python
