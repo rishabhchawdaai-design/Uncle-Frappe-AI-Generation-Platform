@@ -3,9 +3,9 @@ module: "kimi_k3"
 type: module-doc
 status: active
 owner: ""
-lines: 1594
+lines: 1673
 classes: 9
-functions: 15
+functions: 17
 tags: [module, documentation]
 generated: "2026-07-31"
 ---
@@ -20,9 +20,9 @@ Kimi K3 is an open-weight multimodal reasoning model (text + image) with a
 ## Overview
 
 - **File**: `ai_generation/kimi_k3.py`
-- **Lines**: 1594
+- **Lines**: 1673
 - **Classes**: 9
-- **Public Functions**: 15
+- **Public Functions**: 17
 
 ## Classes
 
@@ -53,6 +53,8 @@ Kimi K3 is an open-weight multimodal reasoning model (text + image) with a
 - `register_kimi_k3_capability_graph()`
 - `build_vllm_k8s_yaml()`
 - `build_sglang_k8s_yaml()`
+- `register_kimi_k3_supervisor_workers()`
+- `record_kimi_k3_regression()`
 
 ## Integration
 

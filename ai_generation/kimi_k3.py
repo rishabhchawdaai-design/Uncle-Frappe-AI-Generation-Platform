@@ -1595,3 +1595,79 @@ def _yaml_args(args: str) -> str:
         else:
             lines.append(f"            - {arg}")
     return "\n".join(lines)
+
+
+# ──────────────────────────────────────────────────────────────────
+# Operational integration: supervision + regression detection
+# ──────────────────────────────────────────────────────────────────
+
+def register_kimi_k3_supervisor_workers(supervisor, manager: Optional["KimiK3Manager"] = None) -> List[str]:
+    """Register one MONITOR worker per Kimi K3 endpoint on a SupervisorTree.
+
+    Each worker health-checks its endpoint through the manager and raises a
+    WorkerCrashError when the endpoint is unhealthy, so the supervisor tree
+    applies its fail-fast/recover-quietly restart strategy. Returns the
+    registered worker ids.
+    """
+    import asyncio
+
+    from .supervisor import WorkerCrashError, WorkerType
+
+    if manager is None:
+        manager = KimiK3Manager()
+    worker_ids: List[str] = []
+
+    for endpoint in KIMI_K3_ENDPOINTS:
+        ep_name = endpoint["name"]
+
+        def _health_check(_name: str = ep_name) -> Dict[str, Any]:
+            health = asyncio.run(manager.health()).get(_name, {})
+            if not health.get("healthy") or not health.get("serves_kimi_k3"):
+                raise WorkerCrashError(
+                    f"Kimi K3 endpoint {_name} unhealthy or not serving kimi-k3"
+                )
+            return {"provider": _name, "healthy": True}
+
+        worker_id = f"kimi_k3_{ep_name}"
+        supervisor.add_worker(
+            worker_id=worker_id,
+            fn=_health_check,
+            name=f"Kimi K3 {ep_name} monitor",
+            worker_type=WorkerType.MONITOR,
+        )
+        worker_ids.append(worker_id)
+    return worker_ids
+
+
+def record_kimi_k3_regression(detector, benchmark_result: Dict[str, Any]) -> List[Any]:
+    """Feed a Kimi K3 benchmark result into the Regression Detector.
+
+    ``benchmark_result`` is the dict produced by ``KimiK3Manager.benchmark()``
+    (a ``runs`` list with provider, success, latency_ms, quality_score). The
+    first observation per provider becomes the baseline; subsequent
+    observations are compared via ``auto_detect``. Returns any alerts.
+    """
+    by_provider: Dict[str, List[Dict[str, Any]]] = {}
+    for run in benchmark_result.get("runs", []):
+        by_provider.setdefault(run.get("provider", "kimi_k3_cloud"), []).append(run)
+
+    alerts: List[Any] = []
+    for provider, runs in by_provider.items():
+        successful = [r for r in runs if r.get("success")]
+        latencies = [r["latency_ms"] for r in successful if r.get("latency_ms", 0) > 0]
+        total = max(len(runs), 1)
+        metrics = {
+            "quality_score": round(
+                sum(r.get("quality_score", 0.0) for r in successful) / max(len(successful), 1), 2,
+            ),
+            "error_rate": round(sum(0 if r.get("success") else 1 for r in runs) / total, 4),
+        }
+        if latencies:
+            sorted_lat = sorted(latencies)
+            metrics["latency_p50"] = round(sorted_lat[len(sorted_lat) // 2], 1)
+            metrics["latency_p99"] = round(sorted_lat[-1], 1)
+        if not detector.get_baseline(provider):
+            detector.set_baseline(provider, metrics)
+        detector.record_measurement(provider, metrics)
+        alerts.extend(detector.auto_detect(provider, metrics))
+    return alerts

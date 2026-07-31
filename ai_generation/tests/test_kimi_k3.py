@@ -1075,3 +1075,87 @@ def test_local_runtimes_kimi_k3_invalid_runtime():
     mgr = LocalRuntimeManager()
     with pytest.raises(ValueError):
         mgr.configure_kimi_k3_runtime(RuntimeType.OLLAMA, url="http://x:11434")
+
+
+# ── Supervision + regression detection integration ───────────────
+
+def test_kimi_k3_supervisor_workers_healthy(monkeypatch):
+    from ai_generation.kimi_k3 import (
+        KimiK3Manager, register_kimi_k3_supervisor_workers,
+    )
+    from ai_generation.supervisor import SupervisorTree
+
+    async def fake_get(url, api_key="", timeout=15.0):
+        return {"data": [{"id": "moonshotai/Kimi-K3"}]}
+
+    monkeypatch.setattr("ai_generation.kimi_k3._get_json", fake_get)
+    tree = SupervisorTree(name="kimi_k3_test")
+    manager = KimiK3Manager()
+    worker_ids = register_kimi_k3_supervisor_workers(tree, manager=manager)
+    assert len(worker_ids) == 3
+    for wid in worker_ids:
+        result = tree.run_worker(wid)
+        assert result["healthy"] is True
+        state = tree.get_worker_state(wid)
+        assert state["status"] in ("idle", "running", "stopped")
+        assert state["total_failures"] == 0
+
+
+def test_kimi_k3_supervisor_workers_unhealthy(monkeypatch):
+    from ai_generation.kimi_k3 import (
+        KimiK3Manager, register_kimi_k3_supervisor_workers,
+    )
+    from ai_generation.supervisor import (
+        SupervisorConfig, SupervisorTree, WorkerCrashError,
+    )
+
+    async def fake_get(url, api_key="", timeout=15.0):
+        return {"data": []}
+
+    monkeypatch.setattr("ai_generation.kimi_k3._get_json", fake_get)
+    tree = SupervisorTree(
+        name="kimi_k3_test",
+        config=SupervisorConfig(
+            max_restarts=1, restart_interval_secs=1.0,
+            initial_backoff_secs=0.01, exponential_backoff_base=1.0,
+        ),
+    )
+    manager = KimiK3Manager()
+    worker_ids = register_kimi_k3_supervisor_workers(tree, manager=manager)
+    with pytest.raises(WorkerCrashError):
+        tree.run_worker(worker_ids[0])
+    state = tree.get_worker_state(worker_ids[0])
+    assert state["status"] == "stopped"
+    assert state["total_failures"] == 2
+
+
+def test_record_kimi_k3_regression_baseline_and_detect():
+    from ai_generation.kimi_k3 import record_kimi_k3_regression
+    from ai_generation.regression_detector import RegressionDetector
+
+    detector = RegressionDetector()
+    first = {
+        "prompt": "test",
+        "runs": [
+            {"provider": "kimi_k3_vllm", "success": True, "latency_ms": 100.0,
+             "quality_score": 90.0},
+            {"provider": "kimi_k3_vllm", "success": True, "latency_ms": 120.0,
+             "quality_score": 88.0},
+        ],
+    }
+    alerts = record_kimi_k3_regression(detector, first)
+    assert alerts == []
+    baseline = detector.get_baseline("kimi_k3_vllm")
+    assert baseline["latency_p50"] == 120.0
+    assert baseline["quality_score"] == 89.0
+
+    bad = {
+        "prompt": "test",
+        "runs": [
+            {"provider": "kimi_k3_vllm", "success": True, "latency_ms": 500.0,
+             "quality_score": 40.0},
+        ],
+    }
+    alerts = record_kimi_k3_regression(detector, bad)
+    assert len(alerts) >= 2
+    assert len(detector.get_provider_history("kimi_k3_vllm")) == 2
