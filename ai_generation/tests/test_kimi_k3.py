@@ -809,3 +809,49 @@ async def test_sdk_chat_negotiate_strategy(monkeypatch):
     result = await ai.chat("hello", strategy="negotiate")
     assert result["text"] == "Hello from Kimi K3"
     assert result["provider"].startswith("kimi_k3_")
+
+
+# ── Officially-not-published records ──────────────────────────────
+
+def test_kimi_k3_not_officially_published():
+    from ai_generation.kimi_k3 import KIMI_K3_SPEC
+    nop = KIMI_K3_SPEC["not_officially_published"]
+    for key in ("kubernetes_manifest", "memory_offload_guidance",
+                "runtime_profiling_guide", "scheduler_integration",
+                "continuous_batching"):
+        assert key in nop
+        assert nop[key]
+
+
+# ── MCP health + benchmark tools ──────────────────────────────────
+
+def test_mcp_kimi_health_and_benchmark_registered():
+    from ai_generation.mcp_tools import MCP_GENERATION_TOOLS
+    for name in ("kimi_k3_health", "kimi_k3_benchmark"):
+        assert name in MCP_GENERATION_TOOLS
+
+
+@pytest.mark.asyncio
+async def test_mcp_kimi_health_handler(monkeypatch):
+    from ai_generation.mcp_tools import MCPGenerationTools
+
+    async def fake_get(url, api_key="", timeout=15.0):
+        return {"data": [{"id": "moonshotai/Kimi-K3"}]}
+
+    monkeypatch.setattr("ai_generation.kimi_k3._get_json", fake_get)
+    tools = MCPGenerationTools()
+    result = await tools.handle("kimi_k3_health", {})
+    assert "kimi_k3_cloud" in result["health"]
+    assert result["health"]["kimi_k3_cloud"]["healthy"] is True
+
+
+@pytest.mark.asyncio
+async def test_mcp_kimi_benchmark_handler(monkeypatch):
+    from ai_generation.mcp_tools import MCPGenerationTools
+    monkeypatch.setattr("ai_generation.kimi_k3._post_json", make_post())
+    tools = MCPGenerationTools()
+    result = await tools.handle("kimi_k3_benchmark", {
+        "prompt": "hello", "runs": 1, "provider": "kimi_k3_vllm",
+    })
+    assert len(result["runs"]) == 1
+    assert result["runs"][0]["success"] is True

@@ -136,6 +136,13 @@ KIMI_K3_SPEC: Dict[str, Any] = {
         "huggingface_endpoints": "No official HF Endpoints deployment published",
         "gguf": "No official GGUF weights; third-party conversions only",
     },
+    "not_officially_published": {
+        "kubernetes_manifest": "No official K8s manifest; official Docker images are portable to K8s",
+        "memory_offload_guidance": "No official memory-offload guidance published for Kimi K3",
+        "runtime_profiling_guide": "No official K3 runtime profiling guide published",
+        "scheduler_integration": "Scheduling handled by vLLM/SGLang runtimes; no K3-specific scheduler contract",
+        "continuous_batching": "Provided by vLLM/SGLang by default; no K3-specific tuning published",
+    },
     "deployment": {
         "self_hosted": True,
         "docker": True,
