@@ -30,6 +30,7 @@ def test_discovery_scans_live_research_repo():
     assert len(docs) == RESEARCH_DOC_COUNT
     assert all(len(d.sha256) == 64 for d in docs)
     assert all(d.research_id for d in docs)
+    assert len({d.research_id for d in docs}) == len(docs)
     categories = {d.category for d in docs}
     assert "core_spec" in categories
     assert "research_area" in categories
@@ -145,8 +146,8 @@ def test_research_impact(tmp_path):
 
 def test_change_detection_and_sync_queue(tmp_path):
     repo = tmp_path / "repo"
-    (repo / "research").mkdir(parents=True)
-    (repo / "research" / "alpha.md").write_text("# Alpha\n\nImplementable research.\n")
+    (repo / "research" / "core_specs").mkdir(parents=True)
+    (repo / "research" / "core_specs" / "alpha.md").write_text("# Alpha\n\nImplementable research.\n")
     engine = ResearchIntegrationEngine(
         research_repo=str(repo), data_dir=str(tmp_path / "data")
     )
@@ -159,13 +160,13 @@ def test_change_detection_and_sync_queue(tmp_path):
     assert any(i["source_research"] == "ALPHA" for i in items)
 
     # Modifying content is detected as a change but does not re-queue.
-    (repo / "research" / "alpha.md").write_text("# Alpha\n\nUpdated content.\n")
+    (repo / "research" / "core_specs" / "alpha.md").write_text("# Alpha\n\nUpdated content.\n")
     changes = engine.detect_changes()
     assert any(c["type"] == "modified" and c["research_id"] == "ALPHA" for c in changes)
     assert len(engine.execution_queue()) == 1
 
     # New research requiring credentials is classified as blocked.
-    (repo / "research" / "beta.md").write_text("# Beta\n\nThis requires api key credentials.\n")
+    (repo / "research" / "core_specs" / "beta.md").write_text("# Beta\n\nThis requires api key credentials.\n")
     report2 = engine.sync()
     assert any(c["type"] == "new" and c["research_id"] == "BETA" for c in report2["changes"])
     blocked = [i for i in engine.execution_queue() if i["source_research"] == "BETA"]

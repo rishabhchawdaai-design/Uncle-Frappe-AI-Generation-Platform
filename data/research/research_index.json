@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-31T17:14:46.491475+00:00",
+  "generated_at": "2026-07-31T17:37:08.858857+00:00",
   "research_documents": 57,
   "capabilities": 251,
   "modules": [
@@ -4851,7 +4851,7 @@
       "related_capabilities": []
     },
     {
-      "research_id": "README",
+      "research_id": "README_DATA",
       "title": "ACOS Data\\nThis directory contains runtime data (checkpoints, model registry, etc.).",
       "path": "data/README.md",
       "category": "document",
