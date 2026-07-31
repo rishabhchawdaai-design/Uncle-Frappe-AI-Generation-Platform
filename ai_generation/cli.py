@@ -441,6 +441,146 @@ async def cmd_aigos_endpoints():
         auth = e.get("auth", "unknown")
         print(f"    {e['name']:25s}  type={e.get('type', 'unknown'):20s}  auth={auth}")
 
+
+# ── Phase 33-36 — Quality Engineering Commands ────────────────
+
+async def cmd_quality_gates(file_path=""):
+    """Run all quality gates on a file."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    code = ""
+    if file_path and Path(file_path).exists():
+        with open(file_path) as f:
+            code = f.read()
+    gates = ai.quality_gates.run_all(code, file_path or "<input>")
+    print(f"\n  Quality Gates (Swiss Cheese Model)\n")
+    for name, result in gates.items():
+        icon = "✅" if result.get("passed") else "❌"
+        print(f"    {icon} {name:20s}  {result.get('message', '')[:60]}")
+
+
+async def cmd_review_code(file_path=""):
+    """Run multi-agent code review on a file."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    code = ""
+    if file_path and Path(file_path).exists():
+        with open(file_path) as f:
+            code = f.read()
+    review = ai.multi_agent_review.simulate_review(code, file_path or "<input>")
+    print(f"\n  Multi-Agent Code Review\n")
+    print(f"    Quality Score: {review.quality_score:.0f}/100")
+    print(f"    Total Findings: {review.total_findings}")
+    for severity, count in review.by_severity.items():
+        if count:
+            print(f"    {severity}: {count}")
+    print(f"\n    Summary: {review.summary}")
+
+
+async def cmd_scan_secrets(file_path=""):
+    """Scan a file for secrets."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    code = ""
+    if file_path and Path(file_path).exists():
+        with open(file_path) as f:
+            code = f.read()
+    findings = ai.secret_scanner.scan_text(code, file_path or "<input>")
+    print(f"\n  Secret Scanner\n")
+    if not findings:
+        print("    ✅ No secrets found")
+    for finding in findings:
+        print(f"    ❌ {finding.pattern_name:30s} line={finding.line}  confidence={finding.confidence:.0%}")
+
+
+async def cmd_analyze_code(file_path=""):
+    """Run static and structural analysis on a file."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    code = ""
+    if file_path and Path(file_path).exists():
+        with open(file_path) as f:
+            code = f.read()
+    static = ai.static_analyzer.analyze_code(code, file_path or "<input>")
+    structural = ai.structural_analyzer.analyze({file_path or "<input>": code})
+    print(f"\n  Code Analysis\n")
+    print(f"    Static Issues: {len(static)}")
+    for issue in static[:10]:
+        print(f"      [{issue.severity}] {issue.rule_id} {issue.message[:60]}")
+    print(f"\n    Structural Findings: {len(structural)}")
+    for finding in structural[:10]:
+        print(f"      [{finding.severity}] {finding.category} {finding.message[:60]}")
+
+
+async def cmd_debt_scan(file_path=""):
+    """Scan a file for technical debt."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    code = ""
+    if file_path and Path(file_path).exists():
+        with open(file_path) as f:
+            code = f.read()
+    items = ai.debt_tracker.scan_codebase({file_path or "<input>": code})
+    print(f"\n  Technical Debt Scan\n")
+    if not items:
+        print("    ✅ No debt items found")
+    for item in items[:15]:
+        print(f"    [{item.priority}] {item.category:15s} line={item.line}  {item.description[:60]}")
+
+
+async def cmd_refactor_suggest(file_path=""):
+    """Suggest refactorings for a file."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    code = ""
+    if file_path and Path(file_path).exists():
+        with open(file_path) as f:
+            code = f.read()
+    suggestions = ai.refactoring_engine.analyze(code, file_path or "<input>")
+    print(f"\n  Refactoring Suggestions\n")
+    if not suggestions:
+        print("    ✅ No refactoring needed")
+    for s in suggestions[:10]:
+        print(f"    [{s.effort}] {s.technique:35s} {s.smell.description[:50]}")
+
+
+async def cmd_quality_report(file_path=""):
+    """Run the comprehensive quality dashboard on a file."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    code = ""
+    if file_path and Path(file_path).exists():
+        with open(file_path) as f:
+            code = f.read()
+    report = ai.quality_dashboard.analyze(code, file_path or "<input>")
+    print(f"\n  Quality Dashboard\n")
+    print(f"    Overall: {report.overall_grade} ({report.overall_score:.0f}/100)")
+    print(f"    Summary: {report.summary}\n")
+    for dim in report.dimensions:
+        print(f"    {dim['name']:20s} {dim['grade']:3s} {dim['score']:.0f}/100  findings={dim['findings_count']}")
+    if report.recommendations:
+        print(f"\n  Recommendations:")
+        for rec in report.recommendations:
+            print(f"    → {rec}")
+
+
+async def cmd_orchestrate(file_path=""):
+    """Run the orchestration pipeline on a file."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    code = ""
+    if file_path and Path(file_path).exists():
+        with open(file_path) as f:
+            code = f.read()
+    result = ai.orchestration_pipeline.run_full_pipeline(code, file_path or "<input>")
+    print(f"\n  Orchestration Pipeline\n")
+    for stage in result["stages"]:
+        icon = "✅" if stage["result"] == "pass" else ("❌" if stage["result"] == "fail" else "⚠️")
+        print(f"    {icon} {stage['stage']:15s} {stage['summary'][:60]}")
+    print(f"\n    Final Result: {result['final_result']}")
+    print(f"    Total Findings: {result['total_findings']}")
+
+
 async def main():
     args = sys.argv[1:]
     if not args or args[0] == "--help":
@@ -467,6 +607,16 @@ async def main():
     python -m ai_generation.cli capabilities             Capability matrix
     python -m ai_generation.cli intel                    Provider intelligence
     python -m ai_generation.cli video-caps               Video generation capabilities
+
+    Phase 33-36 — Quality Engineering:
+    python -m ai_generation.cli quality-gates [file]   Run all quality gates
+    python -m ai_generation.cli review [file]          Multi-agent code review
+    python -m ai_generation.cli scan-secrets [file]    Scan for secrets
+    python -m ai_generation.cli analyze-code [file]    Static + structural analysis
+    python -m ai_generation.cli debt-scan [file]       Scan for technical debt
+    python -m ai_generation.cli refactor [file]        Refactoring suggestions
+    python -m ai_generation.cli quality-report [file]  Quality dashboard
+    python -m ai_generation.cli orchestrate [file]     Orchestration pipeline
 
     Phase 14 — AIG-OS Autonomous Agents:
     aigos-status             Show AIG-OS orchestrator status
@@ -604,6 +754,24 @@ async def main():
     elif args[0] == "classify":
         request = args[1] if len(args) > 1 else "generate a luxury cafe advertisement"
         await cmd_classify(request)
+
+    # Phase 33-36 — Quality Engineering
+    elif args[0] == "quality-gates":
+        await cmd_quality_gates(args[1] if len(args) > 1 else "")
+    elif args[0] == "review":
+        await cmd_review_code(args[1] if len(args) > 1 else "")
+    elif args[0] == "scan-secrets":
+        await cmd_scan_secrets(args[1] if len(args) > 1 else "")
+    elif args[0] == "analyze-code":
+        await cmd_analyze_code(args[1] if len(args) > 1 else "")
+    elif args[0] == "debt-scan":
+        await cmd_debt_scan(args[1] if len(args) > 1 else "")
+    elif args[0] == "refactor":
+        await cmd_refactor_suggest(args[1] if len(args) > 1 else "")
+    elif args[0] == "quality-report":
+        await cmd_quality_report(args[1] if len(args) > 1 else "")
+    elif args[0] == "orchestrate":
+        await cmd_orchestrate(args[1] if len(args) > 1 else "")
 
 
 if __name__ == "__main__":
