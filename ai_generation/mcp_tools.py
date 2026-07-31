@@ -1069,6 +1069,34 @@ MCP_GENERATION_TOOLS = {
     "run_quality_dashboard": {"name": "run_quality_dashboard", "description": "Run comprehensive quality analysis across 6 dimensions (security, quality, complexity, documentation, debt, refactoring).", "inputSchema": {"type": "object", "properties": {"code": {"type": "string", "default": ""}, "file_path": {"type": "string", "default": "<input>"}}, "required": []}},
     "get_quality_history": {"name": "get_quality_history", "description": "Get history of quality analyses.", "inputSchema": {"type": "object", "properties": {}}},
     "get_quality_stats": {"name": "get_quality_stats", "description": "Get quality analysis statistics.", "inputSchema": {"type": "object", "properties": {}}},
+    # ── Kimi K3 (Moonshot AI) Tools ──
+    "kimi_k3_chat": {
+        "name": "kimi_k3_chat",
+        "description": "Chat with Kimi K3 through the best available execution path (official cloud API, self-hosted vLLM, or SGLang).",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "prompt": {"type": "string", "description": "User prompt for Kimi K3"},
+                "provider": {"type": "string", "enum": ["auto", "kimi_k3_cloud", "kimi_k3_vllm", "kimi_k3_sglang"], "default": "auto"},
+                "system_prompt": {"type": "string", "default": ""},
+                "reasoning_effort": {"type": "string", "enum": ["low", "high", "max"], "default": "max"},
+                "max_tokens": {"type": "integer", "description": "Max completion tokens"},
+                "temperature": {"type": "number"},
+                "images": {"type": "array", "items": {"type": "string"}, "description": "Image URLs/data URIs for vision input"},
+            },
+            "required": ["prompt"],
+        },
+    },
+    "kimi_k3_spec": {
+        "name": "kimi_k3_spec",
+        "description": "Return the canonical verified Kimi K3 specification (architecture, context, engines, supported/unsupported runtimes).",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+    "kimi_k3_info": {
+        "name": "kimi_k3_info",
+        "description": "Return Kimi K3 configuration state (configured endpoints, keys, supported paths).",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
 
 }
 class MCPGenerationTools:
@@ -1292,6 +1320,9 @@ class MCPGenerationTools:
             "run_quality_dashboard": self._handle_run_quality_dashboard,
             "get_quality_history": self._handle_get_quality_history,
             "get_quality_stats": self._handle_get_quality_stats,
+            "kimi_k3_chat": self._handle_kimi_k3_chat,
+            "kimi_k3_spec": self._handle_kimi_k3_spec,
+            "kimi_k3_info": self._handle_kimi_k3_info,
         }
         handler = handlers.get(tool_name)
         if not handler:
@@ -2685,6 +2716,30 @@ class MCPGenerationTools:
     async def _handle_get_quality_stats(self, args):
         """Get quality analysis statistics"""
         return self.sdk.quality_dashboard.get_stats()
+
+    async def _handle_kimi_k3_chat(self, args):
+        """Chat with Kimi K3 through the best available execution path"""
+        prompt = args.get("prompt", "")
+        if not prompt:
+            return {"error": "prompt is required"}
+        result = await self.sdk.chat(
+            prompt,
+            provider=args.get("provider", "auto"),
+            system_prompt=args.get("system_prompt", ""),
+            reasoning_effort=args.get("reasoning_effort", "max"),
+            max_tokens=args.get("max_tokens"),
+            temperature=args.get("temperature"),
+            images=args.get("images") or None,
+        )
+        return result
+
+    async def _handle_kimi_k3_spec(self, args):
+        """Return the canonical verified Kimi K3 specification"""
+        return {"spec": self.sdk.kimi_k3_info()["spec"]}
+
+    async def _handle_kimi_k3_info(self, args):
+        """Return Kimi K3 configuration state and supported paths"""
+        return self.sdk.kimi_k3_info()
 
 def get_mcp_generation_tools():
     """Return the full MCP tool schema dictionary for AI generation capabilities."""

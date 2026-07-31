@@ -3,7 +3,7 @@ module: "quality_engine"
 type: module-doc
 status: active
 owner: ""
-lines: 161
+lines: 218
 classes: 2
 functions: 0
 tags: [module, documentation]
@@ -18,7 +18,7 @@ heuristic scoring, A/B comparison, and consistency checking.
 ## Overview
 
 - **File**: `ai_generation/quality_engine.py`
-- **Lines**: 161
+- **Lines**: 218
 - **Classes**: 2
 - **Public Functions**: 0
 

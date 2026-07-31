@@ -1,0 +1,689 @@
+"""
+Kimi K3 Integration Tests — Moonshot AI Kimi K3 execution runtime.
+
+Covers the canonical verified spec, message building, response parsing,
+official launch command builders, cloud/vLLM/SGLang clients, the unified
+manager (fallback, stats, benchmark, health), execution-engine routing,
+capability registry/matrix, auto-router chat classification, SDK, CLI,
+MCP tools, health-monitor registration, knowledge-graph nodes, and the
+quality-engine chat evaluator. All tests run offline (no live network).
+"""
+import asyncio
+import json
+import os
+import sys
+
+import pytest
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+
+
+# ── Helpers ───────────────────────────────────────────────────────
+
+def fake_chat_response(text="Hello from Kimi K3", reasoning="verified reasoning",
+                       model="kimi-k3"):
+    return {
+        "choices": [{
+            "message": {"content": text, "reasoning_content": reasoning},
+            "finish_reason": "stop",
+        }],
+        "model": model,
+        "usage": {
+            "prompt_tokens": 10, "completion_tokens": 5, "total_tokens": 15,
+            "prompt_tokens_details": {"cached_tokens": 0},
+        },
+    }
+
+
+def make_post(cloud_ok=False):
+    """Build a fake _post_json. By default fails on cloud and succeeds elsewhere."""
+    async def _post(url, api_key, payload, timeout=120.0):
+        if not cloud_ok and "api.moonshot.ai" in url:
+            from ai_generation.kimi_k3 import KimiK3Error
+            raise KimiK3Error("HTTP 401: invalid api key")
+        assert isinstance(payload, dict)
+        assert payload["model"] == "kimi-k3"
+        assert payload["reasoning_effort"] in ("low", "high", "max")
+        return fake_chat_response()
+    return _post
+
+
+# ── Canonical verified spec ───────────────────────────────────────
+
+def test_kimi_k3_spec_constants():
+    from ai_generation.kimi_k3 import KIMI_K3_SPEC
+    arch = KIMI_K3_SPEC["architecture"]
+    assert KIMI_K3_SPEC["model"] == "kimi-k3"
+    assert KIMI_K3_SPEC["model_id"] == "moonshotai/Kimi-K3"
+    assert KIMI_K3_SPEC["model_type"] == "kimi_k3"
+    assert KIMI_K3_SPEC["context_length"] == 1048576
+    assert arch["total_params"] == "2.8T"
+    assert arch["active_params"] == "104B"
+    assert arch["layers"] == 93
+    assert arch["experts"] == 896
+    assert arch["experts_per_token"] == 16
+    assert arch["hidden_size"] == 7168
+    assert arch["multimodal"] is True
+    assert arch["weights_dtype"] == "MXFP4"
+    assert arch["activations_dtype"] == "MXFP8"
+    tok = KIMI_K3_SPEC["tokenizer"]
+    assert tok["name"] == "TikTokenTokenizer"
+    assert tok["vocab_size"] == 163840
+    assert KIMI_K3_SPEC["thinking"]["reasoning_effort"] == ["low", "high", "max"]
+    assert KIMI_K3_SPEC["thinking"]["always_on"] is True
+
+
+def test_kimi_k3_supported_engines():
+    from ai_generation.kimi_k3 import KIMI_K3_SPEC
+    engines = KIMI_K3_SPEC["engines"]
+    assert engines["cloud_api"]["supported"] is True
+    assert engines["cloud_api"]["base_url"] == "https://api.moonshot.ai/v1"
+    assert engines["vllm"]["supported"] is True
+    assert engines["vllm"]["min_version"] == "0.27.0"
+    assert "kimi_k3" in engines["vllm"]["parsers"][0]
+    assert engines["sglang"]["supported"] is True
+    assert engines["tokenspeed"]["supported"] is True
+
+
+def test_kimi_k3_unsupported_runtimes_recorded():
+    from ai_generation.kimi_k3 import KIMI_K3_SPEC
+    unsupported = KIMI_K3_SPEC["unsupported_runtimes"]
+    for name in ("tensorrt_llm", "deepspeed", "llamacpp", "ollama",
+                 "huggingface_inference", "huggingface_endpoints", "gguf"):
+        assert name in unsupported
+        assert unsupported[name]
+
+
+def test_kimi_k3_deployment_facts():
+    from ai_generation.kimi_k3 import KIMI_K3_SPEC
+    dep = KIMI_K3_SPEC["deployment"]
+    assert dep["min_gpus"] == 8
+    assert dep["min_vram_gb"] == 1680
+    assert dep["docker"] is True
+    assert dep["kubernetes"] is True
+
+
+# ── Message building ──────────────────────────────────────────────
+
+def test_build_chat_messages_text_only():
+    from ai_generation.kimi_k3 import build_chat_messages
+    messages = build_chat_messages("hello", system_prompt="be brief")
+    assert messages[0] == {"role": "system", "content": "be brief"}
+    assert messages[1] == {"role": "user", "content": "hello"}
+
+
+def test_build_chat_messages_with_images():
+    from ai_generation.kimi_k3 import build_chat_messages
+    messages = build_chat_messages("describe this", images=["https://x/img.png"])
+    content = messages[-1]["content"]
+    assert isinstance(content, list)
+    assert content[0]["type"] == "text"
+    assert content[1] == {"type": "image_url", "image_url": {"url": "https://x/img.png"}}
+
+
+def test_build_chat_messages_preserved_thinking():
+    from ai_generation.kimi_k3 import build_chat_messages
+    history = [
+        {"role": "user", "content": "q1"},
+        {"role": "assistant", "content": "a1", "reasoning_content": "r1", "tool_calls": []},
+    ]
+    messages = build_chat_messages("q2", history=history)
+    assistant = messages[1]
+    assert assistant["reasoning_content"] == "r1"
+    assert assistant["tool_calls"] == []
+    # preserve_thinking=False strips reasoning_content
+    messages = build_chat_messages("q2", history=history, preserve_thinking=False)
+    assert "reasoning_content" not in messages[1]
+
+
+def test_build_chat_payload_reasoning_effort():
+    from ai_generation.kimi_k3 import build_chat_payload
+    payload = build_chat_payload("hi", reasoning_effort="high")
+    assert payload["reasoning_effort"] == "high"
+    assert payload["model"] == "kimi-k3"
+    payload = build_chat_payload("hi", reasoning_effort="bogus")
+    assert payload["reasoning_effort"] == "max"
+    payload = build_chat_payload("hi")
+    assert payload["reasoning_effort"] == "max"
+    assert payload["stream"] is False
+
+
+def test_build_chat_payload_optional_params():
+    from ai_generation.kimi_k3 import build_chat_payload
+    payload = build_chat_payload("hi", max_tokens=100, temperature=0.3,
+                                 top_p=0.9, tools=[{"type": "function"}])
+    assert payload["max_tokens"] == 100
+    assert payload["temperature"] == 0.3
+    assert payload["top_p"] == 0.9
+    assert payload["tools"] == [{"type": "function"}]
+
+
+# ── Response parsing ──────────────────────────────────────────────
+
+def test_parse_chat_response():
+    from ai_generation.kimi_k3 import parse_chat_response
+    parsed = parse_chat_response(fake_chat_response())
+    assert parsed["text"] == "Hello from Kimi K3"
+    assert parsed["reasoning"] == "verified reasoning"
+    assert parsed["total_tokens"] == 15
+    assert parsed["completion_tokens"] == 5
+
+
+def test_parse_chat_response_no_choices():
+    from ai_generation.kimi_k3 import KimiK3Error, parse_chat_response
+    with pytest.raises(KimiK3Error):
+        parse_chat_response({"choices": []})
+
+
+# ── Official launch command builders ──────────────────────────────
+
+def test_build_vllm_command_blackwell():
+    from ai_generation.kimi_k3 import build_vllm_command
+    cmd = build_vllm_command(hardware="blackwell")
+    assert cmd["image"] == "vllm/vllm-openai:kimi-k3"
+    args = cmd["command"]
+    assert "--trust-remote-code" in args
+    assert "--reasoning-parser" in args and "kimi_k3" in args
+    assert "--tensor-parallel-size" in args
+    assert "8" in args
+    assert "--expert-parallel-size" in args and "16" in args
+    assert cmd["env"]["VLLM_ENABLE_K3_LATENT_MOE_TAIL_FUSION"] == "1"
+    assert cmd["min_vram_gb"] == 1680
+
+
+def test_build_vllm_command_hopper():
+    from ai_generation.kimi_k3 import build_vllm_command
+    cmd = build_vllm_command(hardware="hopper")
+    args = " ".join(cmd["command"])
+    assert "--moe-backend marlin" in args
+    assert "--attention-backend FLASHMLA" in args
+    assert cmd["env"]["PYTORCH_CUDA_ALLOC_CONF"] == "expandable_segments:True"
+
+
+def test_build_vllm_command_amd():
+    from ai_generation.kimi_k3 import build_vllm_command
+    cmd = build_vllm_command(hardware="amd")
+    assert cmd["image"] == "vllm/vllm-openai-rocm:kimi-k3"
+    assert cmd["env"]["VLLM_ROCM_USE_AITER"] == "1"
+    assert "--mm-encoder-tp-mode" in cmd["command"]
+
+
+def test_build_vllm_command_spec_decode():
+    from ai_generation.kimi_k3 import build_vllm_command
+    cmd = build_vllm_command(hardware="blackwell", spec_decode=True)
+    spec_idx = cmd["command"].index("--speculative-config")
+    spec = json.loads(cmd["command"][spec_idx + 1])
+    assert spec["model"] == "Inferact/Kimi-K3-DSpark"
+    assert spec["num_speculative_tokens"] == 7
+    assert spec["method"] == "dspark"
+
+
+def test_build_vllm_command_language_model_only():
+    from ai_generation.kimi_k3 import build_vllm_command
+    cmd = build_vllm_command(language_model_only=True)
+    assert "--language-model-only" in cmd["command"]
+
+
+def test_build_sglang_command():
+    from ai_generation.kimi_k3 import build_sglang_command
+    cmd = build_sglang_command(hardware="b200")
+    assert cmd["image"] == "lmsysorg/sglang:kimi-k3"
+    args = cmd["command"]
+    assert "--reasoning-parser" in args and "kimi_k3" in args
+    assert "--tp-size" in args and "16" in args
+    assert "--dp-size" in args and "16" in args
+    assert "--host" in args and "--port" in args and "30000" in args
+    assert "--kv-cache-dtype" in args and "fp8_e4m3" in args
+
+
+def test_build_sglang_command_pd_disaggregation():
+    from ai_generation.kimi_k3 import build_sglang_command
+    cmd = build_sglang_command(hardware="h100", pp_size=8)
+    args = cmd["command"]
+    assert "--pp-size" in args and "8" in args
+
+
+# ── Clients (mocked HTTP) ─────────────────────────────────────────
+
+@pytest.mark.asyncio
+async def test_cloud_client_chat(monkeypatch):
+    from ai_generation.kimi_k3 import _post_json, KimiK3CloudClient
+
+    captured = {}
+
+    async def fake_post(url, api_key, payload, timeout=120.0):
+        captured["url"] = url
+        captured["api_key"] = api_key
+        captured["payload"] = payload
+        return fake_chat_response()
+
+    monkeypatch.setattr("ai_generation.kimi_k3._post_json", fake_post)
+    client = KimiK3CloudClient(api_key="test-key")
+    result = await client.chat("hello", reasoning_effort="high", max_tokens=64)
+    assert result["text"] == "Hello from Kimi K3"
+    assert result["reasoning"] == "verified reasoning"
+    assert captured["url"].endswith("/chat/completions")
+    assert captured["api_key"] == "test-key"
+    assert captured["payload"]["reasoning_effort"] == "high"
+    assert captured["payload"]["max_tokens"] == 64
+
+
+@pytest.mark.asyncio
+async def test_client_health(monkeypatch):
+    from ai_generation.kimi_k3 import KimiK3VllmServer
+
+    async def fake_get(url, api_key="", timeout=15.0):
+        assert url.endswith("/models")
+        return {"data": [{"id": "moonshotai/Kimi-K3"}]}
+
+    monkeypatch.setattr("ai_generation.kimi_k3._get_json", fake_get)
+    client = KimiK3VllmServer(base_url="http://localhost:8000")
+    health = await client.health()
+    assert health["healthy"] is True
+    assert health["serves_kimi_k3"] is True
+
+
+@pytest.mark.asyncio
+async def test_client_http_error(monkeypatch):
+    from ai_generation.kimi_k3 import KimiK3Error, KimiK3SglangServer
+
+    async def fake_post(url, api_key, payload, timeout=120.0):
+        raise KimiK3Error("HTTP 429: rate limited")
+
+    monkeypatch.setattr("ai_generation.kimi_k3._post_json", fake_post)
+    client = KimiK3SglangServer(base_url="http://localhost:30000")
+    with pytest.raises(KimiK3Error):
+        await client.chat("hello")
+
+
+# ── Manager ───────────────────────────────────────────────────────
+
+def test_manager_info():
+    from ai_generation.kimi_k3 import KimiK3Manager
+    manager = KimiK3Manager()
+    info = manager.info()
+    assert info["spec"]["model"] == "kimi-k3"
+    supported = {p["name"] for p in info["supported_paths"]}
+    assert supported == {"cloud_api", "vllm", "sglang", "tokenspeed"}
+    unsupported = {p["name"] for p in info["unsupported_paths"]}
+    assert "llamacpp" in unsupported and "ollama" in unsupported
+    assert len(info["configured_endpoints"]) == 3
+
+
+def test_manager_provider_order():
+    from ai_generation.kimi_k3 import KimiK3Manager
+    manager = KimiK3Manager()
+    order = manager.provider_order("auto")
+    assert [e["name"] for e in order] == ["kimi_k3_cloud", "kimi_k3_vllm", "kimi_k3_sglang"]
+    order = manager.provider_order("kimi_k3_vllm")
+    assert [e["name"] for e in order] == ["kimi_k3_vllm"]
+
+
+def test_manager_provider_order_unknown():
+    from ai_generation.kimi_k3 import KimiK3Error, KimiK3Manager
+    manager = KimiK3Manager()
+    with pytest.raises(KimiK3Error):
+        manager.provider_order("nope")
+
+
+@pytest.mark.asyncio
+async def test_manager_chat_success(monkeypatch):
+    from ai_generation.kimi_k3 import KimiK3Manager
+    monkeypatch.setattr("ai_generation.kimi_k3._post_json", make_post())
+    manager = KimiK3Manager()
+    result = await manager.chat("Explain MoE", provider="kimi_k3_vllm",
+                                reasoning_effort="high")
+    assert result.error is None
+    assert result.text == "Hello from Kimi K3"
+    assert result.reasoning == "verified reasoning"
+    assert result.provider == "kimi_k3_vllm"
+    assert result.latency_ms >= 0
+    assert result.quality_score > 0
+    stats = manager.get_stats()
+    assert stats["total_requests"] == 1
+    assert stats["successful"] == 1
+    assert stats["by_provider"]["kimi_k3_vllm"]["requests"] == 1
+
+
+@pytest.mark.asyncio
+async def test_manager_chat_fallback(monkeypatch):
+    from ai_generation.kimi_k3 import KimiK3Manager
+    monkeypatch.setattr("ai_generation.kimi_k3._post_json", make_post())
+    manager = KimiK3Manager()
+    result = await manager.chat("fallback test")
+    # Cloud fails (fake) -> falls back to vLLM (localhost:8000)
+    assert result.error is None
+    assert result.provider in ("kimi_k3_vllm", "kimi_k3_sglang")
+    assert "kimi_k3_cloud" in result.fallbacks
+
+
+@pytest.mark.asyncio
+async def test_manager_all_providers_fail(monkeypatch):
+    from ai_generation.kimi_k3 import KimiK3Error, KimiK3Manager
+
+    async def always_fail(url, api_key, payload, timeout=120.0):
+        raise KimiK3Error("down")
+
+    monkeypatch.setattr("ai_generation.kimi_k3._post_json", always_fail)
+    manager = KimiK3Manager()
+    result = await manager.chat("boom")
+    assert result.error is not None
+    assert result.text == ""
+    stats = manager.get_stats()
+    assert stats["failed"] >= 1
+
+
+@pytest.mark.asyncio
+async def test_manager_benchmark(monkeypatch):
+    from ai_generation.kimi_k3 import KimiK3Manager
+    monkeypatch.setattr("ai_generation.kimi_k3._post_json", make_post())
+    manager = KimiK3Manager()
+    report = await manager.benchmark("benchmark me", runs=2, provider="kimi_k3_vllm")
+    assert len(report["runs"]) == 2
+    assert all(r["success"] for r in report["runs"])
+    assert all(r["quality_score"] > 0 for r in report["runs"])
+
+
+@pytest.mark.asyncio
+async def test_manager_health(monkeypatch):
+    from ai_generation.kimi_k3 import KimiK3Manager
+
+    async def fake_get(url, api_key="", timeout=15.0):
+        return {"data": [{"id": "moonshotai/Kimi-K3"}]}
+
+    monkeypatch.setattr("ai_generation.kimi_k3._get_json", fake_get)
+    manager = KimiK3Manager()
+    health = await manager.health()
+    assert "kimi_k3_cloud" in health
+    assert "kimi_k3_vllm" in health
+    assert "kimi_k3_sglang" in health
+    assert health["kimi_k3_cloud"]["healthy"] is True
+
+
+# ── Execution Engine integration ──────────────────────────────────
+
+def test_execution_engine_kimi_endpoints():
+    from ai_generation.execution_engine import ExecutionEngine, TaskType
+    ee = ExecutionEngine()
+    ee.initialize()
+    endpoints = {e["name"]: e for e in ee.get_all_endpoints()}
+    assert "kimi_k3_cloud" in endpoints
+    assert "chat" in endpoints["kimi_k3_cloud"]["supported_tasks"]
+    assert "kimi-k3" in endpoints["kimi_k3_cloud"]["models"]
+    assert endpoints["kimi_k3_cloud"]["layer"] == 1  # ExecutionLayer.PUBLIC_API
+
+
+def test_execution_engine_kimi_handlers():
+    from ai_generation.execution_engine import ExecutionEngine
+    ee = ExecutionEngine()
+    ee.initialize()
+    assert "kimi_k3_cloud" in ee.router._handlers
+
+
+@pytest.mark.asyncio
+async def test_execution_engine_chat_execute(monkeypatch):
+    from ai_generation.execution_engine import (
+        ExecutionEngine, ExecutionTask, TaskType,
+    )
+    monkeypatch.setattr("ai_generation.kimi_k3._post_json", make_post(cloud_ok=True))
+    ee = ExecutionEngine()
+    task = ExecutionTask(
+        task_type=TaskType.CHAT, prompt="Explain MoE",
+        preferred_provider="kimi_k3_cloud",
+        params={"reasoning_effort": "high"},
+    )
+    result = await ee.execute(task)
+    assert result.status.value == "completed"
+    assert result.metadata["text"] == "Hello from Kimi K3"
+    assert result.metadata["reasoning"] == "verified reasoning"
+    assert result.metadata["provider"] == "kimi_k3_cloud"
+
+
+@pytest.mark.asyncio
+async def test_execution_engine_chat_execute_failure(monkeypatch):
+    from ai_generation.execution_engine import (
+        ExecutionEngine, ExecutionTask, TaskType,
+    )
+    from ai_generation.kimi_k3 import KimiK3Error
+
+    async def fail(url, api_key, payload, timeout=120.0):
+        raise KimiK3Error("down")
+
+    monkeypatch.setattr("ai_generation.kimi_k3._post_json", fail)
+    ee = ExecutionEngine()
+    task = ExecutionTask(
+        task_type=TaskType.CHAT, prompt="boom",
+        preferred_provider="kimi_k3_cloud",
+    )
+    result = await ee.execute(task)
+    assert result.status.value in ("failed", "no_provider")
+
+
+# ── Capability registry / matrix / auto router ────────────────────
+
+def test_capability_registry_has_kimi_k3():
+    from ai_generation.capability_registry import CapabilityRegistry
+    registry = CapabilityRegistry()
+    models = registry.find_models(task="chat")
+    providers = {m["provider"] for m in models}
+    assert "kimi_k3_cloud" in providers
+    assert "kimi_k3_vllm" in providers
+    assert "kimi_k3_sglang" in providers
+    kimi = registry.get_model("kimi-k3-cloud")
+    assert kimi["known_limits"]["context_length"] == 1048576
+
+
+def test_capability_matrix_chat():
+    from ai_generation.capability_matrix import CapabilityMatrix
+    matrix = CapabilityMatrix()
+    best = matrix.find_best_model("chat")
+    assert len(best) >= 3
+    providers = {m["provider"] for m in best}
+    assert "kimi_k3_vllm" in providers
+    caps = matrix.get_capabilities(provider="kimi_k3_sglang")
+    assert len(caps) == 1
+    assert caps[0]["type"] == "text"
+    assert caps[0]["streaming"] is True
+
+
+def test_auto_router_classifies_chat():
+    from ai_generation.auto_router import AutoRouter
+    router = AutoRouter()
+    decision = router.classify_task("Explain why the sky is blue in detail")
+    assert decision.task_type == "chat"
+    assert decision.confidence > 0
+
+
+def test_auto_router_chat_recommends_kimi():
+    from ai_generation.auto_router import AutoRouter
+    from ai_generation.capability_registry import CapabilityRegistry
+    router = AutoRouter(capability_registry=CapabilityRegistry())
+    decision = router.classify_task("Write a poem about the ocean")
+    assert decision.task_type == "chat"
+    recommended = {r["provider"] for r in decision.recommended_providers}
+    assert "kimi_k3_cloud" in recommended
+
+
+# ── SDK ───────────────────────────────────────────────────────────
+
+@pytest.mark.asyncio
+async def test_sdk_chat(monkeypatch):
+    from ai_generation.sdk import UncleFrappeAI
+    monkeypatch.setattr("ai_generation.kimi_k3._post_json", make_post())
+    ai = UncleFrappeAI()
+    result = await ai.chat("hello kimi", provider="kimi_k3_vllm",
+                           reasoning_effort="low")
+    assert result["text"] == "Hello from Kimi K3"
+    assert result["provider"] == "kimi_k3_vllm"
+    assert "reasoning" in result
+    assert result["quality_score"] > 0
+
+
+def test_sdk_kimi_info():
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    info = ai.kimi_k3_info()
+    assert info["spec"]["context_length"] == 1048576
+    assert len(info["unsupported_paths"]) == 7
+
+
+def test_sdk_stats_include_kimi():
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    stats = ai.get_stats()
+    assert "kimi_k3" in stats
+    assert stats["kimi_k3"]["total_requests"] == 0
+
+
+# ── CLI ───────────────────────────────────────────────────────────
+
+def test_cli_kimi_info(capsys):
+    from ai_generation.cli import cmd_kimi_info
+    asyncio.run(cmd_kimi_info())
+    out = capsys.readouterr().out
+    assert "Kimi K3" in out
+    assert "1048576" in out.replace(",", "")
+    assert "2.8T" in out
+    assert "unsupported" in out.lower()
+
+
+@pytest.mark.asyncio
+async def test_cli_kimi_chat(monkeypatch, capsys):
+    from ai_generation.cli import cmd_kimi_chat
+    monkeypatch.setattr("ai_generation.kimi_k3._post_json", make_post())
+    await cmd_kimi_chat("hello", provider="kimi_k3_vllm")
+    out = capsys.readouterr().out
+    assert "Provider:" in out
+    assert "Hello from Kimi K3" in out
+
+
+# ── MCP tools ─────────────────────────────────────────────────────
+
+def test_mcp_kimi_tools_registered():
+    from ai_generation.mcp_tools import MCP_GENERATION_TOOLS
+    for name in ("kimi_k3_chat", "kimi_k3_spec", "kimi_k3_info"):
+        assert name in MCP_GENERATION_TOOLS
+        assert MCP_GENERATION_TOOLS[name]["name"] == name
+
+
+@pytest.mark.asyncio
+async def test_mcp_kimi_chat_handler(monkeypatch):
+    from ai_generation.mcp_tools import MCPGenerationTools
+    monkeypatch.setattr("ai_generation.kimi_k3._post_json", make_post())
+    tools = MCPGenerationTools()
+    result = await tools.handle("kimi_k3_chat", {
+        "prompt": "hello", "provider": "kimi_k3_vllm",
+        "reasoning_effort": "low",
+    })
+    assert result["text"] == "Hello from Kimi K3"
+    assert result["provider"] == "kimi_k3_vllm"
+
+
+@pytest.mark.asyncio
+async def test_mcp_kimi_spec_and_info_handlers():
+    from ai_generation.mcp_tools import MCPGenerationTools
+    tools = MCPGenerationTools()
+    spec = await tools.handle("kimi_k3_spec", {})
+    assert spec["spec"]["context_length"] == 1048576
+    info = await tools.handle("kimi_k3_info", {})
+    assert info["spec"]["model"] == "kimi-k3"
+
+
+# ── Health monitor registration ───────────────────────────────────
+
+def test_register_kimi_k3_health():
+    from ai_generation.health_monitor import HealthMonitor
+    from ai_generation.kimi_k3 import register_kimi_k3_health
+    monitor = HealthMonitor()
+    registered = register_kimi_k3_health(monitor)
+    assert set(registered) == {"kimi_k3_cloud", "kimi_k3_vllm", "kimi_k3_sglang"}
+    assert monitor.get_status("kimi_k3_cloud") is not None
+
+
+# ── Knowledge graph ───────────────────────────────────────────────
+
+def test_register_kimi_k3_graph(tmp_path):
+    from ai_generation.knowledge_graph import KnowledgeGraph
+    from ai_generation.kimi_k3 import register_kimi_k3_graph
+    graph = KnowledgeGraph(data_dir=str(tmp_path))
+    added = register_kimi_k3_graph(graph)
+    assert added >= 3
+    provider = graph.get_node("provider:kimi_k3")
+    assert provider is not None
+    assert graph.get_node("model:kimi-k3") is not None
+    assert graph.get_node("capability:chat") is not None
+    assert "provider:kimi_k3" in graph.query_providers_by_capability("chat")
+    # Idempotent: second registration adds nothing new
+    added_again = register_kimi_k3_graph(graph)
+    assert added_again == 0
+
+
+# ── Quality engine chat evaluation ────────────────────────────────
+
+def test_quality_engine_evaluate_chat():
+    from ai_generation.quality_engine import QualityEngine
+    engine = QualityEngine()
+    report = engine.evaluate_chat("Explain MoE in detail please",
+                                  "Mixture of Experts is a technique where...")
+    assert report.overall_score > 0
+    assert "prompt_relevance" in report.dimensions
+    assert "completeness" in report.dimensions
+    stats = engine.get_stats()
+    assert stats["total_evaluations"] == 1
+
+
+# ── Decision ledger chat records ──────────────────────────────────
+
+def test_decision_ledger_record_chat(ledger_isolated):
+    from ai_generation.decision_ledger import DecisionLedger, DecisionOutcome
+    ledger = DecisionLedger({"ledger_path": ledger_isolated})
+    entry = ledger.record_chat(
+        request_id="req-1", prompt="hello", provider="kimi_k3_cloud",
+        latency_ms=123.4, quality_score=88.0,
+    )
+    d = entry.to_dict()
+    assert d["task_type"] == "chat"
+    assert d["selected_provider"] == "kimi_k3_cloud"
+    assert d["outcome"] == "success"
+    failed = ledger.record_chat(
+        request_id="req-2", prompt="boom", provider="kimi_k3_vllm",
+        outcome=DecisionOutcome.FAILURE, error="timeout",
+    )
+    assert failed.to_dict()["outcome"] == "failure"
+
+
+# ── K3 launch commands expose supported/unsupported truthfully ────
+
+def test_kimi_info_endpoint_truthfulness():
+    from ai_generation.kimi_k3 import KimiK3Manager
+    info = KimiK3Manager().info()
+    for path in info["unsupported_paths"]:
+        assert path["supported"] is False
+    for path in info["supported_paths"]:
+        assert path["supported"] is True
+
+
+# ── Negotiation Engine candidates ────────────────────────────────
+
+def test_kimi_k3_negotiation_candidates():
+    from ai_generation.kimi_k3 import kimi_k3_candidates
+    from ai_generation.negotiation_engine import (
+        NegotiationEngine, NegotiationRequest, Modality, TaskType,
+    )
+    candidates = kimi_k3_candidates()
+    assert len(candidates) == 3
+    names = {c.provider_name for c in candidates}
+    assert names == {"kimi_k3_cloud", "kimi_k3_vllm", "kimi_k3_sglang"}
+    cloud = next(c for c in candidates if c.provider_name == "kimi_k3_cloud")
+    assert cloud.verified is True
+    assert cloud.metadata["context_length"] == 1048576
+    # Negotiation engine can rank the K3 candidates without any network access
+    engine = NegotiationEngine()
+    request = NegotiationRequest(
+        task_type=TaskType.CHAT, modality=Modality.TEXT,
+        prompt="explain", required_capabilities=["chat"],
+    )
+    result = engine.negotiate(request, candidates)
+    assert result.selected_candidate is not None
+    assert result.selected_candidate.provider_name in names
+    assert len(result.fallback_chain) >= 1

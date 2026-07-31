@@ -813,6 +813,37 @@
         "version": 1
       },
       "completed_at": "2026-07-28T09:29:37.279244+00:00"
+    },
+    {
+      "provider": "kimi_k3",
+      "schema_type": "openai_compatible",
+      "status": "integrated",
+      "started_at": "2026-07-31T19:31:41.391486+00:00",
+      "adapter": {
+        "provider": "kimi_k3",
+        "schema_type": "openai_compatible",
+        "endpoints": [
+          {
+            "name": "kimi_k3_cloud",
+            "type": "chat_completions"
+          },
+          {
+            "name": "kimi_k3_vllm",
+            "type": "chat_completions"
+          },
+          {
+            "name": "kimi_k3_sglang",
+            "type": "chat_completions"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "env": "MOONSHOT_API_KEY"
+        },
+        "compiled_at": "2026-07-31T19:31:41.391486+00:00",
+        "version": 1
+      },
+      "completed_at": "2026-07-31T19:31:41.391486+00:00"
     }
   ],
   "adapter_cache": {
@@ -832,5 +863,5 @@
       "version": 1
     }
   },
-  "updated_at": "2026-07-28T09:29:37.280805+00:00"
+  "updated_at": "2026-07-31T19:31:41.391509+00:00"
 }

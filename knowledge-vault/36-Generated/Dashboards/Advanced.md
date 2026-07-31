@@ -12,7 +12,7 @@ generated: "2026-07-31"
 | Module | Classes | Functions | Lines |
 |--------|---------|-----------|-------|
 | `browser_ai` | 5 | 0 | 621 |
-| `decision_ledger` | 4 | 0 | 353 |
+| `decision_ledger` | 4 | 0 | 367 |
 | `edge_ai` | 5 | 2 | 661 |
 | `failure_recovery` | 5 | 0 | 839 |
 | `regression_detector` | 5 | 0 | 298 |

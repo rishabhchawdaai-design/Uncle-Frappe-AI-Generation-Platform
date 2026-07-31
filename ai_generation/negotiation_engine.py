@@ -23,6 +23,7 @@ logger = logging.getLogger(__name__)
 class TaskType(str, Enum):
     TEXT_GENERATION = "text_generation"
     TEXT_EMBEDDING = "text_embedding"
+    CHAT = "chat"
     IMAGE_GENERATION = "image_generation"
     IMAGE_EDITING = "image_editing"
     IMAGE_UPSCALING = "image_upscaling"

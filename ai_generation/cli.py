@@ -688,6 +688,54 @@ async def cmd_research_graph():
         print(f"    {t:12s} {count}")
 
 
+# ── Kimi K3 Commands ──
+
+async def cmd_kimi_chat(prompt, provider="auto", system_prompt="", reasoning_effort="max", max_tokens=0):
+    """Chat with Kimi K3 through the best available execution path."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    result = await ai.chat(
+        prompt, provider=provider, system_prompt=system_prompt,
+        reasoning_effort=reasoning_effort,
+        max_tokens=int(max_tokens) if max_tokens else None,
+    )
+    print(f"\n  Provider:    {result.get('provider', '')}")
+    print(f"  Model:       {result.get('model', 'kimi-k3')}")
+    print(f"  Latency:     {result.get('latency_ms', 0)}ms")
+    print(f"  Quality:     {result.get('quality_score', 0)}")
+    if result.get("reasoning"):
+        print(f"  Reasoning:   {result['reasoning'][:300]}")
+    print(f"  Answer:      {result.get('text', '')}")
+    if result.get("error"):
+        print(f"  Error:       {result['error']}")
+    return result
+
+
+async def cmd_kimi_info():
+    """Print the canonical Kimi K3 specification and supported paths."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    info = ai.kimi_k3_info()
+    spec = info["spec"]
+    print(f"\n  Kimi K3 — {spec['model']} ({spec['model_id']})")
+    print(f"  Architecture: {spec['architecture']['family']} — {spec['architecture']['total_params']} total / {spec['architecture']['active_params']} active")
+    print(f"  Context:      {spec['context_length']:,} tokens")
+    print(f"  Multimodal:   {spec['architecture']['multimodal']} (MoonViT-V2)")
+    print(f"  Weights:      {spec['architecture']['weights_dtype']} / activations {spec['architecture']['activations_dtype']}")
+    print(f"  License:      {spec['license']['name']}")
+    print(f"\n  Supported paths:")
+    for path in info["supported_paths"]:
+        print(f"    OK {path['name']}: {path['description']}")
+    print(f"\n  Unsupported paths (officially):")
+    for path in info["unsupported_paths"]:
+        print(f"    NO {path['name']}: {path['reason']}")
+    print(f"\n  Configured endpoints:")
+    for ep in info["configured_endpoints"]:
+        key = "key set" if ep["api_key_set"] else "no key"
+        print(f"    - {ep['name']:20s} {ep['url']:50s} {key}")
+    return info
+
+
 async def main():
     """Dispatch CLI subcommands to their handlers."""
     args = sys.argv[1:]
@@ -897,6 +945,28 @@ async def main():
         await cmd_research_sync()
     elif args[0] == "research-graph":
         await cmd_research_graph()
+    elif args[0] == "kimi-chat":
+        prompt = args[1] if len(args) > 1 else "Explain what you are."
+        provider = "auto"
+        reasoning_effort = "max"
+        system_prompt = ""
+        max_tokens = 0
+        i = 2
+        while i < len(args):
+            if args[i] == "--provider" and i + 1 < len(args):
+                provider = args[i + 1]; i += 2
+            elif args[i] == "--effort" and i + 1 < len(args):
+                reasoning_effort = args[i + 1]; i += 2
+            elif args[i] == "--system" and i + 1 < len(args):
+                system_prompt = args[i + 1]; i += 2
+            elif args[i] == "--max-tokens" and i + 1 < len(args):
+                max_tokens = int(args[i + 1]); i += 2
+            else:
+                i += 1
+        await cmd_kimi_chat(prompt, provider=provider, system_prompt=system_prompt,
+                            reasoning_effort=reasoning_effort, max_tokens=max_tokens)
+    elif args[0] == "kimi-info":
+        await cmd_kimi_info()
 
 
 if __name__ == "__main__":

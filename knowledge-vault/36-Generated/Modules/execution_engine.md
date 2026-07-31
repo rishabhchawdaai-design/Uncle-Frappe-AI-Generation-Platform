@@ -3,7 +3,7 @@ module: "execution_engine"
 type: module-doc
 status: active
 owner: ""
-lines: 503
+lines: 510
 classes: 8
 functions: 0
 tags: [module, documentation]
@@ -21,7 +21,7 @@ Layer 3: User-Configured
 ## Overview
 
 - **File**: `ai_generation/execution_engine.py`
-- **Lines**: 503
+- **Lines**: 510
 - **Classes**: 8
 - **Public Functions**: 0
 

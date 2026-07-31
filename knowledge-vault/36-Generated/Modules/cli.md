@@ -3,9 +3,9 @@ module: "cli"
 type: module-doc
 status: active
 owner: ""
-lines: 903
+lines: 973
 classes: 0
-functions: 45
+functions: 47
 tags: [module, documentation]
 generated: "2026-07-31"
 ---
@@ -17,9 +17,9 @@ generated: "2026-07-31"
 ## Overview
 
 - **File**: `ai_generation/cli.py`
-- **Lines**: 903
+- **Lines**: 973
 - **Classes**: 0
-- **Public Functions**: 45
+- **Public Functions**: 47
 
 ## Public API
 
@@ -67,6 +67,8 @@ generated: "2026-07-31"
 - `cmd_research_impact()`
 - `cmd_research_sync()`
 - `cmd_research_graph()`
+- `cmd_kimi_chat()`
+- `cmd_kimi_info()`
 - `main()`
 
 ## Integration

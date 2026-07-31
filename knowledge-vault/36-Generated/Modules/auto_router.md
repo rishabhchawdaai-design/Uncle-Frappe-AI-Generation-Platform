@@ -3,7 +3,7 @@ module: "auto_router"
 type: module-doc
 status: active
 owner: ""
-lines: 144
+lines: 145
 classes: 2
 functions: 0
 tags: [module, documentation]
@@ -18,7 +18,7 @@ ranks providers, executes remotely, retries if needed, falls back automatically.
 ## Overview
 
 - **File**: `ai_generation/auto_router.py`
-- **Lines**: 144
+- **Lines**: 145
 - **Classes**: 2
 - **Public Functions**: 0
 

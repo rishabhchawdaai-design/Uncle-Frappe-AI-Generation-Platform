@@ -142,6 +142,22 @@ INITIAL_CAPABILITIES = [
         image_editing=True, img2img=True, inpainting=True,
         api_key_required=True, free_tier=False, benchmark_score=88.0,
     ),
+    # Kimi K3 — official execution paths (Moonshot AI)
+    ModelCapability(
+        model_name="kimi-k3", provider="kimi_k3_cloud", type="text",
+        batching=True, streaming=True,
+        api_key_required=True, free_tier=False, benchmark_score=90.0,
+    ),
+    ModelCapability(
+        model_name="kimi-k3", provider="kimi_k3_vllm", type="text",
+        batching=True, streaming=True,
+        api_key_required=False, free_tier=False, benchmark_score=92.0,
+    ),
+    ModelCapability(
+        model_name="kimi-k3", provider="kimi_k3_sglang", type="text",
+        batching=True, streaming=True,
+        api_key_required=False, free_tier=False, benchmark_score=92.0,
+    ),
 ]
 
 
@@ -207,6 +223,7 @@ class CapabilityMatrix:
             "outpainting": lambda c: c.outpainting,
             "img2img": lambda c: c.img2img,
             "upscale": lambda c: False,  # no built-in upscale models in matrix
+            "chat": lambda c: c.type == "text",
         }
         filter_fn = task_map.get(task, lambda c: True)
         candidates = [c for c in self._capabilities if filter_fn(c)]
