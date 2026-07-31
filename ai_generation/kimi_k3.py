@@ -138,6 +138,7 @@ KIMI_K3_SPEC: Dict[str, Any] = {
         "huggingface_inference": "No official HF Inference/TGI deployment published",
         "huggingface_endpoints": "No official HF Endpoints deployment published",
         "gguf": "No official GGUF weights; third-party conversions only",
+        "transformers": "No official Transformers inference recipe; weights/config are hosted on the Hub but official runtimes are vLLM, SGLang, TokenSpeed, and the cloud API",
     },
     "not_officially_published": {
         "kubernetes_manifest": "No official K8s manifest; official Docker images are portable to K8s",
@@ -145,6 +146,7 @@ KIMI_K3_SPEC: Dict[str, Any] = {
         "runtime_profiling_guide": "No official K3 runtime profiling guide published",
         "scheduler_integration": "Scheduling handled by vLLM/SGLang runtimes; no K3-specific scheduler contract",
         "continuous_batching": "Provided by vLLM/SGLang by default; no K3-specific tuning published",
+        "paged_attention": "Provided by vLLM/SGLang by default; no K3-specific tuning published",
     },
     "deployment": {
         "self_hosted": True,

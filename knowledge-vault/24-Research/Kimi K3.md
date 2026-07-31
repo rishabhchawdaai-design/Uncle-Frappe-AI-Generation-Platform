@@ -48,8 +48,13 @@ page records only **officially supported** facts from:
 ## Officially Unsupported Runtimes
 
 TensorRT-LLM, DeepSpeed, llama.cpp, Ollama, Hugging Face Inference/TGI,
-Hugging Face Endpoints, and GGUF have **no official Moonshot AI support** and
-are recorded as unsupported — never emulated.
+Hugging Face Endpoints, GGUF, and Hugging Face Transformers (no official
+inference recipe; weights/config are Hub-hosted but official runtimes are
+vLLM, SGLang, TokenSpeed, and the cloud API) have **no official Moonshot AI
+support** and are recorded as unsupported — never emulated.
+
+Continuous batching and paged attention are provided by the vLLM/SGLang
+runtimes by default; no K3-specific tuning is published.
 
 ## Parallelism (official)
 

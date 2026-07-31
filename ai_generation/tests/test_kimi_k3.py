@@ -89,7 +89,8 @@ def test_kimi_k3_unsupported_runtimes_recorded():
     from ai_generation.kimi_k3 import KIMI_K3_SPEC
     unsupported = KIMI_K3_SPEC["unsupported_runtimes"]
     for name in ("tensorrt_llm", "deepspeed", "llamacpp", "ollama",
-                 "huggingface_inference", "huggingface_endpoints", "gguf"):
+                 "huggingface_inference", "huggingface_endpoints", "gguf",
+                 "transformers"):
         assert name in unsupported
         assert unsupported[name]
 
@@ -524,7 +525,7 @@ def test_sdk_kimi_info():
     ai = UncleFrappeAI()
     info = ai.kimi_k3_info()
     assert info["spec"]["context_length"] == 1048576
-    assert len(info["unsupported_paths"]) == 7
+    assert len(info["unsupported_paths"]) == 8
 
 
 def test_sdk_stats_include_kimi():
@@ -818,7 +819,7 @@ def test_kimi_k3_not_officially_published():
     nop = KIMI_K3_SPEC["not_officially_published"]
     for key in ("kubernetes_manifest", "memory_offload_guidance",
                 "runtime_profiling_guide", "scheduler_integration",
-                "continuous_batching"):
+                "continuous_batching", "paged_attention"):
         assert key in nop
         assert nop[key]
 
