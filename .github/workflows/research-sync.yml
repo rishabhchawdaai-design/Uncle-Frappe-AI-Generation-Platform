@@ -1,0 +1,51 @@
+name: Research Sync
+
+on:
+  schedule:
+    - cron: "23 3 * * 0"
+  workflow_dispatch:
+
+jobs:
+  research-sync:
+    runs-on: ubuntu-latest
+    if: secrets.ACOS_RESEARCH_TOKEN != ''
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Clone canonical research repo
+        run: |
+          git clone "https://x-access-token:${{ secrets.ACOS_RESEARCH_TOKEN }}@github.com/rishabhchawdaai-design/ACOS-Research.git" ../acos-research
+
+      - name: Run research sync
+        env:
+          ACOS_RESEARCH_REPO: ../acos-research
+        run: |
+          PYTHONPATH=. python3 -m ai_generation.cli research-sync
+          if git diff --quiet -- data/research/research_manifest.json data/research/execution_queue.json; then
+            echo "No research changes — cache is synchronized."
+          else
+            echo "CHANGED=true" >> "$GITHUB_ENV"
+          fi
+
+      - name: Open sync PR
+        if: env.CHANGED == 'true'
+        env:
+          TOKEN: ${{ secrets.ACOS_RESEARCH_TOKEN }}
+        run: |
+          BRANCH="chore/research-sync-$(date +%s)"
+          git checkout -b "$BRANCH"
+          git config user.name "uncle-frappe-bot"
+          git config user.email "noreply@github.com"
+          git add data/research/
+          git commit -m "chore: synchronize research integration cache with ACOS-Research"
+          git push "https://x-access-token:${TOKEN}@github.com/rishabhchawdaai-design/Uncle-Frappe-AI-Generation-Platform.git" "$BRANCH"
+          curl -sS -X POST -H "Authorization: Bearer ${TOKEN}" -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/rishabhchawdaai-design/Uncle-Frappe-AI-Generation-Platform/pulls \
+            -d "{\"title\":\"chore: synchronize research integration cache\",\"head\":\"$BRANCH\",\"base\":\"main\",\"body\":\"Automated sync of the research integration cache from ACOS-Research. Review CI, then merge.\"}"
