@@ -16,3 +16,4 @@ node_modules/
 .env.local
 *.log
 output/
+health_report.json
