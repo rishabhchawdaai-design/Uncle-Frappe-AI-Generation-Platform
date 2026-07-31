@@ -1,76 +1,240 @@
 {
-  "_comment": "External MCP servers the platform can connect to. Canonical registry consolidated from the legacy sections/mcp_registry.json and mcp_adapters/registry.json.",
+  "_comment": "Canonical MCP Server Registry \u2014 single source of truth. Verified against npm registry / PyPI JSON API on 2026-07-31. Entries with status=blocked lack a stable verified distribution.",
   "mcp_servers": {
-    "brave": {
+    "filesystem": {
+      "id": "filesystem",
+      "name": "Filesystem",
+      "category": "filesystem",
+      "status": "ready",
+      "verified": true,
+      "version": "2026.7.10",
+      "install_type": "npx",
+      "package": "@modelcontextprotocol/server-filesystem",
       "command": "npx",
       "args": [
         "-y",
-        "@anthropic-ai/mcp-server-brave-search"
+        "@modelcontextprotocol/server-filesystem",
+        "/path/to/allowed/dir"
       ],
+      "env": {},
       "tools": [
-        "brave_search"
-      ]
+        "read_file",
+        "write_file",
+        "list_directory",
+        "search_files"
+      ],
+      "source": "https://registry.npmjs.org/@modelcontextprotocol/server-filesystem",
+      "note": "Official MCP reference server (Filesystem)."
     },
-    "brightdata_mcp": {
-      "name": "Bright Data MCP",
-      "command": "npx",
+    "git": {
+      "id": "git",
+      "name": "Git",
+      "category": "version-control",
+      "status": "ready",
+      "verified": true,
+      "version": "2026.7.10",
+      "install_type": "uvx",
+      "package": "mcp-server-git",
+      "command": "uvx",
       "args": [
-        "-y",
-        "@brightdata/mcp-server"
+        "mcp-server-git"
+      ],
+      "env": {},
+      "tools": [
+        "git_status",
+        "git_diff",
+        "git_commit",
+        "git_log"
+      ],
+      "source": "https://pypi.org/project/mcp-server-git/",
+      "note": "Official MCP reference server (Git), now distributed via PyPI."
+    },
+    "github": {
+      "id": "github",
+      "name": "GitHub",
+      "category": "version-control",
+      "status": "ready",
+      "verified": true,
+      "version": "1.8.7",
+      "install_type": "docker",
+      "package": "github/github-mcp-server",
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "-e",
+        "GITHUB_PERSONAL_ACCESS_TOKEN",
+        "ghcr.io/github/github-mcp-server"
       ],
       "env": {
-        "BRIGHT_DATA_API_KEY": "${BRIGHT_DATA_API_KEY}"
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
       },
       "tools": [
-        "web_unlocker",
-        "serp_api",
-        "scraping_browser",
-        "datacenter_proxies",
-        "web_crawler"
+        "create_issue",
+        "list_repositories",
+        "get_file_contents",
+        "search_code"
       ],
-      "description": "Bright Data's MCP server for web data collection with proxy support"
+      "source": "https://github.com/github/github-mcp-server",
+      "note": "Official GitHub MCP server (container/binary); npm wrapper github-mcp-server verified."
     },
-    "chroma": {
+    "docker": {
+      "id": "docker",
+      "name": "Docker",
+      "category": "infrastructure",
+      "status": "ready",
+      "verified": true,
+      "version": "2.1.1",
+      "install_type": "npx",
+      "package": "docker-mcp-server",
       "command": "npx",
       "args": [
         "-y",
-        "chroma-mcp"
+        "docker-mcp-server"
       ],
+      "env": {},
       "tools": [
-        "query",
-        "add",
-        "create_collection"
-      ]
-    },
-    "elasticsearch": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "elasticsearch-mcp"
+        "docker_ps",
+        "docker_inspect",
+        "docker_logs",
+        "docker_exec"
       ],
-      "tools": [
-        "search",
-        "index",
-        "mappings"
-      ]
+      "source": "https://registry.npmjs.org/docker-mcp-server",
+      "note": "Community MCP server for Docker. Official @docker/docker-mcp package was not found on npm during audit."
     },
-    "exa": {
+    "kubernetes": {
+      "id": "kubernetes",
+      "name": "Kubernetes",
+      "category": "infrastructure",
+      "status": "ready",
+      "verified": true,
+      "version": "0.0.66",
+      "install_type": "npx",
+      "package": "kubernetes-mcp-server",
       "command": "npx",
       "args": [
         "-y",
-        "@anthropic-ai/mcp-server-exa"
+        "kubernetes-mcp-server"
       ],
+      "env": {},
       "tools": [
-        "search",
-        "get_contents"
-      ]
+        "kubectl_get",
+        "kubectl_describe",
+        "kubectl_logs",
+        "kubectl_apply"
+      ],
+      "source": "https://registry.npmjs.org/kubernetes-mcp-server",
+      "note": "MCP server for Kubernetes/OpenShift (k8s-mcp-server)."
     },
-    "firecrawl_mcp": {
-      "name": "Firecrawl MCP",
+    "browser": {
+      "id": "browser",
+      "name": "Browser MCP",
+      "category": "browser",
+      "status": "ready",
+      "verified": true,
+      "version": "0.1.3",
+      "install_type": "npx",
+      "package": "@browsermcp/mcp",
       "command": "npx",
       "args": [
         "-y",
-        "@mendable/firecrawl-mcp"
+        "@browsermcp/mcp"
+      ],
+      "env": {},
+      "tools": [
+        "browser_navigate",
+        "browser_click",
+        "browser_type",
+        "browser_extract"
+      ],
+      "source": "https://registry.npmjs.org/@browsermcp/mcp",
+      "note": "Official Browser MCP server (browsermcp)."
+    },
+    "playwright": {
+      "id": "playwright",
+      "name": "Playwright",
+      "category": "browser",
+      "status": "ready",
+      "verified": true,
+      "version": "0.0.78",
+      "install_type": "npx",
+      "package": "@playwright/mcp",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@playwright/mcp"
+      ],
+      "env": {},
+      "tools": [
+        "browser_navigate",
+        "browser_screenshot",
+        "browser_click",
+        "browser_fill"
+      ],
+      "source": "https://registry.npmjs.org/@playwright/mcp",
+      "note": "Official Playwright MCP server."
+    },
+    "chrome": {
+      "id": "chrome",
+      "name": "Chrome DevTools",
+      "category": "browser",
+      "status": "ready",
+      "verified": true,
+      "version": "1.6.0",
+      "install_type": "npx",
+      "package": "chrome-devtools-mcp",
+      "command": "npx",
+      "args": [
+        "-y",
+        "chrome-devtools-mcp"
+      ],
+      "env": {},
+      "tools": [
+        "chrome_navigate",
+        "chrome_evaluate",
+        "chrome_screenshot",
+        "chrome_network"
+      ],
+      "source": "https://registry.npmjs.org/chrome-devtools-mcp",
+      "note": "Official Chrome DevTools MCP server (Google)."
+    },
+    "puppeteer": {
+      "id": "puppeteer",
+      "name": "Puppeteer",
+      "category": "browser",
+      "status": "ready",
+      "verified": true,
+      "version": "2025.5.12",
+      "install_type": "npx",
+      "package": "@modelcontextprotocol/server-puppeteer",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-puppeteer"
+      ],
+      "env": {},
+      "tools": [
+        "puppeteer_navigate",
+        "puppeteer_screenshot",
+        "puppeteer_click"
+      ],
+      "source": "https://registry.npmjs.org/@modelcontextprotocol/server-puppeteer",
+      "note": "Official MCP reference server (Puppeteer)."
+    },
+    "firecrawl": {
+      "id": "firecrawl",
+      "name": "Firecrawl",
+      "category": "web",
+      "status": "ready",
+      "verified": true,
+      "version": "3.23.0",
+      "install_type": "npx",
+      "package": "firecrawl-mcp",
+      "command": "npx",
+      "args": [
+        "-y",
+        "firecrawl-mcp"
       ],
       "env": {
         "FIRECRAWL_API_KEY": "${FIRECRAWL_API_KEY}"
@@ -78,83 +242,67 @@
       "tools": [
         "firecrawl_scrape",
         "firecrawl_crawl",
-        "firecrawl_map",
-        "firecrawl_extract",
-        "firecrawl_search"
+        "firecrawl_search",
+        "firecrawl_map"
       ],
-      "description": "Firecrawl MCP server for web scraping and crawling"
+      "source": "https://registry.npmjs.org/firecrawl-mcp",
+      "note": "Official Firecrawl MCP server."
     },
-    "neo4j": {
-      "command": "npx",
+    "crawl4ai": {
+      "id": "crawl4ai",
+      "name": "Crawl4AI",
+      "category": "web",
+      "status": "ready",
+      "verified": true,
+      "version": "0.1.0",
+      "install_type": "uvx",
+      "package": "crawl4ai-mcp",
+      "command": "uvx",
       "args": [
-        "-y",
-        "neo4j-mcp"
-      ],
-      "tools": [
-        "cypher_query",
-        "get_schema"
-      ]
-    },
-    "playwright_mcp": {
-      "name": "Playwright MCP",
-      "command": "npx",
-      "args": [
-        "-y",
-        "@anthropic-ai/mcp-server-playwright"
+        "crawl4ai-mcp"
       ],
       "env": {},
       "tools": [
-        "browser_navigate",
-        "browser_screenshot",
-        "browser_click",
-        "browser_fill",
-        "browser_evaluate",
-        "browser_pdf"
+        "crawl4ai_scrape",
+        "crawl4ai_crawl",
+        "crawl4ai_search"
       ],
-      "description": "Playwright-based browser automation via MCP"
+      "source": "https://pypi.org/project/crawl4ai-mcp/",
+      "note": "Official Crawl4AI MCP server (PyPI)."
     },
-    "puppeteer_mcp": {
-      "name": "Puppeteer MCP",
+    "brave_search": {
+      "id": "brave_search",
+      "name": "Brave Search",
+      "category": "search",
+      "status": "ready",
+      "verified": true,
+      "version": "2.1.0",
+      "install_type": "npx",
+      "package": "@brave/brave-search-mcp-server",
       "command": "npx",
       "args": [
         "-y",
-        "@anthropic-ai/mcp-server-puppeteer"
+        "@brave/brave-search-mcp-server"
       ],
-      "env": {},
+      "env": {
+        "BRAVE_API_KEY": "${BRAVE_API_KEY}"
+      },
       "tools": [
-        "puppeteer_navigate",
-        "puppeteer_screenshot",
-        "puppeteer_click",
-        "puppeteer_evaluate",
-        "puppeteer_fill"
+        "brave_search",
+        "brave_web_search"
       ],
-      "description": "Puppeteer-based Chrome automation via MCP"
+      "source": "https://registry.npmjs.org/@brave/brave-search-mcp-server",
+      "note": "Official Brave Search MCP server."
     },
-    "qdrant": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "qdrant-mcp"
-      ],
-      "tools": [
-        "search",
-        "upsert",
-        "create_collection"
-      ]
-    },
-    "reddit": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "reddit-mcp"
-      ],
-      "tools": [
-        "search_posts",
-        "get_comments"
-      ]
-    },
-    "searxng_mcp": {
-      "name": "SearXNG MCP",
+    "searxng": {
+      "id": "searxng",
+      "name": "SearXNG",
+      "category": "search",
+      "status": "ready",
+      "verified": true,
+      "version": "",
+      "install_type": "npx",
+      "package": "searxng-mcp-server",
       "command": "npx",
       "args": [
         "-y",
@@ -164,44 +312,1102 @@
         "SEARXNG_BASE_URL": "http://localhost:8080"
       },
       "tools": [
-        "searxng_search",
-        "searxng_search_json"
+        "searxng_search"
       ],
-      "description": "Self-hosted SearXNG metasearch engine MCP server"
+      "source": "https://registry.npmjs.org/searxng-mcp-server",
+      "note": "MCP server for self-hosted SearXNG metasearch."
+    },
+    "exa": {
+      "id": "exa",
+      "name": "Exa",
+      "category": "search",
+      "status": "ready",
+      "verified": true,
+      "version": "3.2.1",
+      "install_type": "npx",
+      "package": "exa-mcp-server",
+      "command": "npx",
+      "args": [
+        "-y",
+        "exa-mcp-server"
+      ],
+      "env": {
+        "EXA_API_KEY": "${EXA_API_KEY}"
+      },
+      "tools": [
+        "exa_search",
+        "exa_get_contents",
+        "exa_find_similar"
+      ],
+      "source": "https://registry.npmjs.org/exa-mcp-server",
+      "note": "Official Exa MCP server."
+    },
+    "jina": {
+      "id": "jina",
+      "name": "Jina AI",
+      "category": "search",
+      "status": "ready",
+      "verified": true,
+      "version": "",
+      "install_type": "npx",
+      "package": "jina-mcp",
+      "command": "npx",
+      "args": [
+        "-y",
+        "jina-mcp"
+      ],
+      "env": {
+        "JINA_API_KEY": "${JINA_API_KEY}"
+      },
+      "tools": [
+        "jina_search",
+        "jina_reader",
+        "jina_embed"
+      ],
+      "source": "https://registry.npmjs.org/jina-mcp",
+      "note": "Jina AI MCP server (npm)."
+    },
+    "context7": {
+      "id": "context7",
+      "name": "Context7",
+      "category": "docs",
+      "status": "ready",
+      "verified": true,
+      "version": "3.2.5",
+      "install_type": "npx",
+      "package": "@upstash/context7-mcp",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
+      "env": {},
+      "tools": [
+        "context7_query",
+        "context7_get_docs"
+      ],
+      "source": "https://registry.npmjs.org/@upstash/context7-mcp",
+      "note": "Official Context7 MCP server (library docs)."
+    },
+    "sequential_thinking": {
+      "id": "sequential_thinking",
+      "name": "Sequential Thinking",
+      "category": "reasoning",
+      "status": "ready",
+      "verified": true,
+      "version": "2026.7.4",
+      "install_type": "npx",
+      "package": "@modelcontextprotocol/server-sequential-thinking",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ],
+      "env": {},
+      "tools": [
+        "sequential_thinking"
+      ],
+      "source": "https://registry.npmjs.org/@modelcontextprotocol/server-sequential-thinking",
+      "note": "Official MCP reference server (Sequential Thinking)."
+    },
+    "memory": {
+      "id": "memory",
+      "name": "Memory",
+      "category": "memory",
+      "status": "ready",
+      "verified": true,
+      "version": "2026.7.4",
+      "install_type": "npx",
+      "package": "@modelcontextprotocol/server-memory",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ],
+      "env": {},
+      "tools": [
+        "memory_create_entities",
+        "memory_create_relations",
+        "memory_search_nodes"
+      ],
+      "source": "https://registry.npmjs.org/@modelcontextprotocol/server-memory",
+      "note": "Official MCP reference server (Knowledge Graph memory)."
+    },
+    "sqlite": {
+      "id": "sqlite",
+      "name": "SQLite",
+      "category": "database",
+      "status": "ready",
+      "verified": true,
+      "version": "2025.4.25",
+      "install_type": "uvx",
+      "package": "mcp-server-sqlite",
+      "command": "uvx",
+      "args": [
+        "mcp-server-sqlite",
+        "--db-path",
+        "/path/to/app.db"
+      ],
+      "env": {},
+      "tools": [
+        "sqlite_query",
+        "sqlite_execute",
+        "sqlite_list_tables"
+      ],
+      "source": "https://pypi.org/project/mcp-server-sqlite/",
+      "note": "Official MCP reference server (SQLite), PyPI distribution."
+    },
+    "postgres": {
+      "id": "postgres",
+      "name": "PostgreSQL",
+      "category": "database",
+      "status": "ready",
+      "verified": true,
+      "version": "0.6.2",
+      "install_type": "npx",
+      "package": "@modelcontextprotocol/server-postgres",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-postgres",
+        "postgresql://user:pass@localhost/db"
+      ],
+      "env": {},
+      "tools": [
+        "postgres_query",
+        "postgres_get_schema"
+      ],
+      "source": "https://registry.npmjs.org/@modelcontextprotocol/server-postgres",
+      "note": "Official MCP reference server (PostgreSQL)."
+    },
+    "redis": {
+      "id": "redis",
+      "name": "Redis",
+      "category": "database",
+      "status": "ready",
+      "verified": true,
+      "version": "2025.4.25",
+      "install_type": "npx",
+      "package": "@modelcontextprotocol/server-redis",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-redis",
+        "redis://localhost:6379"
+      ],
+      "env": {},
+      "tools": [
+        "redis_get",
+        "redis_set",
+        "redis_keys"
+      ],
+      "source": "https://registry.npmjs.org/@modelcontextprotocol/server-redis",
+      "note": "MCP server for Redis (modelcontextprotocol)."
+    },
+    "qdrant": {
+      "id": "qdrant",
+      "name": "Qdrant",
+      "category": "vector-db",
+      "status": "ready",
+      "verified": true,
+      "version": "0.2.0",
+      "install_type": "uvx",
+      "package": "qdrant-mcp",
+      "command": "uvx",
+      "args": [
+        "qdrant-mcp"
+      ],
+      "env": {
+        "QDRANT_URL": "http://localhost:6333"
+      },
+      "tools": [
+        "qdrant_search",
+        "qdrant_upsert",
+        "qdrant_create_collection"
+      ],
+      "source": "https://pypi.org/project/qdrant-mcp/",
+      "note": "Qdrant MCP server (PyPI; npm qdrant-mcp also available)."
+    },
+    "weaviate": {
+      "id": "weaviate",
+      "name": "Weaviate",
+      "category": "vector-db",
+      "status": "ready",
+      "verified": true,
+      "version": "0.1.5",
+      "install_type": "uvx",
+      "package": "weaviate-mcp",
+      "command": "uvx",
+      "args": [
+        "weaviate-mcp"
+      ],
+      "env": {
+        "WEAVIATE_URL": "http://localhost:8080"
+      },
+      "tools": [
+        "weaviate_search",
+        "weaviate_insert",
+        "weaviate_get_schema"
+      ],
+      "source": "https://pypi.org/project/weaviate-mcp/",
+      "note": "Weaviate MCP server (PyPI; npm weaviate-mcp also available)."
+    },
+    "milvus": {
+      "id": "milvus",
+      "name": "Milvus",
+      "category": "vector-db",
+      "status": "ready",
+      "verified": true,
+      "version": "",
+      "install_type": "npx",
+      "package": "milvus-mcp-server",
+      "command": "npx",
+      "args": [
+        "-y",
+        "milvus-mcp-server"
+      ],
+      "env": {
+        "MILVUS_URI": "${MILVUS_URI}"
+      },
+      "tools": [
+        "milvus_search",
+        "milvus_insert",
+        "milvus_list_collections"
+      ],
+      "source": "https://registry.npmjs.org/milvus-mcp-server",
+      "note": "Milvus MCP server (npm)."
+    },
+    "chroma": {
+      "id": "chroma",
+      "name": "Chroma",
+      "category": "vector-db",
+      "status": "ready",
+      "verified": true,
+      "version": "0.2.6",
+      "install_type": "uvx",
+      "package": "chroma-mcp",
+      "command": "uvx",
+      "args": [
+        "chroma-mcp"
+      ],
+      "env": {
+        "CHROMA_PERSIST_DIR": "/path/to/chroma"
+      },
+      "tools": [
+        "chroma_query",
+        "chroma_add",
+        "chroma_create_collection"
+      ],
+      "source": "https://pypi.org/project/chroma-mcp/",
+      "note": "Official Chroma MCP server (PyPI); npm chroma-mcp no longer published."
+    },
+    "lancedb": {
+      "id": "lancedb",
+      "name": "LanceDB",
+      "category": "vector-db",
+      "status": "ready",
+      "verified": true,
+      "version": "0.1.3",
+      "install_type": "uvx",
+      "package": "lancedb-mcp",
+      "command": "uvx",
+      "args": [
+        "lancedb-mcp"
+      ],
+      "env": {},
+      "tools": [
+        "lancedb_search",
+        "lancedb_add",
+        "lancedb_create_table"
+      ],
+      "source": "https://pypi.org/project/lancedb-mcp/",
+      "note": "LanceDB MCP server (PyPI)."
+    },
+    "neo4j": {
+      "id": "neo4j",
+      "name": "Neo4j",
+      "category": "graph-db",
+      "status": "ready",
+      "verified": true,
+      "version": "0.1.4",
+      "install_type": "uvx",
+      "package": "neo4j-mcp",
+      "command": "uvx",
+      "args": [
+        "neo4j-mcp"
+      ],
+      "env": {
+        "NEO4J_URI": "bolt://localhost:7687",
+        "NEO4J_USERNAME": "neo4j",
+        "NEO4J_PASSWORD": "${NEO4J_PASSWORD}"
+      },
+      "tools": [
+        "neo4j_cypher_query",
+        "neo4j_get_schema"
+      ],
+      "source": "https://pypi.org/project/neo4j-mcp/",
+      "note": "Neo4j MCP server (PyPI); npm neo4j-mcp no longer published."
+    },
+    "openapi": {
+      "id": "openapi",
+      "name": "OpenAPI",
+      "category": "api",
+      "status": "ready",
+      "verified": true,
+      "version": "2.1.0",
+      "install_type": "npx",
+      "package": "openapi-mcp-server",
+      "command": "npx",
+      "args": [
+        "-y",
+        "openapi-mcp-server",
+        "/path/to/openapi.json"
+      ],
+      "env": {},
+      "tools": [
+        "openapi_call_operation",
+        "openapi_list_operations"
+      ],
+      "source": "https://registry.npmjs.org/openapi-mcp-server",
+      "note": "OpenAPI MCP server (npm; mcp-openapi also available)."
+    },
+    "rest": {
+      "id": "rest",
+      "name": "REST",
+      "category": "api",
+      "status": "ready",
+      "verified": true,
+      "version": "0.0.4",
+      "install_type": "npx",
+      "package": "rest-mcp-server",
+      "command": "npx",
+      "args": [
+        "-y",
+        "rest-mcp-server"
+      ],
+      "env": {},
+      "tools": [
+        "rest_request",
+        "rest_list_endpoints"
+      ],
+      "source": "https://registry.npmjs.org/rest-mcp-server",
+      "note": "REST API MCP server (npm; mcp-rest also available)."
+    },
+    "slack": {
+      "id": "slack",
+      "name": "Slack",
+      "category": "communication",
+      "status": "ready",
+      "verified": true,
+      "version": "1.3.0",
+      "install_type": "npx",
+      "package": "slack-mcp-server",
+      "command": "npx",
+      "args": [
+        "-y",
+        "slack-mcp-server"
+      ],
+      "env": {
+        "SLACK_BOT_TOKEN": "${SLACK_BOT_TOKEN}",
+        "SLACK_TEAM_ID": "${SLACK_TEAM_ID}"
+      },
+      "tools": [
+        "slack_post_message",
+        "slack_list_channels",
+        "slack_read_messages"
+      ],
+      "source": "https://registry.npmjs.org/slack-mcp-server",
+      "note": "Slack MCP server (npm)."
+    },
+    "discord": {
+      "id": "discord",
+      "name": "Discord",
+      "category": "communication",
+      "status": "ready",
+      "verified": true,
+      "version": "2.4.0",
+      "install_type": "npx",
+      "package": "discord-mcp",
+      "command": "npx",
+      "args": [
+        "-y",
+        "discord-mcp"
+      ],
+      "env": {
+        "DISCORD_BOT_TOKEN": "${DISCORD_BOT_TOKEN}"
+      },
+      "tools": [
+        "discord_send_message",
+        "discord_read_messages"
+      ],
+      "source": "https://registry.npmjs.org/discord-mcp",
+      "note": "Discord MCP server (npm)."
+    },
+    "notion": {
+      "id": "notion",
+      "name": "Notion",
+      "category": "productivity",
+      "status": "ready",
+      "verified": true,
+      "version": "2.12.0",
+      "install_type": "npx",
+      "package": "notion-mcp-server",
+      "command": "npx",
+      "args": [
+        "-y",
+        "notion-mcp-server"
+      ],
+      "env": {
+        "NOTION_API_KEY": "${NOTION_API_KEY}"
+      },
+      "tools": [
+        "notion_search",
+        "notion_read_page",
+        "notion_create_page"
+      ],
+      "source": "https://registry.npmjs.org/notion-mcp-server",
+      "note": "Notion MCP server (npm; @notionhq/notion-mcp-server also available)."
+    },
+    "google_drive": {
+      "id": "google_drive",
+      "name": "Google Drive / Docs / Sheets / Calendar",
+      "category": "productivity",
+      "status": "ready",
+      "verified": true,
+      "version": "2025.1.14",
+      "install_type": "npx",
+      "package": "@modelcontextprotocol/server-gdrive",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-gdrive"
+      ],
+      "env": {
+        "GDRIVE_OAUTH_PATH": "${GDRIVE_OAUTH_PATH}"
+      },
+      "tools": [
+        "gdrive_search",
+        "gdrive_read_file",
+        "gdrive_create_file"
+      ],
+      "source": "https://registry.npmjs.org/@modelcontextprotocol/server-gdrive",
+      "note": "Official MCP reference server (Google Drive family: Drive, Docs, Sheets, Calendar)."
+    },
+    "figma": {
+      "id": "figma",
+      "name": "Figma",
+      "category": "design",
+      "status": "ready",
+      "verified": true,
+      "version": "0.13.2",
+      "install_type": "npx",
+      "package": "figma-developer-mcp",
+      "command": "npx",
+      "args": [
+        "-y",
+        "figma-developer-mcp"
+      ],
+      "env": {
+        "FIGMA_API_KEY": "${FIGMA_API_KEY}"
+      },
+      "tools": [
+        "figma_get_file",
+        "figma_get_node",
+        "figma_get_image"
+      ],
+      "source": "https://registry.npmjs.org/figma-developer-mcp",
+      "note": "Official Figma Developer MCP server."
+    },
+    "linear": {
+      "id": "linear",
+      "name": "Linear",
+      "category": "productivity",
+      "status": "ready",
+      "verified": true,
+      "version": "0.1.0",
+      "install_type": "npx",
+      "package": "linear-mcp-server",
+      "command": "npx",
+      "args": [
+        "-y",
+        "linear-mcp-server"
+      ],
+      "env": {
+        "LINEAR_API_KEY": "${LINEAR_API_KEY}"
+      },
+      "tools": [
+        "linear_create_issue",
+        "linear_list_issues",
+        "linear_search"
+      ],
+      "source": "https://registry.npmjs.org/linear-mcp-server",
+      "note": "Linear MCP server (npm)."
+    },
+    "jira": {
+      "id": "jira",
+      "name": "Jira",
+      "category": "productivity",
+      "status": "ready",
+      "verified": true,
+      "version": "2.1.0",
+      "install_type": "npx",
+      "package": "mcp-atlassian",
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-atlassian"
+      ],
+      "env": {
+        "JIRA_URL": "${JIRA_URL}",
+        "JIRA_USERNAME": "${JIRA_USERNAME}",
+        "JIRA_API_TOKEN": "${JIRA_API_TOKEN}"
+      },
+      "tools": [
+        "jira_search",
+        "jira_create_issue",
+        "jira_get_issue"
+      ],
+      "source": "https://registry.npmjs.org/mcp-atlassian",
+      "note": "Atlassian MCP server covering Jira, Confluence, and Bitbucket (jira-mcp-server also available)."
+    },
+    "obsidian": {
+      "id": "obsidian",
+      "name": "Obsidian",
+      "category": "knowledge",
+      "status": "ready",
+      "verified": true,
+      "version": "1.0.6",
+      "install_type": "npx",
+      "package": "obsidian-mcp",
+      "command": "npx",
+      "args": [
+        "-y",
+        "obsidian-mcp"
+      ],
+      "env": {
+        "OBSIDIAN_API_KEY": "${OBSIDIAN_API_KEY}",
+        "OBSIDIAN_HOST": "http://127.0.0.1:27123"
+      },
+      "tools": [
+        "obsidian_search",
+        "obsidian_read_note",
+        "obsidian_write_note"
+      ],
+      "source": "https://registry.npmjs.org/obsidian-mcp",
+      "note": "Obsidian MCP server (Local REST API)."
+    },
+    "cloudflare": {
+      "id": "cloudflare",
+      "name": "Cloudflare",
+      "category": "infrastructure",
+      "status": "ready",
+      "verified": true,
+      "version": "0.2.0",
+      "install_type": "npx",
+      "package": "@cloudflare/mcp-server-cloudflare",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@cloudflare/mcp-server-cloudflare"
+      ],
+      "env": {
+        "CLOUDFLARE_API_TOKEN": "${CLOUDFLARE_API_TOKEN}"
+      },
+      "tools": [
+        "cloudflare_list_workers",
+        "cloudflare_deploy_worker",
+        "cloudflare_purge_cache"
+      ],
+      "source": "https://registry.npmjs.org/@cloudflare/mcp-server-cloudflare",
+      "note": "Official Cloudflare MCP server."
+    },
+    "vercel": {
+      "id": "vercel",
+      "name": "Vercel",
+      "category": "infrastructure",
+      "status": "ready",
+      "verified": true,
+      "version": "1.0.0",
+      "install_type": "npx",
+      "package": "vercel-mcp-server",
+      "command": "npx",
+      "args": [
+        "-y",
+        "vercel-mcp-server"
+      ],
+      "env": {
+        "VERCEL_TOKEN": "${VERCEL_TOKEN}"
+      },
+      "tools": [
+        "vercel_list_projects",
+        "vercel_deploy",
+        "vercel_get_logs"
+      ],
+      "source": "https://registry.npmjs.org/vercel-mcp-server",
+      "note": "Vercel MCP server (npm)."
+    },
+    "railway": {
+      "id": "railway",
+      "name": "Railway",
+      "category": "infrastructure",
+      "status": "ready",
+      "verified": true,
+      "version": "2.2.0",
+      "install_type": "npx",
+      "package": "railway-mcp",
+      "command": "npx",
+      "args": [
+        "-y",
+        "railway-mcp"
+      ],
+      "env": {
+        "RAILWAY_API_KEY": "${RAILWAY_API_KEY}"
+      },
+      "tools": [
+        "railway_list_projects",
+        "railway_deploy",
+        "railway_logs"
+      ],
+      "source": "https://registry.npmjs.org/railway-mcp",
+      "note": "Railway MCP server (npm)."
+    },
+    "render": {
+      "id": "render",
+      "name": "Render",
+      "category": "infrastructure",
+      "status": "ready",
+      "verified": true,
+      "version": "",
+      "install_type": "npx",
+      "package": "render-mcp",
+      "command": "npx",
+      "args": [
+        "-y",
+        "render-mcp"
+      ],
+      "env": {
+        "RENDER_API_KEY": "${RENDER_API_KEY}"
+      },
+      "tools": [
+        "render_list_services",
+        "render_deploy",
+        "render_logs"
+      ],
+      "source": "https://registry.npmjs.org/render-mcp",
+      "note": "Render MCP server (npm)."
+    },
+    "gitlab": {
+      "id": "gitlab",
+      "name": "GitLab",
+      "category": "version-control",
+      "status": "ready",
+      "verified": true,
+      "version": "0.0.1",
+      "install_type": "npx",
+      "package": "gitlab-mcp-server",
+      "command": "npx",
+      "args": [
+        "-y",
+        "gitlab-mcp-server"
+      ],
+      "env": {
+        "GITLAB_PERSONAL_ACCESS_TOKEN": "${GITLAB_PERSONAL_ACCESS_TOKEN}",
+        "GITLAB_URL": "https://gitlab.com"
+      },
+      "tools": [
+        "gitlab_list_projects",
+        "gitlab_get_file",
+        "gitlab_create_merge_request"
+      ],
+      "source": "https://registry.npmjs.org/gitlab-mcp-server",
+      "note": "GitLab MCP server (npm)."
+    },
+    "bitbucket": {
+      "id": "bitbucket",
+      "name": "Bitbucket",
+      "category": "version-control",
+      "status": "ready",
+      "verified": true,
+      "version": "2.1.0",
+      "install_type": "npx",
+      "package": "mcp-atlassian",
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-atlassian"
+      ],
+      "env": {
+        "BITBUCKET_USERNAME": "${BITBUCKET_USERNAME}",
+        "BITBUCKET_API_TOKEN": "${BITBUCKET_API_TOKEN}"
+      },
+      "tools": [
+        "bitbucket_get_repository",
+        "bitbucket_list_repositories",
+        "bitbucket_create_pr"
+      ],
+      "source": "https://registry.npmjs.org/mcp-atlassian",
+      "note": "Atlassian MCP server covering Bitbucket, Jira, and Confluence."
+    },
+    "huggingface": {
+      "id": "huggingface",
+      "name": "Hugging Face",
+      "category": "ai-platform",
+      "status": "ready",
+      "verified": true,
+      "version": "1.0.26",
+      "install_type": "npx",
+      "package": "huggingface-mcp-server",
+      "command": "npx",
+      "args": [
+        "-y",
+        "huggingface-mcp-server"
+      ],
+      "env": {
+        "HUGGINGFACE_TOKEN": "${HUGGINGFACE_TOKEN}"
+      },
+      "tools": [
+        "hf_list_models",
+        "hf_inference",
+        "hf_upload"
+      ],
+      "source": "https://registry.npmjs.org/huggingface-mcp-server",
+      "note": "Hugging Face MCP server (npm)."
+    },
+    "replicate": {
+      "id": "replicate",
+      "name": "Replicate",
+      "category": "ai-platform",
+      "status": "ready",
+      "verified": true,
+      "version": "3.2.3",
+      "install_type": "npx",
+      "package": "replicate-mcp-server",
+      "command": "npx",
+      "args": [
+        "-y",
+        "replicate-mcp-server"
+      ],
+      "env": {
+        "REPLICATE_API_TOKEN": "${REPLICATE_API_TOKEN}"
+      },
+      "tools": [
+        "replicate_run_model",
+        "replicate_list_models"
+      ],
+      "source": "https://registry.npmjs.org/replicate-mcp-server",
+      "note": "Replicate MCP server (npm)."
+    },
+    "fal": {
+      "id": "fal",
+      "name": "Fal",
+      "category": "ai-platform",
+      "status": "ready",
+      "verified": true,
+      "version": "1.0.1",
+      "install_type": "npx",
+      "package": "fal-mcp-server",
+      "command": "npx",
+      "args": [
+        "-y",
+        "fal-mcp-server"
+      ],
+      "env": {
+        "FAL_KEY": "${FAL_KEY}"
+      },
+      "tools": [
+        "fal_run_model",
+        "fal_list_models"
+      ],
+      "source": "https://registry.npmjs.org/fal-mcp-server",
+      "note": "Fal MCP server (npm)."
+    },
+    "together": {
+      "id": "together",
+      "name": "Together AI",
+      "category": "ai-platform",
+      "status": "ready",
+      "verified": true,
+      "version": "0.1.7",
+      "install_type": "npx",
+      "package": "together-mcp",
+      "command": "npx",
+      "args": [
+        "-y",
+        "together-mcp"
+      ],
+      "env": {
+        "TOGETHER_API_KEY": "${TOGETHER_API_KEY}"
+      },
+      "tools": [
+        "together_chat",
+        "together_generate"
+      ],
+      "source": "https://registry.npmjs.org/together-mcp",
+      "note": "Together AI MCP server (npm)."
+    },
+    "openrouter": {
+      "id": "openrouter",
+      "name": "OpenRouter",
+      "category": "ai-platform",
+      "status": "ready",
+      "verified": true,
+      "version": "2.0.1",
+      "install_type": "npx",
+      "package": "openrouter-mcp",
+      "command": "npx",
+      "args": [
+        "-y",
+        "openrouter-mcp"
+      ],
+      "env": {
+        "OPENROUTER_API_KEY": "${OPENROUTER_API_KEY}"
+      },
+      "tools": [
+        "openrouter_chat",
+        "openrouter_list_models"
+      ],
+      "source": "https://registry.npmjs.org/openrouter-mcp",
+      "note": "OpenRouter MCP server (npm)."
+    },
+    "comfyui": {
+      "id": "comfyui",
+      "name": "ComfyUI",
+      "category": "ai-platform",
+      "status": "ready",
+      "verified": true,
+      "version": "0.48.21",
+      "install_type": "npx",
+      "package": "comfyui-mcp",
+      "command": "npx",
+      "args": [
+        "-y",
+        "comfyui-mcp"
+      ],
+      "env": {
+        "COMFYUI_URL": "http://127.0.0.1:8188"
+      },
+      "tools": [
+        "comfyui_run_workflow",
+        "comfyui_get_workflows"
+      ],
+      "source": "https://registry.npmjs.org/comfyui-mcp",
+      "note": "ComfyUI MCP server (npm)."
+    },
+    "ollama": {
+      "id": "ollama",
+      "name": "Ollama",
+      "category": "ai-platform",
+      "status": "ready",
+      "verified": true,
+      "version": "1.1.0",
+      "install_type": "npx",
+      "package": "ollama-mcp-server",
+      "command": "npx",
+      "args": [
+        "-y",
+        "ollama-mcp-server"
+      ],
+      "env": {
+        "OLLAMA_HOST": "http://localhost:11434"
+      },
+      "tools": [
+        "ollama_chat",
+        "ollama_list_models",
+        "ollama_pull_model"
+      ],
+      "source": "https://registry.npmjs.org/ollama-mcp-server",
+      "note": "Ollama MCP server (npm)."
     },
     "tavily": {
+      "id": "tavily",
+      "name": "Tavily",
+      "category": "search",
+      "status": "ready",
+      "verified": true,
+      "version": "0.2.21",
+      "install_type": "npx",
+      "package": "tavily-mcp",
       "command": "npx",
       "args": [
         "-y",
         "tavily-mcp"
       ],
+      "env": {
+        "TAVILY_API_KEY": "${TAVILY_API_KEY}"
+      },
       "tools": [
-        "tavily-search",
-        "tavily-extract"
-      ]
+        "tavily_search",
+        "tavily_extract"
+      ],
+      "source": "https://registry.npmjs.org/tavily-mcp",
+      "note": ""
+    },
+    "reddit": {
+      "id": "reddit",
+      "name": "Reddit",
+      "category": "web",
+      "status": "ready",
+      "verified": true,
+      "version": "1.1.3",
+      "install_type": "npx",
+      "package": "reddit-mcp",
+      "command": "npx",
+      "args": [
+        "-y",
+        "reddit-mcp"
+      ],
+      "env": {},
+      "tools": [
+        "reddit_search_posts",
+        "reddit_get_comments"
+      ],
+      "source": "https://registry.npmjs.org/reddit-mcp",
+      "note": ""
     },
     "twitter": {
+      "id": "twitter",
+      "name": "Twitter/X",
+      "category": "web",
+      "status": "ready",
+      "verified": true,
+      "version": "0.1.1",
+      "install_type": "npx",
+      "package": "twitter-mcp",
       "command": "npx",
       "args": [
         "-y",
         "twitter-mcp"
       ],
+      "env": {},
       "tools": [
-        "search_tweets",
-        "get_user"
-      ]
+        "twitter_search_tweets",
+        "twitter_get_user"
+      ],
+      "source": "https://registry.npmjs.org/twitter-mcp",
+      "note": ""
     },
-    "weaviate": {
+    "elasticsearch": {
+      "id": "elasticsearch",
+      "name": "Elasticsearch",
+      "category": "search",
+      "status": "ready",
+      "verified": true,
+      "version": "0.1.3",
+      "install_type": "npx",
+      "package": "elasticsearch-mcp",
       "command": "npx",
       "args": [
         "-y",
-        "weaviate-mcp"
+        "elasticsearch-mcp"
       ],
+      "env": {},
       "tools": [
-        "search",
-        "insert",
-        "get_schema"
-      ]
+        "es_search",
+        "es_index",
+        "es_mappings"
+      ],
+      "source": "https://registry.npmjs.org/elasticsearch-mcp",
+      "note": ""
+    },
+    "faiss": {
+      "id": "faiss",
+      "name": "FAISS",
+      "category": "vector-db",
+      "status": "blocked",
+      "verified": false,
+      "version": "",
+      "install_type": "npx",
+      "package": "",
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-faiss"
+      ],
+      "env": {},
+      "tools": [],
+      "source": "",
+      "note": "No stable npm/PyPI MCP distribution for FAISS found during audit (2026-07-31)."
+    },
+    "arangodb": {
+      "id": "arangodb",
+      "name": "ArangoDB",
+      "category": "graph-db",
+      "status": "blocked",
+      "verified": false,
+      "version": "",
+      "install_type": "npx",
+      "package": "",
+      "command": "npx",
+      "args": [
+        "-y",
+        "arangodb-mcp"
+      ],
+      "env": {},
+      "tools": [],
+      "source": "",
+      "note": "No stable npm/PyPI MCP distribution for ArangoDB found during audit (2026-07-31)."
+    },
+    "graphql": {
+      "id": "graphql",
+      "name": "GraphQL",
+      "category": "api",
+      "status": "blocked",
+      "verified": false,
+      "version": "",
+      "install_type": "npx",
+      "package": "",
+      "command": "npx",
+      "args": [
+        "-y",
+        "graphql-mcp-server"
+      ],
+      "env": {},
+      "tools": [],
+      "source": "",
+      "note": "No stable npm/PyPI MCP distribution for GraphQL found during audit (2026-07-31)."
+    },
+    "vllm": {
+      "id": "vllm",
+      "name": "vLLM",
+      "category": "ai-platform",
+      "status": "blocked",
+      "verified": false,
+      "version": "",
+      "install_type": "npx",
+      "package": "",
+      "command": "npx",
+      "args": [
+        "-y",
+        "vllm-mcp"
+      ],
+      "env": {},
+      "tools": [],
+      "source": "",
+      "note": "No stable vLLM MCP distribution found; vLLM exposes an OpenAI-compatible API natively supported by this platform."
+    },
+    "brightdata": {
+      "id": "brightdata",
+      "name": "Bright Data",
+      "category": "web",
+      "status": "blocked",
+      "verified": false,
+      "version": "",
+      "install_type": "npx",
+      "package": "@brightdata/mcp-server",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@brightdata/mcp-server"
+      ],
+      "env": {
+        "BRIGHT_DATA_API_KEY": "${BRIGHT_DATA_API_KEY}"
+      },
+      "tools": [
+        "brightdata_scrape",
+        "brightdata_web_unlocker"
+      ],
+      "source": "https://registry.npmjs.org/@brightdata/mcp-server",
+      "note": "Package @brightdata/mcp-server was not found on npm during audit (2026-07-31)."
     }
   }
 }

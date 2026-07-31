@@ -104,6 +104,8 @@ class UncleFrappeAI:
         self._local_runtimes = None
         # Kimi K3 — Moonshot AI execution runtime
         self._kimi_k3 = None
+        # Unified MCP Server Registry
+        self._mcp_registry = None
         # Phase 30 — Security Crypto Layer
         self._encryption_at_rest = None
         # Phase 31 — In-Memory Event Bus
@@ -575,6 +577,28 @@ class UncleFrappeAI:
             from .event_bus import EventBus
             self._event_bus = EventBus(self.config)
         return self._event_bus
+
+    @property
+    def mcp_registry(self):
+        """Unified MCP Server Registry (canonical: configs/mcp_servers.json)."""
+        if self._mcp_registry is None:
+            from .mcp_registry import MCPRegistry
+            self._mcp_registry = MCPRegistry()
+        return self._mcp_registry
+
+    def list_mcp_servers(self, category: str = "", status: str = "",
+                         search: str = "") -> list:
+        """List MCP servers from the unified registry (filterable)."""
+        return self.mcp_registry.list_servers(category=category, status=status,
+                                              search=search)
+
+    def get_mcp_server(self, server_id: str) -> dict:
+        """Get one MCP server entry from the unified registry."""
+        return self.mcp_registry.get_server(server_id)
+
+    def get_mcp_registry_stats(self) -> dict:
+        """Get unified MCP registry statistics."""
+        return self.mcp_registry.stats()
 
     @property
     def event_kernel(self):

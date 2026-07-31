@@ -392,7 +392,8 @@
 |----|-----------|--------|--------|
 | PLT-01 | Unified SDK (Python) | Core Platform | VERIFIED |
 | PLT-02 | CLI Interface | Core Platform | VERIFIED |
-| PLT-03 | MCP Server Tools (80 tools) | Core Platform | VERIFIED |
+| PLT-03 | MCP Server Tools (210 tools) | Core Platform | VERIFIED |
+| PLT-21 | Unified MCP Server Registry (59 servers) | Core Platform | VERIFIED |
 | PLT-04 | Provider Auto-Discovery | Core Platform | VERIFIED |
 | PLT-05 | Provider Verification | Core Platform | VERIFIED |
 | PLT-06 | Health Monitoring | Core Platform | VERIFIED |

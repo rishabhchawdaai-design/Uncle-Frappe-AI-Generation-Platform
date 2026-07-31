@@ -7,9 +7,20 @@ tags: [mcp, overview, index]
 
 # MCP Ecosystem Overview
 
-## 198 MCP Tools
+## 210 MCP Tools
 
 The MCP (Model Context Protocol) ecosystem exposes all platform capabilities as structured tools.
+
+## Unified MCP Server Registry
+
+`configs/mcp_servers.json` is the single canonical MCP server registry:
+**59 servers catalogued, 54 verified ready, 5 blocked** (verified against the
+npm registry / PyPI JSON API on 2026-07-31). Every ready entry records an
+install target, required env vars, and exposed tools. Surfaces:
+
+- SDK: `ai.list_mcp_servers()`, `ai.get_mcp_server()`, `ai.get_mcp_registry_stats()`
+- CLI: `python -m ai_generation.cli mcp-servers [--category|--status|--search]`
+- MCP: `list_mcp_servers`, `get_mcp_server`
 
 ## Tool Categories
 

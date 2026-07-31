@@ -11,7 +11,7 @@ generated: "2026-07-31"
 
 | Module | Classes | Functions | Lines |
 |--------|---------|-----------|-------|
-| `local_runtimes` | 9 | 0 | 546 |
+| `local_runtimes` | 9 | 0 | 594 |
 | `provider_discovery` | 4 | 0 | 251 |
 | `provider_intelligence` | 5 | 0 | 250 |
 | `provider_verifier` | 4 | 0 | 139 |

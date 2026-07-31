@@ -1,33 +1,36 @@
 ---
-module: "mcp_tools"
+module: "mcp_registry"
 type: module-doc
 status: active
 owner: ""
-lines: 2822
+lines: 119
 classes: 1
 functions: 1
 tags: [module, documentation]
 generated: "2026-07-31"
 ---
 
-# mcp_tools
+# mcp_registry
 
-> MCP Tools for AI Generation — expose generation capabilities as MCP tools.
+> MCP Registry — unified registry of MCP servers for the platform.
+
+Single source of truth: ``configs/mcp_servers.json`` (canonical, merged
+with the platform's original MCP configuration — no parallel r
 
 ## Overview
 
-- **File**: `ai_generation/mcp_tools.py`
-- **Lines**: 2822
+- **File**: `ai_generation/mcp_registry.py`
+- **Lines**: 119
 - **Classes**: 1
 - **Public Functions**: 1
 
 ## Classes
 
-- `{{MCPGenerationTools}}`
+- `{{MCPRegistry}}`
 
 ## Public API
 
-- `get_mcp_generation_tools()`
+- `get_mcp_registry()`
 
 ## Integration
 
