@@ -987,3 +987,49 @@ async def test_sdk_chat_publishes_event_bus_events(monkeypatch):
     history = ai.event_bus.get_history("kimi_k3.request.complete")
     assert len(history) == 1
     assert "kimi_k3_vllm" in history[0]["payload"]
+
+
+# ── Agent Interface ──────────────────────────────────────────────
+
+@pytest.mark.asyncio
+async def test_agent_interface_chat(monkeypatch):
+    from ai_generation.agent_interface import AgentInterface
+    monkeypatch.setattr("ai_generation.kimi_k3._post_json", make_post())
+    agent = AgentInterface()
+    result = await agent.chat("hello kimi", provider="kimi_k3_vllm",
+                              reasoning_effort="low")
+    assert result["text"] == "Hello from Kimi K3"
+    assert result["provider"] == "kimi_k3_vllm"
+    assert result["quality_score"] > 0
+
+
+@pytest.mark.asyncio
+async def test_agent_interface_chat_negotiate(monkeypatch):
+    from ai_generation.agent_interface import AgentInterface
+    monkeypatch.setattr("ai_generation.kimi_k3._post_json", make_post())
+    agent = AgentInterface()
+    result = await agent.chat("hello", strategy="negotiate")
+    assert result["text"] == "Hello from Kimi K3"
+    assert result["provider"].startswith("kimi_k3_")
+
+
+def test_agent_interface_kimi_info_and_stats():
+    from ai_generation.agent_interface import AgentInterface
+    agent = AgentInterface()
+    info = agent.kimi_k3_info()
+    assert info["spec"]["context_length"] == 1048576
+    stats = agent.get_stats()
+    assert "kimi_k3" in stats
+    assert stats["kimi_k3"]["total_requests"] == 0
+
+
+@pytest.mark.asyncio
+async def test_agent_interface_event_bus_events(monkeypatch):
+    from ai_generation.agent_interface import AgentInterface
+    monkeypatch.setattr("ai_generation.kimi_k3._post_json", make_post())
+    agent = AgentInterface()
+    result = await agent.chat("hello", provider="kimi_k3_vllm")
+    assert result.get("error") is None
+    history = agent.event_bus.get_history("kimi_k3.request.complete")
+    assert len(history) == 1
+    assert "kimi_k3_vllm" in history[0]["payload"]

@@ -3,7 +3,7 @@ type: summary
 generated: "2026-07-31 20:11"
 total_modules: 66
 total_capabilities: 251
-total_lines: 30821
+total_lines: 30887
 total_classes: 388
 total_functions: 72
 tags: [summary, generated]
@@ -14,7 +14,7 @@ tags: [summary, generated]
 ## Statistics
 
 - **Total Modules**: 66
-- **Total Lines**: 30,821
+- **Total Lines**: 30,887
 - **Total Classes**: 388
 - **Total Public Functions**: 72
 - **Total Capabilities**: 251

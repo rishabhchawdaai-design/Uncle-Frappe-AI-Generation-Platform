@@ -3,7 +3,7 @@ module: "agent_interface"
 type: module-doc
 status: active
 owner: ""
-lines: 156
+lines: 222
 classes: 1
 functions: 0
 tags: [module, documentation]
@@ -18,7 +18,7 @@ The agent calls one interface; the platform decides how to fulfill the request.
 ## Overview
 
 - **File**: `ai_generation/agent_interface.py`
-- **Lines**: 156
+- **Lines**: 222
 - **Classes**: 1
 - **Public Functions**: 0
 
