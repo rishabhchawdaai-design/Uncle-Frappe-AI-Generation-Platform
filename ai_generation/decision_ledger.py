@@ -165,6 +165,20 @@ class DecisionLedger:
             confidence_score=confidence, reasoning=reasoning, **kwargs,
         )
 
+    def record_chat(
+        self, request_id: str, prompt: str, provider: str,
+        model: str = "kimi-k3", outcome: DecisionOutcome = DecisionOutcome.SUCCESS,
+        latency_ms: float = 0.0, quality_score: float = 0.0,
+        error: str = None, **kwargs
+    ) -> DecisionEntry:
+        """Record a chat/text-generation decision (e.g. Kimi K3)."""
+        return self.record_generation(
+            request_id=request_id, prompt=prompt, task_type="chat",
+            provider=provider, model=model, outcome=outcome,
+            latency_ms=latency_ms, quality_score=quality_score,
+            error=error, **kwargs,
+        )
+
     def record_negotiation(
         self, request_id: str, prompt: str, task_type: str,
         selected_provider: str, selected_model: str,

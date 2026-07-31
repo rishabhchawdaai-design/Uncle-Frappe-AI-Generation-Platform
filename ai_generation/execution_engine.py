@@ -45,6 +45,7 @@ class TaskType(str, Enum):
     TEXT_TO_AUDIO = "text_to_audio"
     AUDIO_TO_AUDIO = "audio_to_audio"
     TEXT_TO_SPEECH = "text_to_speech"
+    CHAT = "chat"
 
 
 class ExecutionStatus(str, Enum):
@@ -329,7 +330,13 @@ class ExecutionEngine:
             return
         self._register_public_api_endpoints()
         self._register_hosted_opensource_endpoints()
+        self._register_kimi_k3()
         self._initialized = True
+
+    def _register_kimi_k3(self):
+        """Register Kimi K3 official execution paths (cloud API + self-hosted)."""
+        from .kimi_k3 import register_kimi_k3
+        register_kimi_k3(self)
 
     def _register_public_api_endpoints(self):
         """Layer 1: Public APIs with documented endpoints."""

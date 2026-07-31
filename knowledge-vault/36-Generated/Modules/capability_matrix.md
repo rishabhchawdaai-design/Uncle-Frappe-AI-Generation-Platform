@@ -3,7 +3,7 @@ module: "capability_matrix"
 type: module-doc
 status: active
 owner: ""
-lines: 241
+lines: 258
 classes: 2
 functions: 0
 tags: [module, documentation]
@@ -19,7 +19,7 @@ authentication requirements, and benchm
 ## Overview
 
 - **File**: `ai_generation/capability_matrix.py`
-- **Lines**: 241
+- **Lines**: 258
 - **Classes**: 2
 - **Public Functions**: 0
 

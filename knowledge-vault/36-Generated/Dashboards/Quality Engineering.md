@@ -14,7 +14,7 @@ generated: "2026-07-31"
 | `code_analysis` | 19 | 0 | 916 |
 | `orchestration` | 10 | 0 | 467 |
 | `quality_dashboard` | 4 | 0 | 289 |
-| `quality_engine` | 2 | 0 | 161 |
+| `quality_engine` | 2 | 0 | 218 |
 | `quality_engineering` | 18 | 0 | 864 |
 | `refactoring_engine` | 7 | 0 | 584 |
 | `regression_detector` | 5 | 0 | 298 |

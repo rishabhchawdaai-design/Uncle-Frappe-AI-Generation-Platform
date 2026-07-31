@@ -3,7 +3,7 @@ module: "capability_registry"
 type: module-doc
 status: active
 owner: ""
-lines: 180
+lines: 198
 classes: 2
 functions: 0
 tags: [module, documentation]
@@ -18,7 +18,7 @@ media types, resolutions, auth, latency, limits, and benchmark history.
 ## Overview
 
 - **File**: `ai_generation/capability_registry.py`
-- **Lines**: 180
+- **Lines**: 198
 - **Classes**: 2
 - **Public Functions**: 0
 

@@ -65,6 +65,63 @@ class QualityEngine:
         self._history.append(report)
         return report
 
+    def evaluate_chat(self, prompt="", text="", latency_ms=0.0, metadata=None) -> QualityReport:
+        """Evaluate a chat/text response: prompt relevance, completeness, and coherence."""
+        metadata = metadata or {}
+        report = QualityReport(
+            asset_id="chat-" + hashlib.sha256(f"{prompt}:{text}".encode()).hexdigest()[:8]
+        )
+
+        relevance = 50.0
+        if prompt:
+            words = len(prompt.split())
+            if words > 5:
+                relevance += 20
+            if words > 20:
+                relevance += 10
+            if metadata.get("model"):
+                relevance += 10
+            relevance = min(relevance, 100.0)
+
+        completeness = 30.0
+        if text:
+            completeness += 30
+            if len(text) > 200:
+                completeness += 20
+            if len(text) > 1000:
+                completeness += 10
+            completeness = min(completeness, 100.0)
+
+        coherence = 60.0
+        if text:
+            if len(text) > 50:
+                coherence += 15
+            if len(text.split()) > 20:
+                coherence += 15
+            if text.strip().endswith((".", "!", "?")):
+                coherence += 10
+            coherence = min(coherence, 100.0)
+
+        latency_dim = 70.0
+        if latency_ms and latency_ms < 60000:
+            latency_dim = 90.0
+
+        report.dimensions = {
+            "prompt_relevance": relevance,
+            "completeness": completeness,
+            "coherence": coherence,
+            "latency": latency_dim,
+        }
+        report.overall_score = sum(report.dimensions.values()) / max(len(report.dimensions), 1)
+
+        if report.overall_score < 50:
+            report.suggestions.append("Response may not fully address the prompt")
+        if completeness < 60:
+            report.suggestions.append("Response is short; consider requesting more detail")
+
+        self._history.append(report)
+        return report
+
     def evaluate_prompt(self, prompt, enhanced="", negative="") -> QualityReport:
         report = QualityReport(asset_id="prompt-" + hashlib.sha256(prompt.encode()).hexdigest()[:8])
 

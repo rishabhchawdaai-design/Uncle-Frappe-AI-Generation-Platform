@@ -25,6 +25,9 @@ KNOWN_ENDPOINTS = [
     {"name": "groq", "url": "https://api.groq.com/openai/v1", "type": "openai_compatible", "auth": "api_key", "tasks": ["text_to_speech"]},
     {"name": "openrouter", "url": "https://openrouter.ai/api/v1", "type": "openai_compatible", "auth": "api_key", "tasks": ["text_to_image"]},
     {"name": "black_forest_labs", "url": "https://black-forest-labs-flux-1-schnell.hf.space", "type": "hf_space", "auth": "none", "tasks": ["text_to_image"]},
+    {"name": "kimi_k3_cloud", "url": "https://api.moonshot.ai/v1", "type": "openai_compatible", "auth": "api_key", "tasks": ["chat"]},
+    {"name": "kimi_k3_vllm", "url": "http://localhost:8000", "type": "openai_compatible", "auth": "none", "tasks": ["chat"]},
+    {"name": "kimi_k3_sglang", "url": "http://localhost:30000", "type": "openai_compatible", "auth": "none", "tasks": ["chat"]},
 ]
 
 

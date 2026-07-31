@@ -102,6 +102,8 @@ class UncleFrappeAI:
         self._failure_recovery = None
         # Phase 29 — Local Runtime Integrations
         self._local_runtimes = None
+        # Kimi K3 — Moonshot AI execution runtime
+        self._kimi_k3 = None
         # Phase 30 — Security Crypto Layer
         self._encryption_at_rest = None
         # Phase 31 — In-Memory Event Bus
@@ -521,6 +523,14 @@ class UncleFrappeAI:
         return self._local_runtimes
 
     @property
+    def kimi_k3(self):
+        """Kimi K3 manager — cloud API + self-hosted vLLM/SGLang execution."""
+        if self._kimi_k3 is None:
+            from .kimi_k3 import KimiK3Manager
+            self._kimi_k3 = KimiK3Manager(self.config)
+        return self._kimi_k3
+
+    @property
     def encryption_at_rest(self):
         if self._encryption_at_rest is None:
             from .security_crypto import EncryptionAtRest
@@ -606,6 +616,38 @@ class UncleFrappeAI:
             prompts, concurrency=concurrency, **kwargs,
         )
 
+    async def chat(self, prompt, provider="auto", system_prompt="", images=None,
+                   history=None, reasoning_effort="max", max_tokens=None,
+                   temperature=None, top_p=None, timeout_secs=120.0):
+        """Chat with Kimi K3 through the best available execution path.
+
+        provider: "auto" | "kimi_k3_cloud" | "kimi_k3_vllm" | "kimi_k3_sglang"
+        reasoning_effort: "low" | "high" | "max" (official Kimi K3 values)
+        Returns a dict with text, reasoning, provider, latency_ms, quality_score.
+        """
+        result = await self.kimi_k3.chat(
+            prompt, provider=provider, system_prompt=system_prompt,
+            images=images, history=history, reasoning_effort=reasoning_effort,
+            max_tokens=max_tokens, temperature=temperature, top_p=top_p,
+            timeout_secs=timeout_secs,
+        )
+        return result.to_dict()
+
+    def kimi_k3_info(self):
+        """Return the canonical Kimi K3 specification and supported paths."""
+        return self.kimi_k3.info()
+
+    async def kimi_k3_health(self):
+        """Health-check every configured Kimi K3 execution path."""
+        return await self.kimi_k3.health()
+
+    async def kimi_k3_benchmark(self, prompt, runs=2, provider="auto", reasoning_effort="low"):
+        """Benchmark Kimi K3 chat latency and quality."""
+        return await self.kimi_k3.benchmark(
+            prompt, runs=runs, provider=provider, reasoning_effort=reasoning_effort,
+        )
+
+
     def enhance_prompt(self, prompt, style="", quality="high"):
         return self.prompt_engine.enhance(prompt, style=style, quality=quality)
 
@@ -681,6 +723,7 @@ class UncleFrappeAI:
             "orchestration_pipeline": self.orchestration_pipeline.get_stats(),
             "knowledge_base": self.knowledge_base.get_stats(),
             "research_integration": self.research_integration.get_stats(),
+            "kimi_k3": self.kimi_k3.get_stats(),
         }
 
     # ── Research Integration Convenience Methods ──

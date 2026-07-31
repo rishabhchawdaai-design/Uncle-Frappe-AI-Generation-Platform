@@ -112,6 +112,24 @@ INITIAL_REGISTRY = [
                media_type="image", supported_tasks=["text_to_image"],
                supported_resolutions=["1024x1024"],
                free_tier=True, api_key_required=True),
+    # Kimi K3 — official execution paths (Moonshot AI)
+    ModelEntry(model_id="kimi-k3-cloud", provider="kimi_k3_cloud", model_name="kimi-k3",
+               media_type="text", supported_tasks=["chat"],
+               api_key_required=True, free_tier=False,
+               known_limits={
+                   "context_length": 1048576,
+                   "reasoning_effort": ["low", "high", "max"],
+                   "architecture": "MoE 2.8T total / 104B active",
+                   "multimodal": True,
+               }),
+    ModelEntry(model_id="kimi-k3-vllm", provider="kimi_k3_vllm", model_name="kimi-k3",
+               media_type="text", supported_tasks=["chat"],
+               api_key_required=False, free_tier=False,
+               known_limits={"context_length": 1048576, "engine": "vLLM >= 0.27.0", "min_vram_gb": 1680}),
+    ModelEntry(model_id="kimi-k3-sglang", provider="kimi_k3_sglang", model_name="kimi-k3",
+               media_type="text", supported_tasks=["chat"],
+               api_key_required=False, free_tier=False,
+               known_limits={"context_length": 1048576, "engine": "SGLang kimi-k3 image", "min_vram_gb": 1680}),
 ]
 
 

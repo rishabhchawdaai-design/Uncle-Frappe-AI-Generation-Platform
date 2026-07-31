@@ -132,8 +132,44 @@
         "text_to_image"
       ],
       "discovered_at": "2026-07-28T09:29:37.197167+00:00"
+    },
+    {
+      "name": "kimi_k3_cloud",
+      "url": "https://api.moonshot.ai/v1",
+      "type": "openai_compatible",
+      "auth": "api_key",
+      "tasks": [
+        "chat"
+      ],
+      "model": "kimi-k3",
+      "context_length": 1048576,
+      "source": "Moonshot AI official docs (platform.kimi.ai)"
+    },
+    {
+      "name": "kimi_k3_vllm",
+      "url": "http://localhost:8000",
+      "type": "openai_compatible",
+      "auth": "none",
+      "tasks": [
+        "chat"
+      ],
+      "model": "kimi-k3",
+      "engine": "vllm",
+      "source": "Official vLLM recipe (recipes.vllm.ai/moonshotai/Kimi-K3)"
+    },
+    {
+      "name": "kimi_k3_sglang",
+      "url": "http://localhost:30000",
+      "type": "openai_compatible",
+      "auth": "none",
+      "tasks": [
+        "chat"
+      ],
+      "model": "kimi-k3",
+      "engine": "sglang",
+      "source": "Official SGLang recipe (docs.sglang.io)"
     }
   ],
   "history": [],
-  "updated_at": "2026-07-28T09:29:37.199083+00:00"
+  "updated_at": "2026-07-31T19:31:41.389515+00:00"
 }

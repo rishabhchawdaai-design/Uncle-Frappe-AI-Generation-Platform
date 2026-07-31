@@ -24,6 +24,7 @@ TASK_KEYWORDS = {
     "text_to_speech": {"keywords": ["speak", "narrate", "tts"], "weight": 3},
     "image_to_image": {"keywords": ["transform", "modify", "restyle"], "weight": 2},
     "text_to_image": {"keywords": ["image", "picture", "photo", "illustration", "render", "drawing", "painting", "generate", "create", "draw", "make", "design"], "weight": 2},
+    "chat": {"keywords": ["answer", "explain", "summarize", "summarise", "write", "chat", "tell me", "what is", "how to", "why", "define", "poem", "essay", "translate", "reason about"], "weight": 1},
     "generate_fallback": {"keywords": ["generate", "create", "draw", "make"], "weight": 1},
 }
 

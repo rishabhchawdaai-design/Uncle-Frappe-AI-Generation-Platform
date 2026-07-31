@@ -3,7 +3,7 @@ module: "decision_ledger"
 type: module-doc
 status: active
 owner: ""
-lines: 353
+lines: 367
 classes: 4
 functions: 0
 tags: [module, documentation]
@@ -21,7 +21,7 @@ wit
 ## Overview
 
 - **File**: `ai_generation/decision_ledger.py`
-- **Lines**: 353
+- **Lines**: 367
 - **Classes**: 4
 - **Public Functions**: 0
 

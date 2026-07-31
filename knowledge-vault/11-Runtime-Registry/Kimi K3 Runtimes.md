@@ -1,0 +1,45 @@
+---
+type: runtime
+runtime: "Kimi K3"
+vendor: "Moonshot AI"
+status: verified
+tags: [runtime, kimi-k3, vllm, sglang, cloud]
+---
+
+# Kimi K3 Runtimes
+
+## Official Images
+
+| Engine | Image | Notes |
+|--------|-------|-------|
+| vLLM (NVIDIA) | `vllm/vllm-openai:kimi-k3` | CUDA 13, r580+ driver; min vLLM 0.27.0 |
+| vLLM (AMD) | `vllm/vllm-openai-rocm:kimi-k3` | ROCm |
+| SGLang | `lmsysorg/sglang:kimi-k3` / `:kimi-k3-cu12` | port 30000 |
+| SGLang (ROCm) | `lmsysorg/sglang-rocm:rocm720-mi35x-k3-20260727` | MI350X/MI355X |
+
+## vLLM Launch Flags (official)
+
+- Base: `--trust-remote-code --moe-backend auto --gpu-memory-utilization 0.95`
+- Parsers: `--tool-call-parser kimi_k3 --enable-auto-tool-choice --reasoning-parser kimi_k3`
+- Blackwell: `--load-format fastsafetensors --max-model-len 1048576 --kv-cache-dtype fp8 --attention-config '{"use_prefill_query_quantization":true}' --enable-prefix-caching`
+- Hopper: `--moe-backend marlin --attention-backend FLASHMLA --max-model-len 32768 --max-num-seqs 5`
+- AMD: `--mm-encoder-tp-mode data --max-num-seqs 128 --max-num-batched-tokens 4096`
+- Speculative decoding: DSpark via `Inferact/Kimi-K3-DSpark`, `num_speculative_tokens=7`
+
+## SGLang Launch Flags (official)
+
+`--reasoning-parser kimi_k3 --tool-call-parser kimi_k3 --kv-cache-dtype fp8_e4m3 --moe-a2a-backend megamoe --moe-runner-backend deep_gemm --host 0.0.0.0 --port 30000`
+
+- PD disaggregation: `--pp-size 8 --tp-size 1` (long-context prefill)
+- HiCache hierarchical KV caching; Deep PP; DSpark spec-decode
+
+## Health Checks
+
+- vLLM: `GET /v1/models`
+- SGLang: `GET /v1/models`
+
+## Related
+
+- [[24-Research/Kimi K3|Research]]
+- [[10-Models/Kimi K3|Model]]
+- [[Runtime Registry Overview]]
