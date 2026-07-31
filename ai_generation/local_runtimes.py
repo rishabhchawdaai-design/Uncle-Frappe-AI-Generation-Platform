@@ -507,6 +507,54 @@ class LocalRuntimeManager:
         if "url" in kwargs:
             self._router.set_url(runtime_type, kwargs["url"])
 
+    def configure_kimi_k3_runtime(self, runtime: RuntimeType, url: str,
+                                  hardware: str = "blackwell",
+                                  tensor_parallel: int = 8,
+                                  expert_parallel: int = 16,
+                                  pipeline_parallel: int = 1,
+                                  spec_decode: bool = False) -> Dict[str, Any]:
+        """Configure a Kimi K3 vLLM/SGLang runtime in the Runtime Registry.
+
+        References the canonical Kimi K3 spec and launch builders from
+        ``ai_generation.kimi_k3`` so K3 launch plans are exposed here without
+        duplicating official recipes. vLLM accepts the official Blackwell /
+        Hopper / AMD flag sets; SGLang accepts the official B200 / GB200 /
+        H100 / H200 / B300 / MI350X / MI355X recipes.
+        """
+        from .kimi_k3 import (
+            KIMI_K3_SPEC, build_sglang_command, build_vllm_command,
+        )
+        if runtime not in (RuntimeType.VLLM, RuntimeType.SGLANG):
+            raise ValueError("Kimi K3 runtimes are vLLM (vllm) or SGLang (sglang)")
+        self.configure_runtime(runtime, url=url)
+        if runtime == RuntimeType.VLLM:
+            launch = build_vllm_command(
+                hardware=hardware, tensor_parallel=tensor_parallel,
+                expert_parallel=expert_parallel,
+                pipeline_parallel=pipeline_parallel, spec_decode=spec_decode,
+            )
+        else:
+            launch = build_sglang_command(hardware=hardware, spec_decode=spec_decode)
+        plan = {
+            "model": KIMI_K3_SPEC["model"],
+            "model_id": KIMI_K3_SPEC["model_id"],
+            "context_length": KIMI_K3_SPEC["context_length"],
+            "min_gpus": KIMI_K3_SPEC["deployment"]["min_gpus"],
+            "min_vram_gb": KIMI_K3_SPEC["deployment"]["min_vram_gb"],
+            "launch": launch,
+        }
+        self._runtime_configs[runtime]["kimi_k3"] = plan
+        return plan
+
+    def get_kimi_k3_plans(self) -> Dict[str, Dict[str, Any]]:
+        """Return configured Kimi K3 launch plans from the Runtime Registry."""
+        plans = {}
+        for rt in (RuntimeType.VLLM, RuntimeType.SGLANG):
+            plan = self._runtime_configs.get(rt, {}).get("kimi_k3")
+            if plan:
+                plans[rt.value] = plan
+        return plans
+
     def get_runtime_profile(self, runtime_type: RuntimeType) -> Optional[Dict[str, Any]]:
         profile = self._profiles.get(runtime_type)
         return profile.to_dict() if profile else None

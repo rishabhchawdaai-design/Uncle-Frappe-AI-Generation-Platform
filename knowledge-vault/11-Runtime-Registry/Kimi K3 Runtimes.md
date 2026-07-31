@@ -49,6 +49,9 @@ multi-node parallelism requires a StatefulSet plus `--dist-init-addr`.
   `kimi_k3.latency_ms` histogram (monotonic `perf_counter` timing).
 - **Negotiation**: `chat_negotiated()` selects the optimal path via the
   Negotiation Engine using `kimi_k3_candidates()`.
+- **Local Runtime Registry**: `LocalRuntimeManager.configure_kimi_k3_runtime()`
+  registers K3 vLLM/SGLang launch plans (official flags + hardware facts)
+  into the Runtime Registry.
 - **Decision Ledger**: every completion records a chat decision entry.
 
 ## Health Checks
