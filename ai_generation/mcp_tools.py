@@ -1117,6 +1117,31 @@ MCP_GENERATION_TOOLS = {
         },
     },
 
+    "list_mcp_servers": {
+        "name": "list_mcp_servers",
+        "description": "List MCP servers from the unified platform MCP registry (filter by category, status, search).",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "category": {"type": "string", "description": "Filter by category (e.g. search, vector-db, infrastructure)", "default": ""},
+                "status": {"type": "string", "enum": ["ready", "blocked"], "description": "Filter by verification status", "default": ""},
+                "search": {"type": "string", "description": "Free-text search over id/name/description/package", "default": ""},
+            },
+            "required": [],
+        },
+    },
+    "get_mcp_server": {
+        "name": "get_mcp_server",
+        "description": "Get one MCP server entry (install command, env vars, verification status) from the unified registry.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "server_id": {"type": "string", "description": "Registry id, e.g. firecrawl, postgres, kubernetes"},
+            },
+            "required": ["server_id"],
+        },
+    },
+
 }
 class MCPGenerationTools:
     """Handler for MCP generation tool calls."""
@@ -1342,6 +1367,8 @@ class MCPGenerationTools:
             "kimi_k3_chat": self._handle_kimi_k3_chat,
             "kimi_k3_spec": self._handle_kimi_k3_spec,
             "kimi_k3_info": self._handle_kimi_k3_info,
+            "list_mcp_servers": self._handle_list_mcp_servers,
+            "get_mcp_server": self._handle_get_mcp_server,
             "kimi_k3_health": self._handle_kimi_k3_health,
             "kimi_k3_benchmark": self._handle_kimi_k3_benchmark,
         }
@@ -1390,6 +1417,21 @@ class MCPGenerationTools:
     async def _handle_list_providers(self, args):
         """List all available AI generation providers with their status, tier, and capabilities"""
         return {"providers": self.sdk.list_providers()}
+
+    async def _handle_list_mcp_servers(self, args):
+        """List MCP servers from the unified registry."""
+        return {"servers": self.sdk.list_mcp_servers(
+            category=args.get("category", ""),
+            status=args.get("status", ""),
+            search=args.get("search", ""),
+        )}
+
+    async def _handle_get_mcp_server(self, args):
+        """Get one MCP server entry from the unified registry."""
+        server = self.sdk.get_mcp_server(args.get("server_id", ""))
+        if server is None:
+            return {"error": f"unknown MCP server: {args.get('server_id', '')}"}
+        return {"server": server}
 
     async def _handle_list_styles(self, args):
         """List all available style presets for image generation"""

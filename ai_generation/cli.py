@@ -764,6 +764,24 @@ async def cmd_kimi_benchmark(prompt="Explain Mixture of Experts.", runs=2,
               f"{r.get('latency_ms', 0)}ms  quality {r.get('quality_score', 0)}")
     print(f"    summary: {result.get('stats', {})}")
     return result
+
+
+async def cmd_mcp_servers(category="", status="", search=""):
+    """List MCP servers from the unified registry."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    servers = ai.list_mcp_servers(category=category, status=status, search=search)
+    stats = ai.get_mcp_registry_stats()
+    print(f"\n  MCP Server Registry — {len(servers)} shown / {stats['total_servers']} total"
+          f" ({stats['ready']} ready, {stats['blocked']} blocked)")
+    print(f"  {'ID':<18s} {'STATUS':<8s} {'VERIFIED':<9s} {'PACKAGE'}")
+    for s in servers:
+        verified = "yes" if s.get("verified") else "no"
+        print(f"  {s['id']:<18s} {s.get('status','ready'):<8s} {verified:<9s} "
+              f"{s.get('package','-') or '-'}")
+        if s.get("note"):
+            print(f"    {s['note'][:110]}")
+    return {"servers": servers, "stats": stats}
     print(f"\n  Configured endpoints:")
     for ep in info["configured_endpoints"]:
         key = "key set" if ep["api_key_set"] else "no key"
@@ -1008,6 +1026,21 @@ async def main():
         await cmd_kimi_info()
     elif args[0] == "kimi-health":
         await cmd_kimi_health()
+    elif args[0] == "mcp-servers":
+        category = ""
+        status = ""
+        search = ""
+        i = 1
+        while i < len(args):
+            if args[i] == "--category" and i + 1 < len(args):
+                category = args[i + 1]; i += 2
+            elif args[i] == "--status" and i + 1 < len(args):
+                status = args[i + 1]; i += 2
+            elif args[i] == "--search" and i + 1 < len(args):
+                search = args[i + 1]; i += 2
+            else:
+                i += 1
+        await cmd_mcp_servers(category=category, status=status, search=search)
     elif args[0] == "kimi-benchmark":
         prompt = args[1] if len(args) > 1 else "Explain Mixture of Experts."
         runs = 2

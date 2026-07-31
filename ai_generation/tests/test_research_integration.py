@@ -19,7 +19,7 @@ from ai_generation.research_integration import DATA_DIR, ResearchIntegrationEngi
 
 
 RESEARCH_DOC_COUNT = 57
-CAPABILITY_COUNT = 251
+CAPABILITY_COUNT = 252
 
 
 # ── Discovery & capability mapping ───────────────────────────────
@@ -346,7 +346,7 @@ def test_cli_research_commands(capsys):
     asyncio.run(cmd_research_index())
     out = capsys.readouterr().out
     assert "Research Documents: 57" in out
-    assert "251" in out
+    assert "252" in out
 
     asyncio.run(cmd_research_trace("SEC-05"))
     out = capsys.readouterr().out

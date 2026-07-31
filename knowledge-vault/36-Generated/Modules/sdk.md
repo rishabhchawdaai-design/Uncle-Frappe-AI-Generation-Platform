@@ -3,7 +3,7 @@ module: "sdk"
 type: module-doc
 status: active
 owner: ""
-lines: 1672
+lines: 1696
 classes: 1
 functions: 0
 tags: [module, documentation]
@@ -18,7 +18,7 @@ High-level API for consumers.
 ## Overview
 
 - **File**: `ai_generation/sdk.py`
-- **Lines**: 1672
+- **Lines**: 1696
 - **Classes**: 1
 - **Public Functions**: 0
 

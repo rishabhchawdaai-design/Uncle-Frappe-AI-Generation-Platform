@@ -78,6 +78,33 @@ knowledge vault (`24-Research/Kimi K3.md`). Only official Moonshot AI paths are
 supported; TensorRT-LLM, DeepSpeed, llama.cpp, Ollama, and HF TGI/Endpoints are
 recorded as officially unsupported.
 
+## Unified MCP Server Registry
+
+The platform ships a canonical, verified MCP server registry
+(`configs/mcp_servers.json`, single source of truth — no parallel registries).
+
+- **59 servers catalogued** — 54 verified ready, 5 explicitly blocked (no stable verified distribution)
+- Every ready entry records a verified install target (npm registry / PyPI JSON API audit) plus required env vars
+- Categories: search, vector-db, ai-platform, infrastructure, version-control, browser, database, web, graph-db, and more
+
+```bash
+# CLI: browse the registry
+python -m ai_generation.cli mcp-servers --category vector-db
+python -m ai_generation.cli mcp-servers --search firecrawl
+python -m ai_generation.cli mcp-servers --status blocked
+```
+
+```python
+from ai_generation import UncleFrappeAI
+
+ai = UncleFrappeAI()
+servers = ai.list_mcp_servers(category="search")   # filtered list
+server = ai.get_mcp_server("postgres")              # one entry (install cmd, env)
+stats = ai.get_mcp_registry_stats()                 # totals + categories + env keys
+```
+
+MCP tools: `list_mcp_servers`, `get_mcp_server`.
+
 ## Quick Start
 
 ```python
@@ -106,7 +133,7 @@ async def main():
 asyncio.run(main())
 ```
 
-Run `python -m ai_generation.cli --help` for the CLI, or use the 203 MCP tools
+Run `python -m ai_generation.cli --help` for the CLI, or use the 210 MCP tools
 exposed via `ai_generation.mcp_tools.MCPGenerationTools`.
 
 ## Project Structure
@@ -115,7 +142,7 @@ exposed via `ai_generation.mcp_tools.MCPGenerationTools`.
 ai_generation/          # Single canonical platform package
   sdk.py                # Unified SDK entry point
   cli.py                # CLI interface
-  mcp_tools.py          # 203 MCP tools exposed by the platform
+  mcp_tools.py          # 210 MCP tools exposed by the platform
   generation_manager.py # Orchestration core
   auto_router.py        # Intelligent provider routing
   execution_engine.py   # Task execution
@@ -131,7 +158,7 @@ ai_generation/          # Single canonical platform package
   providers/            # Provider implementations
   agents/               # Autonomous agent system
   tests/                # 1,152 tests
-configs/                # Canonical configuration (env template, MCP servers)
+configs/                # Canonical configuration (env template, MCP server registry)
 data/                   # Runtime registries and benchmarks
 knowledge-vault/        # Obsidian knowledge system (37 sections)
 scripts/                # Setup & utility scripts

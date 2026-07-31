@@ -1,11 +1,11 @@
 ---
 type: summary
-generated: "2026-07-31 20:11"
-total_modules: 66
-total_capabilities: 251
-total_lines: 31084
-total_classes: 388
-total_functions: 72
+generated: "2026-07-31 22:43"
+total_modules: 67
+total_capabilities: 252
+total_lines: 31304
+total_classes: 389
+total_functions: 78
 tags: [summary, generated]
 ---
 
@@ -13,11 +13,11 @@ tags: [summary, generated]
 
 ## Statistics
 
-- **Total Modules**: 66
-- **Total Lines**: 31,084
-- **Total Classes**: 388
-- **Total Public Functions**: 72
-- **Total Capabilities**: 251
+- **Total Modules**: 67
+- **Total Lines**: 31,304
+- **Total Classes**: 389
+- **Total Public Functions**: 78
+- **Total Capabilities**: 252
 
 ## Modules by Size
 
@@ -30,11 +30,11 @@ SORT line_count DESC
 
 ## Largest Modules
 
-- **mcp_tools**: 2,780 lines, 1 classes
-- **sdk**: 1,672 lines, 1 classes
-- **kimi_k3**: 1,673 lines, 9 classes
+- **mcp_tools**: 2,822 lines, 1 classes
+- **sdk**: 1,696 lines, 1 classes
+- **kimi_k3**: 1,675 lines, 9 classes
 - **negotiation_engine**: 1,066 lines, 12 classes
-- **cli**: 1,031 lines, 0 classes
+- **cli**: 1,064 lines, 0 classes
 - **video_editing**: 921 lines, 7 classes
 - **code_analysis**: 916 lines, 19 classes
 - **research_integration**: 865 lines, 5 classes

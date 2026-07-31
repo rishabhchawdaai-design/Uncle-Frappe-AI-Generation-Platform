@@ -69,7 +69,7 @@ is never copied into this repository — only metadata and hashes are cached.
 
 Invariants:
 
-- Every registry capability resolves to exactly one research document (251/251 mapped).
+- Every registry capability resolves to exactly one research document (252/252 mapped).
 - `research-sync` detects new/modified/removed research, refreshes the cache, and
   classifies new research into the execution queue (`implementable` / `blocked` / `speculative`).
 - Blocked queue items record the external dependency (credentials, licensing, hardware, service).

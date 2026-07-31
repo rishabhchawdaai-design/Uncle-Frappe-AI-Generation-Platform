@@ -1,6 +1,6 @@
 ---
-capability_id: "PLT-03"
-capability: "MCP Server Tools (80 tools)"
+capability_id: "PLT-21"
+capability: "Unified MCP Server Registry (59 servers)"
 status: verified
 source: "Core Platform"
 type: capability
@@ -8,7 +8,7 @@ tags: [capability, registry]
 generated: "2026-07-31"
 ---
 
-# PLT-03: MCP Server Tools (80 tools)
+# PLT-21: Unified MCP Server Registry (59 servers)
 
 ## Status
 
