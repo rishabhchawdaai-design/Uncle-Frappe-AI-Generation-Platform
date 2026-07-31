@@ -86,6 +86,10 @@ reference those capabilities via the satisfaction table:
 - `CHAPTER_13_OBSERVABILITY_DIGITAL_TWIN` -> `OBS-01..OBS-07`, `PLT-06`
 - `EXECUTION_GRAPH_SCHEMA` -> `PLT-20`, `WFL-01/03`, `PLT-16/09`, `EXE-01`
 - `SCHEDULING_POLICY_SPECIFICATION` -> `EXE-01/02`, `RUN-12`, `PLT-06`
+- `CHAPTER_01_UNIVERSAL_COMPUTE_GRAPH` -> `CGR-01/04/05/07`, `WFL-01`, `EXE-01`, `RUN-12`
+- `CHAPTER_08_PLUGIN_OPERATING_SYSTEM` -> `PLG-01..PLG-10`, `SEC-01/02/07/10`
+- `MODEL_CAPABILITY_REGISTRY` -> `CGR-02/03`, `RUN-12`, `PLT-15`
+- `WORKFLOW_CAPABILITY_REGISTRY` -> `WFL-01/02/03`, `PLT-11`
 
 Impact analysis (`research-impact`) unions both directions, so changing any
 research document reports the complete implementation blast radius.

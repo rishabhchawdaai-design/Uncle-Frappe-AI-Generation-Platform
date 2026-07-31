@@ -20,8 +20,8 @@ tags: [dashboard, research, integration, traceability]
 | MCP tools | 203 |
 | Tests | 1,156 |
 | Capabilities mapped to research | 251 / 251 |
-| Research documents with implementation links | 35 |
-| Queue: satisfied / blocked / speculative / implementable | 33 / 15 / 9 / 0 |
+| Research documents with implementation links | 39 |
+| Queue: satisfied / blocked / speculative / implementable | 37 / 19 / 1 / 0 |
 
 ## Capabilities by Research Source
 

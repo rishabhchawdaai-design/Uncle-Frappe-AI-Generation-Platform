@@ -133,6 +133,25 @@ DOC_CAPABILITY_REFERENCES = {
         ],
         "note": "Capability matrix lookup, path validation, runtime registry",
     },
+    "CHAPTER_01_UNIVERSAL_COMPUTE_GRAPH": {
+        "capabilities": ["CGR-01", "CGR-04", "CGR-05", "CGR-07", "WFL-01", "EXE-01", "RUN-12"],
+        "note": "Capability graph, path finding, DAG workflows, execution routing, runtime health",
+    },
+    "CHAPTER_08_PLUGIN_OPERATING_SYSTEM": {
+        "capabilities": [
+            "PLG-01", "PLG-02", "PLG-03", "PLG-04", "PLG-05", "PLG-06",
+            "PLG-07", "PLG-08", "PLG-09", "PLG-10", "SEC-01", "SEC-02", "SEC-07", "SEC-10",
+        ],
+        "note": "Plugin lifecycle/registry/events/versioning/marketplace/hot-reload/signing + security model",
+    },
+    "MODEL_CAPABILITY_REGISTRY": {
+        "capabilities": ["CGR-02", "CGR-03", "RUN-12", "PLT-15"],
+        "note": "Model capability matrix, provider registry, runtime health, model intelligence",
+    },
+    "WORKFLOW_CAPABILITY_REGISTRY": {
+        "capabilities": ["WFL-01", "WFL-02", "WFL-03", "PLT-11"],
+        "note": "DAG workflow engine, templates, execution, cinematic pipeline",
+    },
 }
 
 
