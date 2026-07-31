@@ -443,6 +443,8 @@ class UncleFrappeAI:
         if self._knowledge_graph is None:
             from .knowledge_graph import KnowledgeGraph
             self._knowledge_graph = KnowledgeGraph()
+            from .kimi_k3 import register_kimi_k3_graph
+            register_kimi_k3_graph(self._knowledge_graph)
         return self._knowledge_graph
 
     @property
@@ -972,6 +974,8 @@ class UncleFrappeAI:
         if self._capability_graph is None:
             from .capability_graph import CapabilityGraph
             self._capability_graph = CapabilityGraph(self.config)
+            from .kimi_k3 import register_kimi_k3_capability_graph
+            register_kimi_k3_capability_graph(self._capability_graph)
         return self._capability_graph
 
     @property

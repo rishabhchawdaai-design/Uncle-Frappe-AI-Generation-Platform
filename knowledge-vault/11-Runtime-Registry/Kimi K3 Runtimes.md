@@ -58,6 +58,9 @@ multi-node parallelism requires a StatefulSet plus `--dist-init-addr`.
   runs into the Regression Detector (latency / quality / error-rate baselines).
 - **Generation Manager**: `KimiK3TextProvider` (auto-discovered TEXT provider)
   makes K3 reachable via `GenerationManager.generate_text()`.
+- **Knowledge / Capability Graphs**: the SDK auto-registers K3 provider,
+  model, and chat capability nodes via `register_kimi_k3_graph()` /
+  `register_kimi_k3_capability_graph()`.
 - **Decision Ledger**: every completion records a chat decision entry.
 
 ## Health Checks
