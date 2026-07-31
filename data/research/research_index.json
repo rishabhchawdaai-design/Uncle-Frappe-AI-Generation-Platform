@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-31T23:21:34.960594+00:00",
+  "generated_at": "2026-07-31T23:33:46.297883+00:00",
   "research_documents": 57,
   "capabilities": 255,
   "modules": [
@@ -1543,6 +1543,7 @@
         "execution_strategies"
       ],
       "tests": [
+        "test_execution_strategies",
         "test_kimi_k3",
         "test_phase13"
       ],
@@ -1558,6 +1559,7 @@
         "execution_strategies"
       ],
       "tests": [
+        "test_execution_strategies",
         "test_kimi_k3",
         "test_phase13"
       ],
@@ -1640,6 +1642,7 @@
         "supervisor"
       ],
       "tests": [
+        "test_execution_strategies",
         "test_kimi_k3",
         "test_phase15"
       ],
@@ -3032,7 +3035,9 @@
       "modules": [
         "otel_export"
       ],
-      "tests": [],
+      "tests": [
+        "test_otel_export"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
@@ -3041,7 +3046,9 @@
       "modules": [
         "otel_export"
       ],
-      "tests": [],
+      "tests": [
+        "test_otel_export"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
@@ -3745,6 +3752,7 @@
         "workflow_engine"
       ],
       "tests": [
+        "test_execution_strategies",
         "test_generation",
         "test_kimi_k3",
         "test_phase11",
@@ -3948,6 +3956,7 @@
       ],
       "tests": [
         "test_code_analysis",
+        "test_execution_strategies",
         "test_generation",
         "test_kimi_k3",
         "test_phase11",

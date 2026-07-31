@@ -62,6 +62,9 @@ class HardwareProfile:
             profile.cpu_cores = psutil.cpu_count(logical=False) or os.cpu_count() or 1
         except Exception:
             pass
+        # stdlib fallback (psutil is optional): never leave cpu_cores unknown
+        if not profile.cpu_cores:
+            profile.cpu_cores = os.cpu_count() or 1
         return profile
 
 
