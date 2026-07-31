@@ -5,7 +5,7 @@ status: verified
 source: "Execution Strategy Library"
 type: capability
 tags: [capability, registry]
-generated: "2026-07-28"
+generated: "2026-07-31"
 ---
 
 # EXE-01: 4-Layer Execution Routing

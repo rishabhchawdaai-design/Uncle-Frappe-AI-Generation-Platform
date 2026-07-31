@@ -5,7 +5,7 @@ status: blocked
 source: "Workflow Research"
 type: capability
 tags: [capability, registry]
-generated: "2026-07-28"
+generated: "2026-07-31"
 ---
 
 # WFL-06: Prefect Integration

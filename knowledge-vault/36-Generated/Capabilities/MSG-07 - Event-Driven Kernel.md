@@ -5,7 +5,7 @@ status: verified
 source: "Messaging Research"
 type: capability
 tags: [capability, registry]
-generated: "2026-07-28"
+generated: "2026-07-31"
 ---
 
 # MSG-07: Event-Driven Kernel

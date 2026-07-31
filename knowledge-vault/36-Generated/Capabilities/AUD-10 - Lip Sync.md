@@ -5,7 +5,7 @@ status: blocked
 source: "Audio Speech Research"
 type: capability
 tags: [capability, registry]
-generated: "2026-07-28"
+generated: "2026-07-31"
 ---
 
 # AUD-10: Lip Sync

@@ -5,7 +5,7 @@ status: verified
 source: "OCR Research"
 type: capability
 tags: [capability, registry]
-generated: "2026-07-28"
+generated: "2026-07-31"
 ---
 
 # OCR-07: Table Recognition

@@ -5,7 +5,7 @@ status: verified
 source: "Infrastructure Registry"
 type: capability
 tags: [capability, registry]
-generated: "2026-07-28"
+generated: "2026-07-31"
 ---
 
 # INF-01: NVIDIA GPU Detection

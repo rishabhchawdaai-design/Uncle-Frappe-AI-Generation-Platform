@@ -5,7 +5,7 @@ status: verified
 source: "Auto Router"
 type: capability
 tags: [capability, registry]
-generated: "2026-07-28"
+generated: "2026-07-31"
 ---
 
 # RTG-08: Task Classification

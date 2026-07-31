@@ -5,7 +5,7 @@ status: blocked
 source: "Storage Research"
 type: capability
 tags: [capability, registry]
-generated: "2026-07-28"
+generated: "2026-07-31"
 ---
 
 # STR-06: Redis Cache

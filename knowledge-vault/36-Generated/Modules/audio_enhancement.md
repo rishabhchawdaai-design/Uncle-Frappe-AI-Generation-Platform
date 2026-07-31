@@ -7,7 +7,7 @@ lines: 303
 classes: 4
 functions: 0
 tags: [module, documentation]
-generated: "2026-07-28"
+generated: "2026-07-31"
 ---
 
 # audio_enhancement

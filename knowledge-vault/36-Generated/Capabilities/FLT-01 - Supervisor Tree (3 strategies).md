@@ -5,7 +5,7 @@ status: verified
 source: "Failure Atlas"
 type: capability
 tags: [capability, registry]
-generated: "2026-07-28"
+generated: "2026-07-31"
 ---
 
 # FLT-01: Supervisor Tree (3 strategies)

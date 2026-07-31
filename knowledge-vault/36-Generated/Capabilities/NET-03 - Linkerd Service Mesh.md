@@ -5,7 +5,7 @@ status: blocked
 source: "Networking Research"
 type: capability
 tags: [capability, registry]
-generated: "2026-07-28"
+generated: "2026-07-31"
 ---
 
 # NET-03: Linkerd Service Mesh

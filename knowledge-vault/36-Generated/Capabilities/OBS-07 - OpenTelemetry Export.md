@@ -5,7 +5,7 @@ status: verified
 source: "Observability Research"
 type: capability
 tags: [capability, registry]
-generated: "2026-07-28"
+generated: "2026-07-31"
 ---
 
 # OBS-07: OpenTelemetry Export

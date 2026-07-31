@@ -5,7 +5,7 @@ status: verified
 source: "Decision Ledger"
 type: capability
 tags: [capability, registry]
-generated: "2026-07-28"
+generated: "2026-07-31"
 ---
 
 # RTG-09: Decision Ledger (Audit Trail)

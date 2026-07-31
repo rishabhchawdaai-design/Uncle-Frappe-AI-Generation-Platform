@@ -5,7 +5,7 @@ status: verified
 source: "Image Gen Research"
 type: capability
 tags: [capability, registry]
-generated: "2026-07-28"
+generated: "2026-07-31"
 ---
 
 # IMG-03: Text-to-Image Generation (HuggingFace)

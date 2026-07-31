@@ -3,11 +3,11 @@ module: "sdk"
 type: module-doc
 status: active
 owner: ""
-lines: 1567
+lines: 1576
 classes: 1
 functions: 0
 tags: [module, documentation]
-generated: "2026-07-28"
+generated: "2026-07-31"
 ---
 
 # sdk
@@ -18,7 +18,7 @@ High-level API for consumers.
 ## Overview
 
 - **File**: `ai_generation/sdk.py`
-- **Lines**: 1567
+- **Lines**: 1576
 - **Classes**: 1
 - **Public Functions**: 0
 

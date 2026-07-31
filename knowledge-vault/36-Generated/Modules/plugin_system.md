@@ -7,7 +7,7 @@ lines: 440
 classes: 8
 functions: 0
 tags: [module, documentation]
-generated: "2026-07-28"
+generated: "2026-07-31"
 ---
 
 # plugin_system

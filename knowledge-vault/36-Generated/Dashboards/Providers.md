@@ -2,7 +2,7 @@
 type: architecture-layer
 layer: "Providers"
 tags: [architecture, layer]
-generated: "2026-07-28"
+generated: "2026-07-31"
 ---
 
 # Providers

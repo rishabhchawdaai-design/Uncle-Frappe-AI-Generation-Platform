@@ -5,7 +5,7 @@ status: blocked
 source: "Security Canon"
 type: capability
 tags: [capability, registry]
-generated: "2026-07-28"
+generated: "2026-07-31"
 ---
 
 # SEC-11: Supply Chain Security (SBOM)

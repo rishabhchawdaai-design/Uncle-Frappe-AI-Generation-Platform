@@ -7,7 +7,7 @@ lines: 661
 classes: 5
 functions: 2
 tags: [module, documentation]
-generated: "2026-07-28"
+generated: "2026-07-31"
 ---
 
 # edge_ai

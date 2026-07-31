@@ -189,8 +189,8 @@ def generate_architecture_pages(modules: List[Dict[str, Any]]) -> Dict[str, str]
     # Group modules by layer
     layers = {
         "Entry Points": ["sdk", "cli", "mcp_tools"],
-        "Intelligence": ["auto_router", "agent_planner", "negotiation_engine", "research_agent"],
-        "Quality Engineering": ["quality_engineering", "quality_dashboard", "code_analysis", "orchestration", "refactoring_engine"],
+        "Intelligence": ["auto_router", "agent_planner", "negotiation_engine", "research_agent", "decision_ledger", "supervisor"],
+        "Quality Engineering": ["quality_engineering", "quality_dashboard", "code_analysis", "orchestration", "refactoring_engine", "quality_engine", "regression_detector"],
         "Execution": ["execution_engine", "workflow_engine", "benchmark_engine", "benchmark_lab"],
         "Generation": ["generation_manager", "image_editing", "video_generation", "video_editing", "audio_generation", "music_generation", "voice_cloning", "audio_enhancement", "generation_3d", "generation_3d_extensions"],
         "Providers": ["provider_discovery", "provider_intelligence", "provider_verifier", "local_runtimes", "remote_endpoints"],

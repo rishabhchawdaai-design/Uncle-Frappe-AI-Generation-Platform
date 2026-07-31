@@ -5,7 +5,7 @@ status: verified
 source: "Edge AI Research"
 type: capability
 tags: [capability, registry]
-generated: "2026-07-28"
+generated: "2026-07-31"
 ---
 
 # INF-04: Edge Hardware Detection

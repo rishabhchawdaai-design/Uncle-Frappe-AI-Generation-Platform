@@ -7,7 +7,7 @@ lines: 610
 classes: 0
 functions: 32
 tags: [module, documentation]
-generated: "2026-07-28"
+generated: "2026-07-31"
 ---
 
 # cli

@@ -1,9 +1,9 @@
 ---
 type: summary
-generated: "2026-07-28 08:17"
+generated: "2026-07-31 14:53"
 total_modules: 64
 total_capabilities: 251
-total_lines: 27303
+total_lines: 27312
 total_classes: 374
 total_functions: 42
 tags: [summary, generated]
@@ -14,7 +14,7 @@ tags: [summary, generated]
 ## Statistics
 
 - **Total Modules**: 64
-- **Total Lines**: 27,303
+- **Total Lines**: 27,312
 - **Total Classes**: 374
 - **Total Public Functions**: 42
 - **Total Capabilities**: 251
@@ -31,7 +31,7 @@ SORT line_count DESC
 ## Largest Modules
 
 - **mcp_tools**: 2,409 lines, 1 classes
-- **sdk**: 1,567 lines, 1 classes
+- **sdk**: 1,576 lines, 1 classes
 - **negotiation_engine**: 1,065 lines, 12 classes
 - **code_analysis**: 916 lines, 19 classes
 - **video_editing**: 883 lines, 7 classes

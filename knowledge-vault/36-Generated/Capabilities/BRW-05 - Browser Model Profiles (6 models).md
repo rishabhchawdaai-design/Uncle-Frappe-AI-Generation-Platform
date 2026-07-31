@@ -5,7 +5,7 @@ status: verified
 source: "Browser AI Research"
 type: capability
 tags: [capability, registry]
-generated: "2026-07-28"
+generated: "2026-07-31"
 ---
 
 # BRW-05: Browser Model Profiles (6 models)

@@ -7,7 +7,7 @@ lines: 238
 classes: 4
 functions: 1
 tags: [module, documentation]
-generated: "2026-07-28"
+generated: "2026-07-31"
 ---
 
 # workflow_engine

@@ -7,7 +7,7 @@ lines: 2409
 classes: 1
 functions: 1
 tags: [module, documentation]
-generated: "2026-07-28"
+generated: "2026-07-31"
 ---
 
 # mcp_tools

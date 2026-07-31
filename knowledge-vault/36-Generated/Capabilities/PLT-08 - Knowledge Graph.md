@@ -5,7 +5,7 @@ status: verified
 source: "Core Platform"
 type: capability
 tags: [capability, registry]
-generated: "2026-07-28"
+generated: "2026-07-31"
 ---
 
 # PLT-08: Knowledge Graph

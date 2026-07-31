@@ -7,7 +7,7 @@ lines: 315
 classes: 11
 functions: 0
 tags: [module, documentation]
-generated: "2026-07-28"
+generated: "2026-07-31"
 ---
 
 # generation_3d_extensions

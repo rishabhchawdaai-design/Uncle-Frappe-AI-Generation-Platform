@@ -5,7 +5,7 @@ status: verified
 source: "Runtime Capability Registry"
 type: capability
 tags: [capability, registry]
-generated: "2026-07-28"
+generated: "2026-07-31"
 ---
 
 # RUN-03: Diffusers Runtime Integration
