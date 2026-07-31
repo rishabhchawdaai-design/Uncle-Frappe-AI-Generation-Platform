@@ -52,6 +52,10 @@ multi-node parallelism requires a StatefulSet plus `--dist-init-addr`.
 - **Local Runtime Registry**: `LocalRuntimeManager.configure_kimi_k3_runtime()`
   registers K3 vLLM/SGLang launch plans (official flags + hardware facts)
   into the Runtime Registry.
+- **Supervision**: `register_kimi_k3_supervisor_workers()` registers one
+  MONITOR worker per K3 endpoint (fail-fast on unhealthy / not serving kimi-k3).
+- **Regression Detection**: `record_kimi_k3_regression()` feeds benchmark
+  runs into the Regression Detector (latency / quality / error-rate baselines).
 - **Decision Ledger**: every completion records a chat decision entry.
 
 ## Health Checks
