@@ -392,9 +392,10 @@
 |----|-----------|--------|--------|
 | PLT-01 | Unified SDK (Python) | Core Platform | VERIFIED |
 | PLT-02 | CLI Interface | Core Platform | VERIFIED |
-| PLT-03 | MCP Server Tools (210 tools) | Core Platform | VERIFIED |
+| PLT-03 | MCP Server Tools (214 tools) | Core Platform | VERIFIED |
 | PLT-21 | Unified MCP Server Registry (59 servers) | Core Platform | VERIFIED |
 | PLT-22 | Unified Skill Registry (80 skills) | Plugin Ecosystem Research | VERIFIED |
+| PLT-23 | MCP Server Runtime Validation | Core Platform | VERIFIED |
 | PLT-04 | Provider Auto-Discovery | Core Platform | VERIFIED |
 | PLT-05 | Provider Verification | Core Platform | VERIFIED |
 | PLT-06 | Health Monitoring | Core Platform | VERIFIED |
@@ -425,7 +426,7 @@
 | Benchmark Knowledge Base | 8 | 8 | 0 | 0 | 0 | 0 |
 | Browser AI Research | 9 | 8 | 0 | 0 | 0 | 1 |
 | Capability Graph Spec | 9 | 9 | 0 | 0 | 0 | 0 |
-| Core Platform | 21 | 21 | 0 | 0 | 0 | 0 |
+| Core Platform | 22 | 22 | 0 | 0 | 0 | 0 |
 | Decision Ledger | 1 | 1 | 0 | 0 | 0 | 0 |
 | Distributed AI Research | 6 | 0 | 0 | 0 | 0 | 6 |
 | Edge AI Research | 10 | 10 | 0 | 0 | 0 | 0 |
@@ -444,23 +445,23 @@
 | Security Canon | 12 | 9 | 0 | 0 | 0 | 3 |
 | Storage Research | 8 | 2 | 0 | 0 | 0 | 6 |
 | Workflow Research | 7 | 3 | 0 | 0 | 0 | 4 |
-| **TOTAL** | **253** | **206** | **0** | **0** | **0** | **47** |
+| **TOTAL** | **254** | **207** | **0** | **0** | **0** | **47** |
 
 ## Completion Calculation
 
 ```
-Total capabilities:     253
+Total capabilities:     254
 BLOCKED:                47  (external service dependencies)
-Eligible for completion:206
+Eligible for completion:207
 
-VERIFIED:              206
+VERIFIED:              207
 
-Verified completion = 206 / 206 = 100%
+Verified completion = 207 / 207 = 100%
 ```
 
 ---
 
-All 206 eligible capabilities are VERIFIED. The remaining 47 capabilities are
+All 207 eligible capabilities are VERIFIED. The remaining 47 capabilities are
 BLOCKED by external dependencies (provider credentials, proprietary models,
 licensed services, or unavailable infrastructure) and are tracked with
 justification in the registry rows above.

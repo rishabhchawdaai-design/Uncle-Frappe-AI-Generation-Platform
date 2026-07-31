@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-07-31T22:55:20.803113+00:00",
+  "generated_at": "2026-07-31T23:09:33.746154+00:00",
   "research_documents": 57,
-  "capabilities": 253,
+  "capabilities": 254,
   "modules": [
     "agent_interface",
     "agent_planner",
@@ -4454,6 +4454,51 @@
       "mcp_tools": [],
       "benchmarks": []
     },
+    "PLT-23": {
+      "modules": [
+        "mcp_registry",
+        "mcp_tools"
+      ],
+      "tests": [
+        "test_3d_extensions",
+        "test_3d_generation",
+        "test_audio",
+        "test_audio_enhancement",
+        "test_browser_ai",
+        "test_capability_graph",
+        "test_document_intelligence",
+        "test_edge_ai",
+        "test_event_bus",
+        "test_failure_recovery",
+        "test_generation",
+        "test_kimi_k3",
+        "test_local_runtimes",
+        "test_mcp_registry",
+        "test_music_generation",
+        "test_observability",
+        "test_ocr",
+        "test_phase11",
+        "test_phase13",
+        "test_phase14",
+        "test_plugin_extensions",
+        "test_plugin_system",
+        "test_quality_engineering",
+        "test_regression",
+        "test_research_integration",
+        "test_search_backends",
+        "test_search_systems",
+        "test_security",
+        "test_security_crypto",
+        "test_skill_registry",
+        "test_video_editing",
+        "test_voice_cloning"
+      ],
+      "sdk_interfaces": [
+        "mcp_registry"
+      ],
+      "mcp_tools": [],
+      "benchmarks": []
+    },
     "PLT-04": {
       "modules": [
         "auto_router",
@@ -5214,7 +5259,8 @@
         "PLT-18",
         "PLT-19",
         "PLT-20",
-        "PLT-21"
+        "PLT-21",
+        "PLT-23"
       ]
     },
     {

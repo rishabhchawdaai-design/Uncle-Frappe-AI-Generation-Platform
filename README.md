@@ -105,6 +105,23 @@ stats = ai.get_mcp_registry_stats()                 # totals + categories + env 
 
 MCP tools: `list_mcp_servers`, `get_mcp_server`.
 
+Runtime validation (offline config checks + live probes):
+
+```bash
+python -m ai_generation.cli mcp-check ollama            # offline config validation
+python -m ai_generation.cli mcp-check --all              # validate every entry offline
+python -m ai_generation.cli mcp-check ollama --live      # spawn probe (5s window)
+```
+
+```python
+report = ai.validate_mcp_server("postgres")     # command resolvable, env documented
+probe = ai.check_mcp_server_health("ollama")    # live spawn probe
+batch = ai.run_mcp_validation()                 # offline validation of all servers
+```
+
+MCP tools: `validate_mcp_server`, `check_mcp_server_health`.
+
+
 ## Unified Skill Registry
 
 The platform ships a canonical, unified skill registry
@@ -160,7 +177,7 @@ async def main():
 asyncio.run(main())
 ```
 
-Run `python -m ai_generation.cli --help` for the CLI, or use the 210 MCP tools
+Run `python -m ai_generation.cli --help` for the CLI, or use the 214 MCP tools
 exposed via `ai_generation.mcp_tools.MCPGenerationTools`.
 
 ## Project Structure
@@ -169,7 +186,7 @@ exposed via `ai_generation.mcp_tools.MCPGenerationTools`.
 ai_generation/          # Single canonical platform package
   sdk.py                # Unified SDK entry point
   cli.py                # CLI interface
-  mcp_tools.py          # 210 MCP tools exposed by the platform
+  mcp_tools.py          # 214 MCP tools exposed by the platform
   generation_manager.py # Orchestration core
   auto_router.py        # Intelligent provider routing
   execution_engine.py   # Task execution

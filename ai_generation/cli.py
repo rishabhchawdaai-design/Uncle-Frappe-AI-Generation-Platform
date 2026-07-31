@@ -766,6 +766,75 @@ async def cmd_kimi_benchmark(prompt="Explain Mixture of Experts.", runs=2,
     return result
 
 
+async def cmd_mcp_check(server_id="", live=False):
+    """Validate one MCP server (offline config) or live probe it (--live)."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    print("")
+    if not live:
+        result = ai.validate_mcp_server(server_id)
+        print(f"  MCP config validation — {server_id}: {result['status']}")
+        for err in result.get("errors", []):
+            print(f"    - {err}")
+        return result
+    result = ai.check_mcp_server_health(server_id, timeout=8.0)
+    print(f"  MCP live probe — {server_id}: {result['status']}")
+    if result.get("note"):
+        print(f"    {result['note']}")
+    if result.get("stderr_tail"):
+        print(f"    stderr: {result['stderr_tail'][-200:]}")
+    return result
+
+
+async def cmd_mcp_check_all(live=False):
+    """Validate all servers: offline config checks, or live probes with --live."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    print("")
+    if live:
+        print("  Running live probes across all servers (network required)...")
+    results = ai.run_mcp_validation(live=live)
+    ok = sum(1 for r in results if r.get("valid", r.get("healthy", False)))
+    print(f"  MCP validation — {len(results)} servers, {ok} ok"
+          f"{' (live probes)' if live else ''}")
+    for r in results:
+        flag = "OK " if r.get("valid", r.get("healthy", False)) else "FAIL"
+        print(f"  [{flag}] {r['server_id']}: {r.get('status')}")
+        for err in r.get("errors", []):
+            print(f"         - {err}")
+    return results
+
+
+
+    """Validate one MCP server (offline config) or all (live probes with --all)."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    print("")
+    if server_id and not live:
+        result = ai.validate_mcp_server(server_id)
+        print(f"  MCP config validation — {server_id}: {result['status']}")
+        for err in result.get("errors", []):
+            print(f"    - {err}")
+        return result
+    if server_id and live:
+        result = ai.check_mcp_server_health(server_id, timeout=8.0)
+        print(f"  MCP live probe — {server_id}: {result['status']}")
+        if result.get("note"):
+            print(f"    {result['note']}")
+        if result.get("stderr_tail"):
+            print(f"    stderr: {result['stderr_tail'][-200:]}")
+        return result
+    results = ai.run_mcp_validation(live=live)
+    ok = sum(1 for r in results if r.get("valid", r.get("healthy", False)))
+    print(f"  MCP validation — {len(results)} servers, {ok} ok")
+    for r in results:
+        flag = "OK " if r.get("valid", r.get("healthy", False)) else "FAIL"
+        print(f"  [{flag}] {r['server_id']}: {r.get('status')}")
+        for err in r.get("errors", []):
+            print(f"         - {err}")
+    return results
+
+
 async def cmd_skills(category="", status="", search=""):
     """List skills from the unified registry."""
     from ai_generation.sdk import UncleFrappeAI
@@ -1045,6 +1114,23 @@ async def main():
         await cmd_kimi_info()
     elif args[0] == "kimi-health":
         await cmd_kimi_health()
+    elif args[0] == "mcp-check":
+        server_id = ""
+        live = False
+        all_servers = False
+        i = 1
+        while i < len(args):
+            if args[i] == "--all":
+                all_servers = True
+            elif args[i] == "--live":
+                live = True
+            elif not args[i].startswith("-"):
+                server_id = args[i]
+            i += 1
+        if all_servers and not server_id:
+            results = await cmd_mcp_check_all(live=live)
+        else:
+            await cmd_mcp_check(server_id=server_id, live=live)
     elif args[0] == "skills":
         category = ""
         status = ""
