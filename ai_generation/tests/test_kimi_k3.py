@@ -687,3 +687,83 @@ def test_kimi_k3_negotiation_candidates():
     assert result.selected_candidate is not None
     assert result.selected_candidate.provider_name in names
     assert len(result.fallback_chain) >= 1
+
+
+# ── Docker run builders ───────────────────────────────────────────
+
+def test_build_vllm_docker_run():
+    from ai_generation.kimi_k3 import build_vllm_docker_run
+    plan = build_vllm_docker_run(hardware="blackwell")
+    assert plan["engine"] == "vllm"
+    assert "docker run --gpus all" in plan["docker_run"]
+    assert "vllm/vllm-openai:kimi-k3" in plan["docker_run"]
+    assert "--tensor-parallel-size" in plan["docker_run"]
+    assert "-e VLLM_ENABLE_K3_LATENT_MOE_TAIL_FUSION=1" in plan["docker_run"]
+    assert plan["requires_gpus"] == 128
+
+
+def test_build_sglang_docker_run():
+    from ai_generation.kimi_k3 import build_sglang_docker_run
+    plan = build_sglang_docker_run(hardware="b200")
+    assert plan["engine"] == "sglang"
+    assert "lmsysorg/sglang:kimi-k3" in plan["docker_run"]
+    assert "--tp-size 16" in plan["docker_run"]
+    assert "-p 30000:30000" in plan["docker_run"]
+
+
+# ── Capability Graph integration ──────────────────────────────────
+
+def test_capability_graph_has_kimi_k3():
+    from ai_generation.capability_graph import CapabilityGraph
+    graph = CapabilityGraph()
+    assert graph.get_node("kimi_k3_cloud") is not None
+    assert graph.get_node("kimi_k3_vllm") is not None
+    assert graph.get_node("kimi_k3_sglang") is not None
+    paths = graph.find_capability_path("chat")
+    providers = {p.nodes[0] for p in paths}
+    assert providers == {"kimi_k3_cloud", "kimi_k3_vllm", "kimi_k3_sglang"}
+    chain = graph.find_fallback_chain("chat", failed_provider="kimi_k3_cloud")
+    assert chain and chain[0]["provider"] in ("kimi_k3_vllm", "kimi_k3_sglang")
+
+
+def test_register_kimi_k3_capability_graph_idempotent():
+    from ai_generation.capability_graph import CapabilityGraph
+    from ai_generation.kimi_k3 import register_kimi_k3_capability_graph
+    graph = CapabilityGraph()
+    before = graph.get_stats()
+    added = register_kimi_k3_capability_graph(graph)
+    after = graph.get_stats()
+    # Default graph already contains K3 -> nothing new added
+    assert added == 0
+    assert before["node_count"] == after["node_count"]
+
+
+def test_register_kimi_k3_capability_graph_dynamic():
+    from ai_generation.capability_graph import CapabilityGraph
+    from ai_generation.kimi_k3 import register_kimi_k3_capability_graph
+    graph = CapabilityGraph()
+    # Remove K3 nodes to simulate a fresh/dynamic graph
+    for pid in ("kimi_k3_cloud", "kimi_k3_vllm", "kimi_k3_sglang", "chat"):
+        graph._nodes.pop(pid, None)
+    added = register_kimi_k3_capability_graph(graph)
+    assert added >= 4  # 3 provider nodes + chat capability node
+    assert len(graph.find_capability_path("chat")) == 3
+
+
+# ── Benchmark Lab integration ─────────────────────────────────────
+
+@pytest.mark.asyncio
+async def test_manager_benchmark_lab(monkeypatch, tmp_path):
+    from ai_generation.benchmark_lab import BenchmarkLab
+    from ai_generation.kimi_k3 import KimiK3Manager
+    monkeypatch.setattr("ai_generation.kimi_k3._post_json", make_post())
+    lab = BenchmarkLab(data_dir=str(tmp_path))
+    manager = KimiK3Manager(benchmark_lab=lab)
+    report = await manager.benchmark("lab benchmark", runs=2, provider="kimi_k3_vllm")
+    assert len(report["runs"]) == 2
+    stats = lab.get_stats()
+    assert stats["total_results"] == 2
+    assert stats["total_providers"] == 1
+    score = lab.get_provider_score("kimi_k3_vllm")
+    assert score is not None
+    assert score["total_benchmarks"] == 2

@@ -1,11 +1,11 @@
 ---
 type: summary
-generated: "2026-07-31 19:31"
+generated: "2026-07-31 19:40"
 total_modules: 66
 total_capabilities: 251
-total_lines: 30357
+total_lines: 30489
 total_classes: 388
-total_functions: 67
+total_functions: 70
 tags: [summary, generated]
 ---
 
@@ -14,9 +14,9 @@ tags: [summary, generated]
 ## Statistics
 
 - **Total Modules**: 66
-- **Total Lines**: 30,357
+- **Total Lines**: 30,489
 - **Total Classes**: 388
-- **Total Public Functions**: 67
+- **Total Public Functions**: 70
 - **Total Capabilities**: 251
 
 ## Modules by Size
@@ -32,7 +32,7 @@ SORT line_count DESC
 
 - **mcp_tools**: 2,746 lines, 1 classes
 - **sdk**: 1,654 lines, 1 classes
-- **kimi_k3**: 1,212 lines, 9 classes
+- **kimi_k3**: 1,330 lines, 9 classes
 - **negotiation_engine**: 1,066 lines, 12 classes
 - **cli**: 973 lines, 0 classes
 - **video_editing**: 921 lines, 7 classes

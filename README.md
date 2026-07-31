@@ -13,6 +13,7 @@ Uncle Frappé is an agent-first AI media orchestration platform capable of:
 - **OCR & Document AI** — Text extraction, document understanding
 - **Intelligent Routing** — Automatic provider selection, benchmarking, cost optimization
 - **Multi-Provider** — OpenAI, HuggingFace, Replicate, Together, Fal, Pollinations, Stability, and more
+- **Kimi K3 (Moonshot AI)** — 1M-context multimodal reasoning via official cloud API, vLLM, and SGLang execution paths
 
 ## Architecture
 
@@ -37,6 +38,43 @@ Uncle Frappé is an agent-first AI media orchestration platform capable of:
 │  └──────────┘ └──────────┘ └──────────┘            │
 └─────────────────────────────────────────────────────┘
 ```
+
+## Kimi K3 (Moonshot AI)
+
+The platform can use Kimi K3 as a chat/text-reasoning execution runtime through
+every **officially supported** path:
+
+| Path | Enable | Endpoint |
+|------|--------|----------|
+| Cloud API | `MOONSHOT_API_KEY` in `.env` | `kimi_k3_cloud` |
+| Self-hosted vLLM | `KIMI_K3_VLLM_URL` in `.env` | `kimi_k3_vllm` |
+| Self-hosted SGLang | `KIMI_K3_SGLANG_URL` in `.env` | `kimi_k3_sglang` |
+
+```python
+import asyncio
+from ai_generation import UncleFrappeAI
+
+async def main():
+    ai = UncleFrappeAI()
+    result = await ai.chat(
+        "Explain Mixture of Experts",
+        provider="auto",  # auto | kimi_k3_cloud | kimi_k3_vllm | kimi_k3_sglang
+        reasoning_effort="high",  # low | high | max (official values)
+    )
+    print(result["text"])
+    print(result["reasoning"])
+
+asyncio.run(main())
+```
+
+CLI: `python -m ai_generation.cli kimi-chat "prompt"` · `kimi-info`
+MCP tools: `kimi_k3_chat`, `kimi_k3_spec`, `kimi_k3_info`
+
+Kimi K3 specs and deployment recipes (TP/EP/PP, DSpark speculative decoding,
+Blackwell/Hopper/AMD launch flags) are in `ai_generation/kimi_k3.py` and the
+knowledge vault (`24-Research/Kimi K3.md`). Only official Moonshot AI paths are
+supported; TensorRT-LLM, DeepSpeed, llama.cpp, Ollama, and HF TGI/Endpoints are
+recorded as officially unsupported.
 
 ## Quick Start
 

@@ -122,6 +122,12 @@ class CapabilityGraph:
             ("kokoro", "Kokoro", NodeType.PROVIDER, {"tier": "free", "type": "audio"}),
             ("openai_tts", "OpenAI TTS", NodeType.PROVIDER, {"tier": "paid", "type": "audio"}),
             ("whisper", "Whisper", NodeType.PROVIDER, {"tier": "free", "type": "audio"}),
+            ("kimi_k3_cloud", "Kimi K3 Cloud API", NodeType.PROVIDER,
+             {"tier": "paid", "type": "text", "vendor": "Moonshot AI", "context_length": 1048576}),
+            ("kimi_k3_vllm", "Kimi K3 vLLM", NodeType.PROVIDER,
+             {"tier": "paid", "type": "text", "runtime": "vllm", "context_length": 1048576}),
+            ("kimi_k3_sglang", "Kimi K3 SGLang", NodeType.PROVIDER,
+             {"tier": "paid", "type": "text", "runtime": "sglang", "context_length": 1048576}),
         ]
         for pid, name, ntype, attrs in providers:
             self.add_node(pid, ntype, name, attrs)
@@ -133,6 +139,7 @@ class CapabilityGraph:
             ("speech_to_text", "Speech-to-Text", NodeType.CAPABILITY),
             ("image_editing", "Image Editing", NodeType.CAPABILITY),
             ("text_generation", "Text Generation", NodeType.CAPABILITY),
+            ("chat", "Chat / Text Reasoning", NodeType.CAPABILITY),
         ]
         for cid, name, ntype in capabilities:
             self.add_node(cid, ntype, name)
@@ -152,6 +159,13 @@ class CapabilityGraph:
         self.add_edge("kokoro", "text_to_speech", EdgeType.SUPPORTS)
         self.add_edge("openai_tts", "text_to_speech", EdgeType.SUPPORTS)
         self.add_edge("whisper", "speech_to_text", EdgeType.SUPPORTS)
+        self.add_edge("kimi_k3_cloud", "chat", EdgeType.SUPPORTS)
+        self.add_edge("kimi_k3_vllm", "chat", EdgeType.SUPPORTS)
+        self.add_edge("kimi_k3_sglang", "chat", EdgeType.SUPPORTS)
+
+        # Kimi K3 fallback chain: cloud API -> self-hosted vLLM -> SGLang
+        self.add_edge("kimi_k3_cloud", "kimi_k3_vllm", EdgeType.FALLBACK_TO, weight=0.9)
+        self.add_edge("kimi_k3_vllm", "kimi_k3_sglang", EdgeType.FALLBACK_TO, weight=0.9)
 
         # Fallback chains (prefer free, then paid)
         for cap in ["text_to_image"]:
