@@ -26,7 +26,7 @@ graph LR
 
 ## Modules with no internal dependencies (leaf nodes)
 
-`agent_interface`, `agent_planner`, `asset_intelligence`, `audio_enhancement`, `audio_generation`, `auto_router`, `benchmark_engine`, `benchmark_lab`, `browser_ai`, `capability_graph`, `capability_matrix`, `capability_registry`, `character_manager`, `cinema_benchmark`, `cinematic_workflow`, `code_analysis`, `decision_ledger`, `document_intelligence`, `dynamic_adapter`, `edge_ai`, `event_bus`, `execution_engine`, `execution_strategies`, `failure_recovery`, `generation_3d`, `generation_3d_extensions`, `generation_manager`, `health_monitor`, `image_editing`, `knowledge_graph`, `local_runtimes`, `media_intelligence`, `music_generation`, `negotiation_engine`, `observability`, `ocr_engine`, `orchestration`, `otel_export`, `plugin_extensions`, `plugin_system`, `project_manager`, `prompt_engine`, `provider_discovery`, `provider_intelligence`, `provider_verifier`, `quality_dashboard`, `quality_engine`, `quality_engineering`, `refactoring_engine`, `regression_detector`, `remote_endpoints`, `research_agent`, `sdk`, `search_backends`, `search_systems`, `security`, `security_crypto`, `supervisor`, `video_editing`, `video_generation`, `voice_cloning`, `workflow_engine`
+`agent_interface`, `agent_planner`, `asset_intelligence`, `audio_enhancement`, `audio_generation`, `auto_router`, `benchmark_engine`, `benchmark_lab`, `browser_ai`, `capability_graph`, `capability_matrix`, `capability_registry`, `character_manager`, `cinema_benchmark`, `cinematic_workflow`, `code_analysis`, `decision_ledger`, `document_intelligence`, `dynamic_adapter`, `edge_ai`, `event_bus`, `execution_engine`, `execution_strategies`, `failure_recovery`, `generation_3d`, `generation_3d_extensions`, `generation_manager`, `health_monitor`, `image_editing`, `knowledge_graph`, `local_runtimes`, `media_intelligence`, `music_generation`, `negotiation_engine`, `observability`, `ocr_engine`, `orchestration`, `otel_export`, `plugin_extensions`, `plugin_system`, `project_manager`, `prompt_engine`, `provider_discovery`, `provider_intelligence`, `provider_verifier`, `quality_dashboard`, `quality_engine`, `quality_engineering`, `refactoring_engine`, `regression_detector`, `remote_endpoints`, `research_agent`, `research_integration`, `sdk`, `search_backends`, `search_systems`, `security`, `security_crypto`, `supervisor`, `video_editing`, `video_generation`, `voice_cloning`, `workflow_engine`
 
 ## Layer Map
 
@@ -50,9 +50,34 @@ graph LR
 | Testing | `ai_generation/tests/` |
 | Tools | `ai_generation/cli.py`, `scripts/` |
 
+## Research Integration Layer
+
+One engineering ecosystem: ACOS-Research is the canonical knowledge source,
+this platform is the canonical implementation. Research flows into
+implementation; implementation always references research. Research content
+is never copied into this repository — only metadata and hashes are cached.
+
+| Component | Canonical home |
+|---|---|
+| Research canon (upstream, read-only) | `rishabhchawdaai-design/ACOS-Research` |
+| Integration engine | `ai_generation/research_integration.py` |
+| Generated cache (committed) | `data/research/{research_manifest,research_index,execution_queue}.json` |
+| SDK surface | `research_integration` property + `trace_capability` / `research_impact` / `research_sync_status` / `research_graph` |
+| MCP tools | `research_index`, `trace_capability`, `research_impact_analysis`, `research_sync_status`, `research_graph` |
+| CLI | `research-index`, `research-trace`, `research-impact`, `research-sync`, `research-graph` |
+| Automation | `scripts/research-sync.sh`, `.github/workflows/research-sync.yml` |
+
+Invariants:
+
+- Every registry capability resolves to exactly one research document (251/251 mapped).
+- `research-sync` detects new/modified/removed research, refreshes the cache, and
+  classifies new research into the execution queue (`implementable` / `blocked` / `speculative`).
+- Blocked queue items record the external dependency (credentials, licensing, hardware, service).
+- The remote `main` branch always represents the latest verified implementation.
+
 ## Dependency Verification
 
-- Nodes: 66 (`ai_generation/` modules incl. `providers/` and `agents/` subpackages)
+- Nodes: 67 (`ai_generation/` modules incl. `providers/` and `agents/` subpackages)
 - Edges: 14 explicit intra-package imports
 - Cycles: **none** — the graph is acyclic
 - Coupling: intentionally low; modules are wired together through the unified SDK (`sdk.py` lazy-loads every engine property)

@@ -8,10 +8,13 @@ implementation graph, SDK integration, MCP tools, and CLI commands.
 import asyncio
 import json
 import shutil
+import os
 
 import pytest
 
 from ai_generation.research_integration import ResearchIntegrationEngine
+from pathlib import Path
+
 from ai_generation.research_integration import DATA_DIR, ResearchIntegrationEngine
 
 
@@ -239,6 +242,28 @@ async def test_mcp_research_handlers():
     graph = await mcp.handle("research_graph", {})
     assert isinstance(graph, dict)
     assert graph["node_count"] > 100
+
+
+# ── Sync automation script ─────────────────────────────────────────
+
+def test_research_sync_script_present_and_executable():
+    script = Path(__file__).resolve().parents[2] / "scripts" / "research-sync.sh"
+    assert script.exists()
+    assert os.access(script, os.X_OK)
+
+
+def test_research_sync_script_check_mode():
+    import subprocess
+    repo_root = Path(__file__).resolve().parents[2]
+    result = subprocess.run(
+        ["scripts/research-sync.sh", "--check"],
+        cwd=str(repo_root),
+        capture_output=True,
+        text=True,
+        timeout=120,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "synchronized" in result.stdout
 
 
 # ── CLI commands ─────────────────────────────────────────────────
