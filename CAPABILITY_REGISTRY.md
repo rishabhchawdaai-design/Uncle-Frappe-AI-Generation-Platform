@@ -463,6 +463,44 @@ BLOCKED by external dependencies (provider credentials, proprietary models,
 licensed services, or unavailable infrastructure) and are tracked with
 justification in the registry rows above.
 
+## Blocked Capabilities Register
+
+### Agent Frameworks — external SDK/service dependencies
+- **AGT-13** LangGraph, **AGT-14** OpenAI Agents, **AGT-15** CrewAI, **AGT-16** AutoGen — require installing and running each external agent framework with live API credentials.
+
+### Workflow Orchestration — external workflow services
+- **WFL-04** Temporal, **WFL-05** Dagster, **WFL-06** Prefect, **WFL-07** Airflow — require deployed external orchestration services and their client SDKs.
+
+### Distributed AI — multi-node GPU infrastructure
+- **DST-01** Ray, **DST-02** DeepSpeed, **DST-03** PyTorch DDP, **DST-04** TorchTitan, **DST-05** Petals, **DST-06** exo — require multi-GPU/multi-node clusters not available in the test environment.
+
+### Infrastructure — cloud credentials and hardware
+- **INF-06** Cloud Instance Management, **INF-07** Kubernetes, **INF-09** Cost Optimization, **INF-10** Spot Instances — require cloud provider credentials.
+- **INF-08** Docker/Podman Support — runtime backend integration requires a Docker daemon and SDK; container packaging is already provided via the root `Dockerfile` and CI build.
+- **INF-11** AMD GPU Detection — requires AMD GPU hardware for validation.
+
+### Messaging — external brokers
+- **MSG-02** Kafka, **MSG-03** RabbitMQ, **MSG-04** Redis Streams, **MSG-06** Durable Queues — require deployed external brokers.
+
+### Networking — cluster infrastructure
+- **NET-01** Cilium, **NET-02** Istio, **NET-03** Linkerd, **NET-04** Envoy, **NET-05** Service Discovery, **NET-06** Traffic Management — require a Kubernetes/mesh cluster.
+
+### Observability — external backends
+- **OBS-08** Prometheus, **OBS-09** Grafana, **OBS-10** Loki, **OBS-11** Tempo — require deployed external observability backends.
+
+### Security — external runtimes and tooling
+- **SEC-08** Plugin Sandboxing (Container) — requires a container runtime (Docker).
+- **SEC-09** Plugin Sandboxing (WASM) — requires a WASM runtime.
+- **SEC-11** Supply Chain Security (SBOM) — requires build-toolchain integration.
+
+### Storage & Databases — external services
+- **STR-01** PostgreSQL, **STR-02** Qdrant, **STR-03** MinIO, **STR-04** Neo4j, **STR-05** Prometheus TSDB, **STR-06** Redis — require deployed external database services.
+
+### Media — proprietary APIs and services
+- **VID-08** / **AUD-10** Lip Sync — requires licensed lip-sync models or paid APIs.
+- **VID-09** Avatar Generation — requires proprietary avatar-generation APIs.
+- **BRW-09** WebNN Support — requires browser WebNN support (Chrome flag, no Safari/Firefox).
+
 ### QE-09 — Secret Scanner (extracted from ai-code-reviewer)
 - **Status**: VERIFIED
 - **Module**: `ai_generation/code_analysis.py` → `SecretScanner`
