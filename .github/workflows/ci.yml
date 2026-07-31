@@ -62,7 +62,5 @@ jobs:
       - name: Build Docker image
         run: docker build -t uncle-frappe-ai-generation-platform .
       - name: Verify Docker image
-        run: docker run --rm uncle-frappe-ai-generation-platform python -c "
-          import ai_generation
-          print('Docker image OK, version', ai_generation.__version__)
-          "
+        run: |
+          docker run --rm uncle-frappe-ai-generation-platform python -c "import ai_generation; print('Docker image OK, version', ai_generation.__version__)"
