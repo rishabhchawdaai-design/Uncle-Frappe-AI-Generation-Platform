@@ -26,7 +26,7 @@ graph LR
 
 ## Modules with no internal dependencies (leaf nodes)
 
-`agent_interface`, `agent_planner`, `asset_intelligence`, `audio_enhancement`, `audio_generation`, `auto_router`, `benchmark_engine`, `benchmark_lab`, `browser_ai`, `capability_graph`, `capability_matrix`, `capability_registry`, `character_manager`, `cinema_benchmark`, `cinematic_workflow`, `code_analysis`, `decision_ledger`, `document_intelligence`, `dynamic_adapter`, `edge_ai`, `event_bus`, `execution_engine`, `execution_strategies`, `failure_recovery`, `generation_3d`, `generation_3d_extensions`, `generation_manager`, `health_monitor`, `image_editing`, `knowledge_graph`, `local_runtimes`, `media_intelligence`, `music_generation`, `negotiation_engine`, `observability`, `ocr_engine`, `orchestration`, `otel_export`, `plugin_extensions`, `plugin_system`, `project_manager`, `prompt_engine`, `provider_discovery`, `provider_intelligence`, `provider_verifier`, `quality_dashboard`, `quality_engine`, `quality_engineering`, `refactoring_engine`, `regression_detector`, `remote_endpoints`, `research_agent`, `research_integration`, `sdk`, `search_backends`, `search_systems`, `security`, `security_crypto`, `supervisor`, `video_editing`, `video_generation`, `voice_cloning`, `workflow_engine`, `kimi_k3`
+`agent_interface`, `agent_planner`, `asset_intelligence`, `audio_enhancement`, `audio_generation`, `auto_router`, `benchmark_engine`, `benchmark_lab`, `browser_ai`, `capability_graph`, `capability_matrix`, `capability_registry`, `character_manager`, `cinema_benchmark`, `cinematic_workflow`, `code_analysis`, `decision_ledger`, `document_intelligence`, `dynamic_adapter`, `edge_ai`, `event_bus`, `execution_engine`, `execution_strategies`, `failure_recovery`, `generation_3d`, `generation_3d_extensions`, `generation_manager`, `health_monitor`, `image_editing`, `knowledge_graph`, `local_runtimes`, `media_intelligence`, `music_generation`, `negotiation_engine`, `observability`, `ocr_engine`, `orchestration`, `otel_export`, `plugin_extensions`, `plugin_system`, `project_manager`, `prompt_engine`, `provider_discovery`, `provider_intelligence`, `provider_verifier`, `quality_dashboard`, `quality_engine`, `quality_engineering`, `refactoring_engine`, `regression_detector`, `remote_endpoints`, `research_agent`, `research_integration`, `sdk`, `search_backends`, `search_systems`, `security`, `security_crypto`, `supervisor`, `video_editing`, `video_generation`, `voice_cloning`, `workflow_engine`, `kimi_k3`, `mcp_registry`, `skill_registry`, `tool_registry`
 
 ## Layer Map
 
@@ -36,10 +36,11 @@ graph LR
 | Core (execution, negotiation, planning, registry, supervisor) | `ai_generation/{execution_engine,negotiation_engine,agent_planner,capability_registry,supervisor}.py` |
 | Providers | `ai_generation/providers/` |
 | Runtimes | `ai_generation/local_runtimes.py`, `ai_generation/remote_endpoints.py` |
-| Models | `ai_generation/models.py` (via registry in `data/`) |
-| MCP | `ai_generation/mcp_tools.py` + `configs/mcp_servers.json` |
-| Skills | `knowledge-vault/07-Skills/` |
+| Models | capability registry (`ai_generation/capability_registry.py`, `capability_matrix.py`) |
+| MCP | `ai_generation/mcp_tools.py`, `mcp_registry.py` + `configs/mcp_servers.json` |
+| Skills | `ai_generation/skill_registry.py` + `configs/skills.json`, `knowledge-vault/07-Skills/` |
 | Plugins | `ai_generation/plugin_system.py`, `plugin_extensions.py` |
+| Tools | `ai_generation/tool_registry.py` + `configs/tools.json` |
 | Agent Frameworks | `ai_generation/agents/`, `agent_interface.py` |
 | Security | `ai_generation/security.py`, `security_crypto.py` |
 | Observability | `ai_generation/observability.py`, `otel_export.py` |
