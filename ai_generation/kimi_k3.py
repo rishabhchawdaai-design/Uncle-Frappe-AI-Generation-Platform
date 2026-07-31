@@ -789,7 +789,7 @@ class KimiK3Manager:
         fallbacks: List[str] = []
         last_error: Optional[str] = None
         for endpoint in self.provider_order(request.provider):
-            start = time.time()
+            start = time.perf_counter()
             client = self._make_client(endpoint)
             try:
                 parsed = await asyncio.wait_for(
@@ -806,7 +806,7 @@ class KimiK3Manager:
                     timeout=request.timeout_secs,
                 )
             except Exception as e:
-                latency = round((time.time() - start) * 1000, 1)
+                latency = round((time.perf_counter() - start) * 1000, 1)
                 last_error = str(e)[:300]
                 self._record(endpoint["name"], latency, success=False, error=last_error)
                 self._record_failure(request, endpoint["name"], last_error, latency)
@@ -814,7 +814,7 @@ class KimiK3Manager:
                 logger.warning("Kimi K3 provider %s failed: %s", endpoint["name"], last_error)
                 continue
 
-            latency = round((time.time() - start) * 1000, 1)
+            latency = round((time.perf_counter() - start) * 1000, 1)
             result = KimiK3Result(
                 text=parsed["text"],
                 reasoning=parsed["reasoning"],
@@ -878,10 +878,9 @@ class KimiK3Manager:
                 "kimi_k3.requests.success" if success else "kimi_k3.requests.failed",
                 labels=labels,
             )
-            if latency_ms > 0:
-                self._observability.record_histogram(
-                    "kimi_k3.latency_ms", latency_ms, labels=labels,
-                )
+            self._observability.record_histogram(
+                "kimi_k3.latency_ms", max(latency_ms, 0.0), labels=labels,
+            )
             if success:
                 self._observability.log_info(
                     f"Kimi K3 request succeeded via {provider} in {latency_ms:.0f}ms",
@@ -968,10 +967,10 @@ class KimiK3Manager:
         runs = max(1, int(runs))
         results = []
         for _ in range(runs):
-            start = time.time()
+            start = time.perf_counter()
             result = await self.chat(prompt, provider=provider,
                                      reasoning_effort=reasoning_effort)
-            latency = result.latency_ms or round((time.time() - start) * 1000, 1)
+            latency = result.latency_ms or round((time.perf_counter() - start) * 1000, 1)
             entry = {
                 "provider": result.provider,
                 "success": result.error is None,
