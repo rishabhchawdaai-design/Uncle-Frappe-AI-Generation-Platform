@@ -9,8 +9,6 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
-import httpx
-
 logger = logging.getLogger(__name__)
 
 
@@ -49,6 +47,8 @@ class HealthMonitor:
             self._statuses[name] = HealthStatus(provider=name, health_url=health_url)
 
     async def check_provider(self, name: str, url: str) -> HealthStatus:
+        import httpx
+
         status = self._statuses.get(name, HealthStatus(provider=name))
         start = time.time()
         try:
