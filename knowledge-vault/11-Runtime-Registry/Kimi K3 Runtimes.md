@@ -33,6 +33,13 @@ tags: [runtime, kimi-k3, vllm, sglang, cloud]
 - PD disaggregation: `--pp-size 8 --tp-size 1` (long-context prefill)
 - HiCache hierarchical KV caching; Deep PP; DSpark spec-decode
 
+## Kubernetes
+
+Single-node Deployment manifests are generated from the official images and
+verified flags via `build_vllm_k8s_yaml()` / `build_sglang_k8s_yaml()`
+(`ai_generation/kimi_k3.py`). No official Moonshot K8s manifest exists;
+multi-node parallelism requires a StatefulSet plus `--dist-init-addr`.
+
 ## Health Checks
 
 - vLLM: `GET /v1/models`

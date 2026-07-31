@@ -855,3 +855,61 @@ async def test_mcp_kimi_benchmark_handler(monkeypatch):
     })
     assert len(result["runs"]) == 1
     assert result["runs"][0]["success"] is True
+
+
+# ── Kubernetes deployment manifests ───────────────────────────────
+
+def test_build_vllm_k8s_yaml():
+    from ai_generation.kimi_k3 import build_vllm_k8s_yaml
+    yaml_text = build_vllm_k8s_yaml(gpus=8)
+    assert "kind: Deployment" in yaml_text
+    assert "name: kimi-k3-vllm" in yaml_text
+    assert "image: vllm/vllm-openai:kimi-k3" in yaml_text
+    assert "nvidia.com/gpu: 8" in yaml_text
+    assert "--tensor-parallel-size" in yaml_text
+    assert "kind: Service" in yaml_text
+
+
+def test_build_sglang_k8s_yaml():
+    from ai_generation.kimi_k3 import build_sglang_k8s_yaml
+    yaml_text = build_sglang_k8s_yaml(gpus=8)
+    assert "kind: Deployment" in yaml_text
+    assert "name: kimi-k3-sglang" in yaml_text
+    assert "lmsysorg/sglang:kimi-k3" in yaml_text
+    assert "--reasoning-parser" in yaml_text
+    assert "containerPort: 30000" in yaml_text
+
+
+# ── Observability integration ─────────────────────────────────────
+
+@pytest.mark.asyncio
+async def test_manager_observability_metrics(monkeypatch):
+    from ai_generation.kimi_k3 import KimiK3Manager
+    from ai_generation.observability import ObservabilityManager
+    monkeypatch.setattr("ai_generation.kimi_k3._post_json", make_post())
+    obs = ObservabilityManager()
+    manager = KimiK3Manager(observability=obs)
+    await manager.chat("hello", provider="kimi_k3_vllm")
+    labels = {"provider": "kimi_k3_vllm", "model": "kimi-k3"}
+    assert obs.get_counter("kimi_k3.requests.total", labels) == 1
+    assert obs.get_counter("kimi_k3.requests.success", labels) == 1
+    latency_stats = obs.get_histogram_stats("kimi_k3.latency_ms", labels)
+    assert latency_stats["count"] == 1
+    assert "kimi_k3" in {l["source"] for l in obs.get_logs()}
+
+
+@pytest.mark.asyncio
+async def test_manager_observability_failure(monkeypatch):
+    from ai_generation.kimi_k3 import KimiK3Error, KimiK3Manager
+    from ai_generation.observability import ObservabilityManager
+
+    async def fail(url, api_key, payload, timeout=120.0):
+        raise KimiK3Error("down")
+
+    monkeypatch.setattr("ai_generation.kimi_k3._post_json", fail)
+    obs = ObservabilityManager()
+    manager = KimiK3Manager(observability=obs)
+    await manager.chat("boom")
+    cloud_labels = {"provider": "kimi_k3_cloud", "model": "kimi-k3"}
+    assert obs.get_counter("kimi_k3.requests.total", cloud_labels) == 1
+    assert obs.get_counter("kimi_k3.requests.failed", cloud_labels) == 1
