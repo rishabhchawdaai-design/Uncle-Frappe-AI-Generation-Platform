@@ -41,22 +41,33 @@ Uncle Frappé is an agent-first AI media orchestration platform capable of:
 ## Quick Start
 
 ```python
-from ai_generation.sdk import UncleFrappeAI
+import asyncio
+from ai_generation import UncleFrappeAI
 
-ai = UncleFrappeAI()
+async def main():
+    ai = UncleFrappeAI()
 
-# Generate an image
-result = ai.generate_image(
-    prompt="A cinematic coffee advertisement with warm lighting",
-    model="stabilityai/stable-diffusion-xl-base-1.0"
-)
+    # Generate an image with automatic provider selection
+    result = await ai.generate_image(
+        prompt="A cinematic coffee advertisement with warm lighting",
+        style="photorealistic",
+    )
+    print(result.status, result.provider)
 
-# Generate with automatic provider selection
-result = ai.generate_image(
-    prompt="A luxury café interior",
-    auto_select=True  # Picks best available provider
-)
+    # Generate a video
+    video = await ai.generate_video("A city timelapse at dusk", duration_secs=4.0)
+    print(video.status, video.provider)
+
+    # Enhance a prompt with cinematic techniques
+    enhanced = ai.enhance_prompt("A luxury café interior", style="cinematic")
+    print(enhanced.enhanced)
+
+
+asyncio.run(main())
 ```
+
+Run `python -m ai_generation.cli --help` for the CLI, or use the 198 MCP tools
+exposed via `ai_generation.mcp_tools.MCPGenerationTools`.
 
 ## Project Structure
 
@@ -115,6 +126,24 @@ python -m pytest ai_generation/tests/ -v
 
 # Run CLI
 python -m ai_generation.cli --help
+
+# Build and run the container
+docker build -t uncle-frappe-ai-generation-platform .
+docker run --rm uncle-frappe-ai-generation-platform
+```
+
+CI runs the full `ai_generation/tests/` suite (1,141 tests), verifies every
+module imports cleanly, smoke-tests the unified SDK, and builds the Docker
+image on every push to `main` (`.github/workflows/ci.yml`).
+
+## Knowledge Base
+
+`knowledge-vault/` is an Obsidian vault generated from the codebase — 37
+sections covering architecture, ADRs, capabilities, providers, runtimes,
+benchmarks, and quality engineering. Regenerate with:
+
+```bash
+python3 knowledge-vault/37-Pipeline/generate_vault.py
 ```
 
 ## License
