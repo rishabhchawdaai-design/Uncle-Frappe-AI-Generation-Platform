@@ -644,9 +644,10 @@ class KimiK3Manager:
     """
 
     def __init__(self, config: Optional[Dict[str, Any]] = None,
-                 benchmark_lab=None):
+                 benchmark_lab=None, observability=None):
         self.config = config or {}
         self._benchmark_lab = benchmark_lab
+        self._observability = observability
         self._history: List[Dict[str, Any]] = []
         self._stats: Dict[str, Any] = {
             "total_requests": 0,
@@ -844,6 +845,7 @@ class KimiK3Manager:
 
     def _record(self, provider: str, latency_ms: float, success: bool,
                 usage: Optional[Dict[str, Any]] = None, error: str = ""):
+        self._record_observability(provider, latency_ms, success, error)
         self._stats["total_requests"] += 1
         if success:
             self._stats["successful"] += 1
@@ -861,6 +863,37 @@ class KimiK3Manager:
             "provider": provider, "success": success, "latency_ms": latency_ms,
             "error": error, "timestamp": datetime.now().isoformat(),
         })
+
+    def _record_observability(self, provider: str, latency_ms: float,
+                              success: bool, error: str = ""):
+        """Push Kimi K3 metrics/logs to the Observability layer when attached."""
+        if self._observability is None:
+            return
+        try:
+            labels = {"provider": provider, "model": "kimi-k3"}
+            self._observability.increment_counter(
+                "kimi_k3.requests.total", labels=labels,
+            )
+            self._observability.increment_counter(
+                "kimi_k3.requests.success" if success else "kimi_k3.requests.failed",
+                labels=labels,
+            )
+            if latency_ms > 0:
+                self._observability.record_histogram(
+                    "kimi_k3.latency_ms", latency_ms, labels=labels,
+                )
+            if success:
+                self._observability.log_info(
+                    f"Kimi K3 request succeeded via {provider} in {latency_ms:.0f}ms",
+                    source="kimi_k3",
+                )
+            else:
+                self._observability.log_error(
+                    f"Kimi K3 request failed via {provider}: {error}",
+                    source="kimi_k3",
+                )
+        except Exception as e:
+            logger.debug("observability record skipped: %s", e)
 
     def _record_decision(self, request: KimiK3Request, result: KimiK3Result, quality: float):
         try:
@@ -1380,3 +1413,143 @@ def register_kimi_k3_capability_graph(graph) -> int:
             graph.add_edge(src, tgt, EdgeType.FALLBACK_TO, weight=0.9)
             added += 1
     return added
+
+
+# ──────────────────────────────────────────────────────────────────
+# Kubernetes deployment manifests (official images + verified flags)
+# ──────────────────────────────────────────────────────────────────
+
+def build_vllm_k8s_yaml(model: str = "moonshotai/Kimi-K3", hardware: str = "blackwell",
+                        gpus: int = 8, service_port: int = 8000) -> str:
+    """Return a Kubernetes Deployment manifest for a Kimi K3 vLLM server.
+
+    Wraps the official image with the verified launch flags. Multi-node
+    parallelism requires a StatefulSet plus `--dist-init-addr`; this manifest
+    covers a single-node TP/TEP deployment.
+    """
+    plan = build_vllm_command(model=model, hardware=hardware,
+                              tensor_parallel=gpus, expert_parallel=gpus * 2)
+    args = " ".join(plan["command"][2:])
+    env_block = "\n".join(
+        f"            - name: {k}\n              value: \"{v}\"" for k, v in plan["env"].items()
+    )
+    return f"""apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kimi-k3-vllm
+  labels:
+    app: kimi-k3
+    engine: vllm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kimi-k3
+      engine: vllm
+  template:
+    metadata:
+      labels:
+        app: kimi-k3
+        engine: vllm
+    spec:
+      containers:
+        - name: kimi-k3-vllm
+          image: {plan["image"]}
+          command: ["python", "-m", "vllm.entrypoints.openai.api_server"]
+          args:
+{_yaml_args(args)}
+          env:
+{env_block}
+          resources:
+            limits:
+              nvidia.com/gpu: {gpus}
+            requests:
+              nvidia.com/gpu: {gpus}
+          ports:
+            - containerPort: {service_port}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kimi-k3-vllm
+spec:
+  selector:
+    app: kimi-k3
+    engine: vllm
+  ports:
+    - port: {service_port}
+      targetPort: {service_port}
+"""
+
+
+def build_sglang_k8s_yaml(model: str = "moonshotai/Kimi-K3", hardware: str = "b200",
+                          gpus: int = 8, service_port: int = 30000) -> str:
+    """Return a Kubernetes Deployment manifest for a Kimi K3 SGLang server.
+
+    Wraps the official image with the verified launch flags (single node).
+    """
+    plan = build_sglang_command(model=model, hardware=hardware)
+    args = " ".join(plan["command"][2:])
+    env_block = "\n".join(
+        f"            - name: {k}\n              value: \"{v}\"" for k, v in plan["env"].items()
+    )
+    return f"""apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kimi-k3-sglang
+  labels:
+    app: kimi-k3
+    engine: sglang
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kimi-k3
+      engine: sglang
+  template:
+    metadata:
+      labels:
+        app: kimi-k3
+        engine: sglang
+    spec:
+      containers:
+        - name: kimi-k3-sglang
+          image: {plan["image"]}
+          command: ["python", "-m", "sglang.launch_server"]
+          args:
+{_yaml_args(args)}
+          env:
+{env_block}
+          resources:
+            limits:
+              nvidia.com/gpu: {gpus}
+            requests:
+              nvidia.com/gpu: {gpus}
+          ports:
+            - containerPort: {service_port}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kimi-k3-sglang
+spec:
+  selector:
+    app: kimi-k3
+    engine: sglang
+  ports:
+    - port: {service_port}
+      targetPort: {service_port}
+"""
+
+
+def _yaml_args(args: str) -> str:
+    """Format a space-separated arg string as a YAML list (one item per arg)."""
+    lines = []
+    for arg in args.split(" "):
+        if not arg:
+            continue
+        if arg.startswith("{"):
+            lines.append(f'            - "{arg}"')
+        else:
+            lines.append(f"            - {arg}")
+    return "\n".join(lines)
