@@ -11,6 +11,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 
 async def cmd_generate(prompt, style="", width=1024, height=1024, provider=""):
+    """Generate an image from a text prompt through the unified SDK."""
     from ai_generation.sdk import UncleFrappeAI
     ai = UncleFrappeAI()
     result = await ai.generate(prompt, style=style, width=width, height=height, provider=provider or None)
@@ -28,6 +29,7 @@ async def cmd_generate(prompt, style="", width=1024, height=1024, provider=""):
 
 
 async def cmd_video(prompt, duration=4.0, width=1280, height=720):
+    """Generate a video from a text prompt through the unified SDK."""
     from ai_generation.sdk import UncleFrappeAI
     ai = UncleFrappeAI()
     result = await ai.generate_video(prompt, duration_secs=duration, width=width, height=height)
@@ -42,6 +44,7 @@ async def cmd_video(prompt, duration=4.0, width=1280, height=720):
 
 
 async def cmd_enhance(prompt, style="photorealistic"):
+    """Enhance a prompt with cinematic and quality techniques."""
     from ai_generation.sdk import UncleFrappeAI
     ai = UncleFrappeAI()
     result = ai.enhance_prompt(prompt, style=style)
@@ -54,6 +57,7 @@ async def cmd_enhance(prompt, style="photorealistic"):
 
 
 async def cmd_providers():
+    """List available generation providers with availability status."""
     from ai_generation.sdk import UncleFrappeAI
     ai = UncleFrappeAI()
     providers = ai.list_providers()
@@ -64,6 +68,7 @@ async def cmd_providers():
 
 
 async def cmd_benchmarks(prompt="a beautiful landscape"):
+    """Run image benchmarks across all providers and show rankings."""
     from ai_generation.sdk import UncleFrappeAI
     ai = UncleFrappeAI()
     print(f"\n  Running benchmarks with prompt: {prompt}\n")
@@ -81,6 +86,7 @@ async def cmd_benchmarks(prompt="a beautiful landscape"):
 
 
 async def cmd_providers_list():
+    """List known providers from research, including free tier status."""
     from ai_generation.research_agent import ResearchAgent
     ra = ResearchAgent()
     free = ra.get_free_providers()
@@ -92,6 +98,7 @@ async def cmd_providers_list():
 
 
 async def cmd_stats():
+    """Print aggregate platform statistics."""
     from ai_generation.sdk import UncleFrappeAI
     ai = UncleFrappeAI()
     stats = ai.get_stats()
@@ -111,6 +118,7 @@ async def cmd_stats():
 # ── Phase 11 Commands ──
 
 async def cmd_analyze(prompt):
+    """Analyze a generation request and recommend providers and workflow."""
     from ai_generation.sdk import UncleFrappeAI
     ai = UncleFrappeAI()
     analysis = ai.analyze_request(prompt)
@@ -128,6 +136,7 @@ async def cmd_analyze(prompt):
 
 
 async def cmd_edit(operation, input_path, prompt="", mask=""):
+    """Run an image editing operation on an input file."""
     from ai_generation.sdk import UncleFrappeAI
     ai = UncleFrappeAI()
     result = await ai.image_editing.edit(operation, input_path, prompt=prompt, mask_path=mask)
@@ -145,6 +154,7 @@ async def cmd_edit(operation, input_path, prompt="", mask=""):
 
 
 async def cmd_video_gen(prompt, duration=4.0, image_path=""):
+    """Generate video from text or an input image and print capabilities."""
     from ai_generation.sdk import UncleFrappeAI
     ai = UncleFrappeAI()
     if image_path:
@@ -168,6 +178,7 @@ async def cmd_video_gen(prompt, duration=4.0, image_path=""):
 
 
 async def cmd_plan(request):
+    """Plan a generation request into agent steps."""
     from ai_generation.sdk import UncleFrappeAI
     ai = UncleFrappeAI()
     plan = ai.plan_request(request)
@@ -191,6 +202,7 @@ async def cmd_plan(request):
 
 
 async def cmd_character(action, name="", char_id=""):
+    """Create, list, or prompt characters for identity consistency."""
     from ai_generation.sdk import UncleFrappeAI
     ai = UncleFrappeAI()
     if action == "create" and name:
@@ -209,6 +221,7 @@ async def cmd_character(action, name="", char_id=""):
 
 
 async def cmd_project(action, name="", proj_id=""):
+    """Create or list generation projects."""
     from ai_generation.sdk import UncleFrappeAI
     ai = UncleFrappeAI()
     if action == "create" and name:
@@ -224,6 +237,7 @@ async def cmd_project(action, name="", proj_id=""):
 
 
 async def cmd_cinema_dims():
+    """List the 14 cinematic benchmark dimensions and weights."""
     from ai_generation.sdk import UncleFrappeAI
     ai = UncleFrappeAI()
     dims = ai.get_cinema_dimensions()
@@ -233,6 +247,7 @@ async def cmd_cinema_dims():
 
 
 async def cmd_capabilities():
+    """Print the generation capability matrix summary."""
     from ai_generation.sdk import UncleFrappeAI
     ai = UncleFrappeAI()
     stats = ai.get_capability_matrix()
@@ -246,6 +261,7 @@ async def cmd_capabilities():
 
 
 async def cmd_intel():
+    """Show provider intelligence recommendations."""
     from ai_generation.sdk import UncleFrappeAI
     ai = UncleFrappeAI()
     recs = ai.get_provider_recommendations()
@@ -255,6 +271,7 @@ async def cmd_intel():
 
 
 async def cmd_video_caps():
+    """Print the video generation capabilities report."""
     from ai_generation.sdk import UncleFrappeAI
     ai = UncleFrappeAI()
     report = ai.video_generation.get_capabilities_report()
@@ -269,6 +286,7 @@ async def cmd_video_caps():
 # ── Phase 13 Commands ──
 
 async def cmd_agent_generate(request):
+    """Run the agent-based generation pipeline for a request."""
     from ai_generation.sdk import UncleFrappeAI
     ai = UncleFrappeAI()
     result = await ai.agent_generate(request)
@@ -291,6 +309,7 @@ async def cmd_agent_generate(request):
 
 
 async def cmd_endpoints():
+    """List configured remote execution endpoints."""
     from ai_generation.sdk import UncleFrappeAI
     ai = UncleFrappeAI()
     endpoints = ai.agent_providers()
@@ -302,6 +321,7 @@ async def cmd_endpoints():
 
 
 async def cmd_health():
+    """Run a health check across all configured providers."""
     from ai_generation.sdk import UncleFrappeAI
     ai = UncleFrappeAI()
     result = await ai.agent_health_check()
@@ -314,6 +334,7 @@ async def cmd_health():
 
 
 async def cmd_cap_matrix():
+    """Print the agent capability matrix with provider details."""
     from ai_generation.sdk import UncleFrappeAI
     ai = UncleFrappeAI()
     matrix = ai.agent_capability_matrix()
@@ -328,6 +349,7 @@ async def cmd_cap_matrix():
 
 
 async def cmd_discover():
+    """Show provider discovery recommendations."""
     from ai_generation.sdk import UncleFrappeAI
     ai = UncleFrappeAI()
     recs = ai.get_provider_recommendations()
@@ -337,6 +359,7 @@ async def cmd_discover():
 
 
 async def cmd_add_endpoint(name, url):
+    """Register a remote execution endpoint by name and URL."""
     from ai_generation.sdk import UncleFrappeAI
     ai = UncleFrappeAI()
     ep = ai.agent_add_remote_endpoint(name, url)
@@ -346,6 +369,7 @@ async def cmd_add_endpoint(name, url):
 
 
 async def cmd_classify(request):
+    """Classify a request into a task type with provider recommendations."""
     from ai_generation.sdk import UncleFrappeAI
     ai = UncleFrappeAI()
     decision = ai.agent_classify(request)
@@ -452,11 +476,11 @@ async def cmd_quality_gates(file_path=""):
     if file_path and Path(file_path).exists():
         with open(file_path) as f:
             code = f.read()
-    gates = ai.quality_gates.run_all(code, file_path or "<input>")
+    gates = await ai.quality_gates.run_all_gates(file_path or "<input>", code)
     print(f"\n  Quality Gates (Swiss Cheese Model)\n")
-    for name, result in gates.items():
-        icon = "✅" if result.get("passed") else "❌"
-        print(f"    {icon} {name:20s}  {result.get('message', '')[:60]}")
+    for result in gates:
+        icon = "✅" if result.result.value == "passed" else "❌"
+        print(f"    {icon} {result.gate_name:20s}  {result.message[:60]}")
 
 
 async def cmd_review_code(file_path=""):
@@ -582,6 +606,7 @@ async def cmd_orchestrate(file_path=""):
 
 
 async def main():
+    """Dispatch CLI subcommands to their handlers."""
     args = sys.argv[1:]
     if not args or args[0] == "--help":
         print("""

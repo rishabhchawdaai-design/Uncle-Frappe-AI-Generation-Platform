@@ -1038,16 +1038,19 @@ class MCPGenerationTools:
     """Handler for MCP generation tool calls."""
 
     def __init__(self):
+        """Initialize the MCP generation tools handler with a lazy SDK reference."""
         self._sdk = None
 
     @property
     def sdk(self):
+        """Lazily construct and cache the unified UncleFrappeAI SDK instance."""
         if self._sdk is None:
             from .sdk import UncleFrappeAI
             self._sdk = UncleFrappeAI()
         return self._sdk
 
     async def handle(self, tool_name, arguments):
+        """Dispatch an MCP tool invocation to its handler by tool name."""
         handlers = {
             "generate_image": self._handle_generate_image,
             "generate_video": self._handle_generate_video,
@@ -1257,6 +1260,7 @@ class MCPGenerationTools:
             return {"error": str(e)[:200]}
 
     async def _handle_generate_image(self, args):
+        """Generate an image from a text prompt using AI. Supports multiple providers with automatic failover"""
         result = await self.sdk.generate(
             prompt=args["prompt"], style=args.get("style", ""),
             width=args.get("width", 1024), height=args.get("height", 1024),
@@ -1265,6 +1269,7 @@ class MCPGenerationTools:
         return result.to_dict()
 
     async def _handle_generate_video(self, args):
+        """Generate a video from a text prompt using AI video models"""
         result = await self.sdk.generate_video(
             prompt=args["prompt"], duration_secs=args.get("duration_secs", 4.0),
             width=args.get("width", 1280), height=args.get("height", 720),
@@ -1272,6 +1277,7 @@ class MCPGenerationTools:
         return result.to_dict()
 
     async def _handle_enhance_prompt(self, args):
+        """Enhance a text prompt with quality modifiers, style presets, and negative prompts"""
         result = self.sdk.enhance_prompt(
             args["prompt"], style=args.get("style", "photorealistic"),
             quality=args.get("quality", "high"),
@@ -1284,21 +1290,27 @@ class MCPGenerationTools:
         }
 
     async def _handle_analyze_prompt(self, args):
+        """Analyze a prompt and get suggestions for improvement"""
         return self.sdk.analyze_prompt(args["prompt"])
 
     async def _handle_list_providers(self, args):
+        """List all available AI generation providers with their status, tier, and capabilities"""
         return {"providers": self.sdk.list_providers()}
 
     async def _handle_list_styles(self, args):
+        """List all available style presets for image generation"""
         return {"styles": self.sdk.list_styles()}
 
     async def _handle_list_templates(self, args):
+        """List all available prompt templates organized by category"""
         return {"templates": self.sdk.list_templates()}
 
     async def _handle_provider_stats(self, args):
+        """Get performance statistics for all providers including success rates and latency"""
         return self.sdk.generation_manager.get_stats()
 
     async def _handle_known_providers(self, args):
+        """List known free and community AI providers from the research database"""
         return {
             "providers": self.sdk.research_agent.get_known_providers(
                 provider_type=args.get("provider_type"),
@@ -1307,12 +1319,14 @@ class MCPGenerationTools:
         }
 
     async def _handle_render_template(self, args):
+        """Render a prompt template with provided variables"""
         result = self.sdk.prompt_engine.render_template(
             args["template_name"], **args.get("variables", {}),
         )
         return {"rendered": result}
 
     async def _handle_evaluate(self, args):
+        """Evaluate the quality of a prompt for image generation"""
         report = self.sdk.quality_engine.evaluate_prompt(
             args["prompt"], enhanced=args.get("enhanced", ""),
             negative=args.get("negative", ""),
@@ -1322,6 +1336,7 @@ class MCPGenerationTools:
     # ── Phase 11 Handlers ──
 
     async def _handle_analyze_media(self, args):
+        """Analyze a media request for strategy, providers, workflow"""
         from ai_generation.media_intelligence import BudgetTier
         budget_map = {"free": BudgetTier.FREE, "low": BudgetTier.LOW, "medium": BudgetTier.MEDIUM,
                       "high": BudgetTier.HIGH, "unlimited": BudgetTier.UNLIMITED}
@@ -1333,12 +1348,14 @@ class MCPGenerationTools:
         return analysis.to_dict()
 
     async def _handle_restore_face(self, args):
+        """Restore faces in images using GFPGAN/CodeFormer"""
         result = await self.sdk.restore_face(
             args["input_path"],
         )
         return result.to_dict()
 
     async def _handle_edit_image(self, args):
+        """Image editing: img2img, inpainting, outpainting, background, style transfer, upscaling"""
         from ai_generation.image_editing import EditOperation
         op_map = {
             "img2img": EditOperation.IMG2IMG, "inpainting": EditOperation.INPAINTING,
@@ -1356,9 +1373,11 @@ class MCPGenerationTools:
         return result.to_dict()
 
     async def _handle_list_edits(self, args):
+        """List all supported image editing operations"""
         return {"operations": self.sdk.image_editing.get_all_operations()}
 
     async def _handle_video_ai(self, args):
+        """Generate true AI video (text-to-video or image-to-video)"""
         from ai_generation.video_generation import VideoGenMode
         mode_map = {"text_to_video": VideoGenMode.TEXT_TO_VIDEO, "image_to_video": VideoGenMode.IMAGE_TO_VIDEO}
         mode = mode_map.get(args.get("mode", "text_to_video"), VideoGenMode.TEXT_TO_VIDEO)
@@ -1372,8 +1391,10 @@ class MCPGenerationTools:
         return result.to_dict()
 
     async def _handle_video_caps(self, args):
+        """Get video generation capabilities"""
         return {"capabilities": self.sdk.video_generation.get_capabilities_report()}
     async def _handle_edit_video(self, args):
+        """Execute a video editing operation (trim, concat, transition, speed, crop, resize, rotate, reverse, stabilize, watermark, audio_extract, audio_replace, subtitle_burn, enhance, frame_interpolation, upscale)"""
         from ai_generation.video_editing import VideoEditOperation
         op_str = args.get("operation", "trim")
         op = VideoEditOperation(op_str)
@@ -1386,6 +1407,7 @@ class MCPGenerationTools:
         return result.to_dict()
 
     async def _handle_trim_video(self, args):
+        """Trim video to start/end timestamps"""
         result = await self.sdk.video_editing.trim(
             args["input_path"], output_path=args.get("output_path", ""),
             start=args.get("start", 0.0), end=args.get("end", 0.0),
@@ -1393,12 +1415,14 @@ class MCPGenerationTools:
         return result.to_dict()
 
     async def _handle_concat_videos(self, args):
+        """Concatenate multiple video files sequentially"""
         result = await self.sdk.video_editing.concat(
             args["input_paths"], output_path=args.get("output_path", ""),
         )
         return result.to_dict()
 
     async def _handle_interpolate_frames(self, args):
+        """Increase FPS using frame interpolation (RIFE/minterpolate)"""
         result = await self.sdk.video_editing.interpolate_frames(
             args["input_path"], output_path=args.get("output_path", ""),
             target_fps=args.get("target_fps", 60.0),
@@ -1406,6 +1430,7 @@ class MCPGenerationTools:
         return result.to_dict()
 
     async def _handle_upscale_video(self, args):
+        """Upscale video resolution (2x or 4x) using Lanczos or Real-ESRGAN"""
         result = await self.sdk.video_editing.upscale(
             args["input_path"], output_path=args.get("output_path", ""),
             scale_factor=args.get("scale_factor", 2),
@@ -1413,6 +1438,7 @@ class MCPGenerationTools:
         return result.to_dict()
 
     async def _handle_enhance_video(self, args):
+        """Enhance video quality (denoise, sharpen, color grade)"""
         result = await self.sdk.video_editing.enhance(
             args["input_path"], output_path=args.get("output_path", ""),
             denoise=args.get("denoise", True), sharpen=args.get("sharpen", True),
@@ -1420,10 +1446,12 @@ class MCPGenerationTools:
         return result.to_dict()
 
     async def _handle_video_edit_profiles(self, args):
+        """List all video editing operations and their requirements"""
         return {"profiles": self.sdk.video_editing.get_profiles(), "available": self.sdk.video_editing.get_available_operations()}
 
 
     async def _handle_clone_voice(self, args):
+        """Clone a voice from reference audio and generate speech. Supports XTTS, Fish Speech, OpenVoice"""
         result = await self.sdk.clone_voice(
             args["reference_audio_path"], args["text"],
             language=args.get("language", "en"),
@@ -1433,9 +1461,11 @@ class MCPGenerationTools:
         return result.to_dict()
 
     async def _handle_voice_clone_profiles(self, args):
+        """List available voice cloning providers and their capabilities"""
         return {"profiles": self.sdk.voice_cloning.get_profiles(), "providers": self.sdk.voice_cloning.get_provider_names()}
 
     async def _handle_generate_music(self, args):
+        """Generate music from text prompt using AudioCraft/MusicGen"""
         result = await self.sdk.generate_music(
             args["prompt"],
             duration_secs=args.get("duration_secs", 10.0),
@@ -1445,6 +1475,7 @@ class MCPGenerationTools:
         return result.to_dict()
 
     async def _handle_generate_sfx(self, args):
+        """Generate sound effects from text prompt using AudioCraft/AudioGen"""
         result = await self.sdk.generate_sfx(
             args["prompt"],
             duration_secs=args.get("duration_secs", 5.0),
@@ -1453,6 +1484,7 @@ class MCPGenerationTools:
         return result.to_dict()
 
     async def _handle_generate_melody(self, args):
+        """Generate melody-conditioned music from text prompt and reference melody"""
         result = await self.sdk.generate_melody(
             args["prompt"], args["melody_path"],
             duration_secs=args.get("duration_secs", 10.0),
@@ -1462,6 +1494,7 @@ class MCPGenerationTools:
 
 
     async def _handle_enhance_audio(self, args):
+        """Execute audio enhancement operation (denoise, normalize, equalize, remove_silence, convert_format, resample, compress, limit, fade_in, fade_out, speed, pitch, reverse, mix, concat, gain)"""
         from ai_generation.audio_enhancement import AudioEnhanceOperation
         op_str = args.get("operation", "denoise")
         op = AudioEnhanceOperation(op_str)
@@ -1474,6 +1507,7 @@ class MCPGenerationTools:
         return result.to_dict()
 
     async def _handle_denoise_audio(self, args):
+        """Remove noise from audio"""
         result = await self.sdk.audio_enhancement.denoise(
             args["input_path"], output_path=args.get("output_path", ""),
             strength=args.get("strength", "medium"),
@@ -1481,6 +1515,7 @@ class MCPGenerationTools:
         return result.to_dict()
 
     async def _handle_normalize_audio(self, args):
+        """Normalize audio loudness"""
         result = await self.sdk.audio_enhancement.normalize(
             args["input_path"], output_path=args.get("output_path", ""),
             target_level=args.get("target_level", -16),
@@ -1488,6 +1523,7 @@ class MCPGenerationTools:
         return result.to_dict()
 
     async def _handle_convert_audio(self, args):
+        """Convert audio format (wav, mp3, aac, ogg, flac)"""
         result = await self.sdk.audio_enhancement.convert_format(
             args["input_path"], output_path=args.get("output_path", ""),
             format=args.get("format", "wav"),
@@ -1495,6 +1531,7 @@ class MCPGenerationTools:
         return result.to_dict()
 
     async def _handle_mix_audio(self, args):
+        """Mix multiple audio files together"""
         from ai_generation.audio_enhancement import AudioEnhanceOperation
         result = await self.sdk.audio_enhancement.execute(
             AudioEnhanceOperation.MIX, input_paths=args["input_paths"],
@@ -1504,6 +1541,7 @@ class MCPGenerationTools:
         return result.to_dict()
 
     async def _handle_parse_document(self, args):
+        """Parse document to Markdown (PDF, DOCX, HTML, EPUB, PPTX). Uses Marker, Nougat, or Docling"""
         result = await self.sdk.document_intelligence.parse_document(
             args["input_path"], output_path=args.get("output_path", ""),
             backend=args.get("backend", "auto"),
@@ -1511,6 +1549,7 @@ class MCPGenerationTools:
         return result.to_dict()
 
     async def _handle_extract_tables(self, args):
+        """Extract tables from PDF documents. Uses Camelot or Tabula"""
         result = await self.sdk.document_intelligence.extract_tables(
             args["input_path"], backend=args.get("backend", "auto"),
             pages=args.get("pages", "all"),
@@ -1518,12 +1557,14 @@ class MCPGenerationTools:
         return result.to_dict()
 
     async def _handle_analyze_layout(self, args):
+        """Analyze document layout (regions, columns, headers). Uses LayoutLMv3, DETR, or Surya"""
         result = await self.sdk.document_intelligence.analyze_layout(
             args["input_path"], backend=args.get("backend", "auto"),
         )
         return result.to_dict()
 
     async def _handle_search_external(self, args):
+        """Search using external backends (Meilisearch, OpenSearch, Vector)"""
         from ai_generation.search_backends import ExternalSearchBackend
         backend = ExternalSearchBackend(args["backend"])
         result = await self.sdk.search_backends.search(
@@ -1533,6 +1574,7 @@ class MCPGenerationTools:
         return result.to_dict()
 
     async def _handle_vector_search(self, args):
+        """Semantic similarity search using sentence-transformers embeddings"""
         result = await self.sdk.search_backends.vector_search(
             args["collection"], args["query"],
             limit=args.get("limit", 10),
@@ -1541,6 +1583,7 @@ class MCPGenerationTools:
         return result.to_dict()
 
     async def _handle_index_documents_external(self, args):
+        """Index documents into an external search backend"""
         from ai_generation.search_backends import ExternalSearchBackend
         backend = ExternalSearchBackend(args["backend"])
         return await self.sdk.search_backends.index_documents(
@@ -1548,9 +1591,11 @@ class MCPGenerationTools:
         )
 
     async def _handle_check_search_health(self, args):
+        """Check health of external search backends"""
         return await self.sdk.search_backends.check_health()
 
     async def _handle_train_gaussian_splat(self, args):
+        """Train Gaussian Splatting model from images/video"""
         result = await self.sdk.gaussian_splatting.train(
             args["input_path"], output_path=args.get("output_path", ""),
             backend=args.get("backend", "auto"),
@@ -1558,12 +1603,14 @@ class MCPGenerationTools:
         return result.to_dict()
 
     async def _handle_render_gaussian_splat(self, args):
+        """Render from trained Gaussian Splatting model"""
         result = await self.sdk.gaussian_splatting.render(
             args["model_path"], output_path=args.get("output_path", ""),
         )
         return result.to_dict()
 
     async def _handle_process_mesh(self, args):
+        """Process 3D mesh (simplify, smooth, remesh, triangulate, decimate, UV unwrap, normal map, scale, merge)"""
         from ai_generation.generation_3d_extensions import MeshOperation
         op = MeshOperation(args["operation"])
         result = await self.sdk.mesh_processing.process(
@@ -1572,6 +1619,7 @@ class MCPGenerationTools:
         return result.to_dict()
 
     async def _handle_edit_3d_model(self, args):
+        """Edit 3D model (transform, clip, reconstruct, export)"""
         from ai_generation.generation_3d_extensions import Edit3DOperation
         op = Edit3DOperation(args["operation"])
         result = await self.sdk.edit_3d.edit(
@@ -1580,32 +1628,40 @@ class MCPGenerationTools:
         return result.to_dict()
 
     async def _handle_gaussian_splat_profiles(self, args):
+        """List Gaussian Splatting backends"""
         return {"profiles": self.sdk.gaussian_splatting.get_profiles()}
 
     async def _handle_mesh_profiles(self, args):
+        """List mesh processing operations"""
         return {"profiles": self.sdk.mesh_processing.get_profiles()}
 
     async def _handle_search_plugin_marketplace(self, args):
+        """Search plugin marketplace by name, tags, or source"""
         return {"results": self.sdk.plugin_marketplace.search(
             query=args.get("query", ""),
             tags=args.get("tags"),
         )}
 
     async def _handle_list_plugin_marketplace(self, args):
+        """List all plugins in the marketplace"""
         return {"entries": self.sdk.plugin_marketplace.list_entries(), "stats": self.sdk.plugin_marketplace.get_stats()}
 
     async def _handle_watch_plugin(self, args):
+        """Watch a plugin directory for hot-reloading"""
         self.sdk.plugin_hot_reloader.watch(args["plugin_id"], args["path"])
         return {"status": "watching", "plugin_id": args["plugin_id"]}
 
     async def _handle_check_plugin_changes(self, args):
+        """Check for plugin file changes"""
         changed = self.sdk.plugin_hot_reloader.check_for_changes()
         return {"changed": changed}
 
     async def _handle_reload_plugin(self, args):
+        """Hot-reload a changed plugin"""
         return await self.sdk.plugin_hot_reloader.reload(args["plugin_id"])
 
     async def _handle_sign_plugin(self, args):
+        """Sign a plugin with cryptographic hash"""
         sig = self.sdk.plugin_signer.sign_plugin(
             args["plugin_id"], args["version"], args["code"],
             key_id=args.get("key_id", "default"),
@@ -1613,12 +1669,14 @@ class MCPGenerationTools:
         return sig.to_dict()
 
     async def _handle_verify_plugin_signature(self, args):
+        """Verify a plugin's cryptographic signature"""
         sig = self.sdk.plugin_signer.verify_plugin(
             args["plugin_id"], args["version"], args["code"],
         )
         return sig.to_dict()
 
     async def _handle_run_quality_gates(self, args):
+        """Run all quality gates on code (Swiss Cheese Model: secrets, debug, imports, security, type hints)"""
         gates = args.get("gates")
         if gates:
             results = []
@@ -1630,15 +1688,18 @@ class MCPGenerationTools:
         return {"results": [r.to_dict() for r in results]}
 
     async def _handle_run_single_gate(self, args):
+        """Run a single quality gate check"""
         result = await self.sdk.quality_gates.run_gate(
             args["gate_name"], file_path=args.get("file_path", ""), code=args.get("code", ""),
         )
         return result.to_dict()
 
     async def _handle_list_quality_gates(self, args):
+        """List all available quality gates"""
         return {"gates": self.sdk.quality_gates.list_gates(), "stats": self.sdk.quality_gates.get_stats()}
 
     async def _handle_review_code(self, args):
+        """Run automated code review (correctness, security, performance, maintainability)"""
         result = await self.sdk.code_review.review(
             file_path=args.get("file_path", ""), code=args.get("code", ""),
             rules=args.get("rules"),
@@ -1646,44 +1707,54 @@ class MCPGenerationTools:
         return result.to_dict()
 
     async def _handle_score_quality(self, args):
+        """Score code quality across 7 dimensions (correctness, security, performance, maintainability, testability, readability, documentation)"""
         return await self.sdk.quality_scoring.score_file(
             file_path=args.get("file_path", ""), code=args.get("code", ""),
         )
 
     async def _handle_generate_tests(self, args):
+        """Generate test cases for Python functions"""
         return await self.sdk.test_generation.generate_tests(
             file_path=args.get("file_path", ""), code=args.get("code", ""),
             template=args.get("template", "unit_test_pytest"),
         )
 
     async def _handle_analyze_coverage_gaps(self, args):
+        """Analyze coverage gaps and prioritize by risk"""
         return await self.sdk.coverage_gap.analyze_gaps(
             file_path=args.get("file_path", ""), code=args.get("code", ""),
             test_code=args.get("test_code", ""),
         )
 
     async def _handle_detect_flaky_tests(self, args):
+        """Detect flaky tests from test history"""
         flaky = await self.sdk.flaky_detection.detect_flaky(min_runs=args.get("min_runs", 3))
         return {"flaky_tests": flaky}
 
     async def _handle_learn_pattern(self, args):
+        """Learn and store a codebase pattern for reuse"""
         self.sdk.pattern_learning.learn_pattern(
             args["pattern_id"], args["pattern_type"], args["description"], args["code"],
         )
         return {"status": "learned", "pattern_id": args["pattern_id"]}
 
     async def _handle_find_patterns(self, args):
+        """Find learned patterns by type or context"""
         patterns = self.sdk.pattern_learning.find_patterns(
             pattern_type=args.get("pattern_type", ""), context=args.get("context", ""),
         )
         return {"patterns": patterns}
     async def _handle_get_plugin_signatures(self, args):
+        """List all plugin signatures"""
         return {"signatures": self.sdk.plugin_signer.list_signatures(), "stats": self.sdk.plugin_signer.get_stats()}
     async def _handle_3d_edit_profiles(self, args):
+        """List 3D editing operations"""
         return {"profiles": self.sdk.edit_3d.get_profiles()}
     async def _handle_search_backend_profiles(self, args):
+        """List available external search backends"""
         return {"profiles": self.sdk.search_backends.get_profiles(), "stats": self.sdk.search_backends.get_stats()}
     async def _handle_doc_intelligence_profiles(self, args):
+        """List available document intelligence backends"""
         return {
             "parsing": self.sdk.document_intelligence.get_parsing_profiles(),
             "table_extraction": self.sdk.document_intelligence.get_table_profiles(),
@@ -1691,6 +1762,7 @@ class MCPGenerationTools:
             "available": self.sdk.document_intelligence.get_available_backends(),
         }
     async def _handle_concat_audio(self, args):
+        """Concatenate multiple audio files sequentially"""
         from ai_generation.audio_enhancement import AudioEnhanceOperation
         result = await self.sdk.audio_enhancement.execute(
             AudioEnhanceOperation.CONCAT, input_paths=args["input_paths"],
@@ -1698,40 +1770,49 @@ class MCPGenerationTools:
         )
         return result.to_dict()
     async def _handle_music_profiles(self, args):
+        """List available music/SFX generation models"""
         task = args.get("task", "")
         if task:
             from ai_generation.music_generation import MusicTask
             return {"profiles": self.sdk.music_generation.get_models_for_task(MusicTask(task))}
         return {"profiles": self.sdk.music_generation.get_profiles()}
     async def _handle_probe_video(self, args):
+        """Probe video file metadata (resolution, fps, codec, duration)"""
         return self.sdk.video_editing.probe(args["input_path"])
 
 
     async def _handle_create_pipeline(self, args):
+        """Create cinematic production pipeline from template"""
         pipeline = self.sdk.cinematic_workflow.create_pipeline(
             template=args["template"], name=args.get("name", ""),
         )
         return pipeline.to_dict()
 
     async def _handle_list_templates_cinematic(self, args):
+        """List cinematic pipeline templates"""
         from ai_generation.cinematic_workflow import PipelineTemplates
         return {"templates": PipelineTemplates.list_all()}
 
     async def _handle_plan(self, args):
+        """Plan complete media production from natural language"""
         plan = self.sdk.plan_request(args["request"])
         return plan.to_dict()
 
     async def _handle_create_character(self, args):
+        """Create character profile for consistency"""
         char = self.sdk.create_character(args["name"], description=args.get("description", ""))
         return char.to_dict()
 
     async def _handle_capability_matrix(self, args):
+        """Get capability matrix of all providers/models"""
         return self.sdk.get_capability_matrix()
 
     async def _handle_intel(self, args):
+        """Get provider intelligence recommendations"""
         return {"recommendations": self.sdk.get_provider_recommendations()}
 
     async def _handle_score_cinema(self, args):
+        """Score output across cinematic quality dimensions"""
         report = self.sdk.cinema_benchmark.score_output(
             provider=args["provider"],
             scores=args.get("scores"),
@@ -1739,58 +1820,76 @@ class MCPGenerationTools:
         return report.to_dict()
 
     async def _handle_cinema_dims(self, args):
+        """List cinematic benchmark dimensions"""
         return {"dimensions": self.sdk.get_cinema_dimensions()}
 
     async def _handle_agent_generate(self, args):
+        """Agent-native generation: classify task, find best provider, execute, return result"""
         return await self.sdk.agent_generate(args["request"], require_free=args.get("require_free", False))
 
     async def _handle_agent_edit(self, args):
+        """Agent-native image editing with automatic provider selection"""
         return await self.sdk.agent_edit(args["image_path"], prompt=args.get("prompt", ""))
 
     async def _handle_agent_video(self, args):
+        """Agent-native video generation with automatic provider selection"""
         return await self.sdk.agent_video(args["request"], require_free=args.get("require_free", False))
 
     async def _handle_list_endpoints(self, args):
+        """List all execution endpoints across all 4 layers"""
         return {"endpoints": self.sdk.agent_providers()}
 
     async def _handle_health_check(self, args):
+        """Run health checks on all registered providers"""
         return await self.sdk.agent_health_check()
 
     async def _handle_cap_registry(self, args):
+        """Get the live capability registry of all providers and models"""
         return self.sdk.agent_capability_matrix()
 
     async def _handle_classify(self, args):
+        """Classify a natural language request into a task type with routing decision"""
         return self.sdk.agent_classify(args["request"])
 
     async def _handle_add_endpoint(self, args):
+        """Add a user-configured remote inference endpoint (ComfyUI, Forge, etc.)"""
         return self.sdk.agent_add_remote_endpoint(args["name"], args["url"], endpoint_type=args.get("endpoint_type", "api"))
 
     async def _handle_discovery(self, args):
+        """Get provider discovery research and recommendations"""
         return {"recommendations": self.sdk.get_provider_recommendations()}
 
 
     async def _handle_aigos_status(self, args):
+        """Get AIG-OS orchestrator status with all 10 autonomous agents"""
         return self.sdk.aigos_status()
 
     async def _handle_aigos_agents(self, args):
+        """List all AIG-OS autonomous agents and their current status"""
         return {"agents": self.sdk.aigos_agents()}
 
     async def _handle_aigos_execute(self, args):
+        """Execute a natural language generation request through the AIG-OS pipeline"""
         return self.sdk.aigos_execute(args["request"])
 
     async def _handle_aigos_knowledge_search(self, args):
+        """Search the AIG-OS provider knowledge graph"""
         return self.sdk.aigos_knowledge_query(args["query"], args.get("domain", ""))
 
     async def _handle_aigos_leaderboard(self, args):
+        """Get the AIG-OS benchmark leaderboard"""
         return {"leaderboard": self.sdk.aigos_benchmark_leaderboard()}
 
     async def _handle_aigos_research_providers(self, args):
+        """Get all providers discovered by the Research Agent"""
         return {"providers": self.sdk.aigos_providers()}
 
     async def _handle_aigos_discovery_endpoints(self, args):
+        """Get all execution endpoints discovered by the Discovery Agent"""
         return {"endpoints": self.sdk.aigos_endpoints()}
 
     async def _handle_aigos_verify_provider(self, args):
+        """Run verification checks on a provider"""
         from ai_generation.agents.base_agent import AgentTask
         task = AgentTask(task_type="verify_provider", payload={
             "provider": args["provider"], "capabilities": args.get("capabilities", ["text_to_image"]),
@@ -1799,6 +1898,7 @@ class MCPGenerationTools:
         return agent.execute(task).data
 
     async def _handle_aigos_benchmark(self, args):
+        """Run a benchmark on a provider for quality scoring"""
         from ai_generation.agents.base_agent import AgentTask
         task = AgentTask(task_type="benchmark_provider", payload={
             "provider": args["provider"], "categories": args.get("categories", ["realism", "prompt_adherence"]),
@@ -1807,6 +1907,7 @@ class MCPGenerationTools:
         return agent.execute(task).data
 
     async def _handle_aigos_report_failure(self, args):
+        """Report a provider failure to the Recovery Agent"""
         from ai_generation.agents.base_agent import AgentTask
         task = AgentTask(task_type="report_failure", payload={
             "provider": args["provider"], "error": args.get("error", "unknown"),
@@ -1815,6 +1916,7 @@ class MCPGenerationTools:
         return agent.execute(task).data
 
     async def _handle_aigos_evolve(self, args):
+        """Trigger the Evolution Agent to refresh discovery, benchmarks, and routing"""
         from ai_generation.agents.base_agent import AgentTask
         task = AgentTask(task_type="evolve")
         agent = self.sdk.aigos.registry.get_agent("evolution")
@@ -1822,27 +1924,35 @@ class MCPGenerationTools:
 
 
     async def _handle_aigos_status(self, args):
+        """Get AIG-OS orchestrator status with all 10 autonomous agents"""
         return self.sdk.aigos_status()
 
     async def _handle_aigos_agents(self, args):
+        """List all AIG-OS autonomous agents and their current status"""
         return {"agents": self.sdk.aigos_agents()}
 
     async def _handle_aigos_execute(self, args):
+        """Execute a natural language generation request through the AIG-OS pipeline"""
         return self.sdk.aigos_execute(args["request"])
 
     async def _handle_aigos_knowledge_search(self, args):
+        """Search the AIG-OS provider knowledge graph"""
         return self.sdk.aigos_knowledge_query(args["query"], args.get("domain", ""))
 
     async def _handle_aigos_leaderboard(self, args):
+        """Get the AIG-OS benchmark leaderboard"""
         return {"leaderboard": self.sdk.aigos_benchmark_leaderboard()}
 
     async def _handle_aigos_research_providers(self, args):
+        """Get all providers discovered by the Research Agent"""
         return {"providers": self.sdk.aigos_providers()}
 
     async def _handle_aigos_discovery_endpoints(self, args):
+        """Get all execution endpoints discovered by the Discovery Agent"""
         return {"endpoints": self.sdk.aigos_endpoints()}
 
     async def _handle_aigos_verify_provider(self, args):
+        """Run verification checks on a provider"""
         from ai_generation.agents.base_agent import AgentTask
         task = AgentTask(task_type="verify_provider", payload={
             "provider": args["provider"], "capabilities": args.get("capabilities", ["text_to_image"]),
@@ -1851,6 +1961,7 @@ class MCPGenerationTools:
         return agent.execute(task).data
 
     async def _handle_aigos_benchmark(self, args):
+        """Run a benchmark on a provider for quality scoring"""
         from ai_generation.agents.base_agent import AgentTask
         task = AgentTask(task_type="benchmark_provider", payload={
             "provider": args["provider"], "categories": args.get("categories", ["realism", "prompt_adherence"]),
@@ -1859,6 +1970,7 @@ class MCPGenerationTools:
         return agent.execute(task).data
 
     async def _handle_aigos_report_failure(self, args):
+        """Report a provider failure to the Recovery Agent"""
         from ai_generation.agents.base_agent import AgentTask
         task = AgentTask(task_type="report_failure", payload={
             "provider": args["provider"], "error": args.get("error", "unknown"),
@@ -1867,6 +1979,7 @@ class MCPGenerationTools:
         return agent.execute(task).data
 
     async def _handle_aigos_evolve(self, args):
+        """Trigger the Evolution Agent to refresh discovery, benchmarks, and routing"""
         from ai_generation.agents.base_agent import AgentTask
         task = AgentTask(task_type="evolve")
         agent = self.sdk.aigos.registry.get_agent("evolution")
@@ -1875,6 +1988,7 @@ class MCPGenerationTools:
     # ── Audio Handlers ──
 
     async def _handle_text_to_speech(self, args):
+        """Convert text to speech using AI. Supports multiple providers (OpenAI, Kokoro, Piper) with automatic failover"""
         result = await self.sdk.text_to_speech(
             text=args["text"],
             voice=args.get("voice", "default"),
@@ -1885,6 +1999,7 @@ class MCPGenerationTools:
         return result
 
     async def _handle_transcribe(self, args):
+        """Transcribe audio to text using AI speech recognition. Supports Whisper and other STT providers"""
         audio_path = args["audio_path"]
         with open(audio_path, "rb") as f:
             audio_data = f.read()
@@ -1896,29 +2011,35 @@ class MCPGenerationTools:
         return result
 
     async def _handle_list_audio_providers(self, args):
+        """List all available audio generation and speech recognition providers"""
         return self.sdk.list_audio_providers()
 
     async def _handle_get_audio_stats(self, args):
+        """Get performance statistics for audio providers"""
         return self.sdk.get_audio_stats()
 
     # ── Browser AI Handlers ──
 
     async def _handle_list_browser_runtimes(self, args):
+        """List available browser AI runtimes (Transformers.js, WebLLM, ONNX Web, TF.js)"""
         return self.sdk.list_browser_runtimes()
 
     async def _handle_list_browser_models(self, args):
+        """List browser-compatible AI models with optional category/runtime filtering"""
         return self.sdk.list_browser_models(
             category=args.get("category", ""),
             runtime=args.get("runtime", ""),
         )
 
     async def _handle_find_browser_models(self, args):
+        """Find browser models suitable for a task type within memory limits"""
         return self.sdk.find_browser_models(
             task_type=args["task_type"],
             max_memory_mb=args.get("max_memory_mb", 4000),
         )
 
     async def _handle_select_browser_runtime(self, args):
+        """Select optimal browser runtime for a task type"""
         runtime = self.sdk.select_browser_runtime(
             task_type=args["task_type"],
             needs_offline=args.get("needs_offline", False),
@@ -1927,6 +2048,7 @@ class MCPGenerationTools:
         return {"selected_runtime": runtime}
 
     async def _handle_generate_browser_template(self, args):
+        """Generate browser inference HTML/JS template for a runtime and task"""
         return self.sdk.generate_browser_template(
             runtime=args["runtime"],
             task_type=args["task_type"],
@@ -1934,20 +2056,24 @@ class MCPGenerationTools:
         )
 
     async def _handle_get_browser_ai_stats(self, args):
+        """Get browser AI layer statistics"""
         return self.sdk.get_browser_ai_stats()
 
     # ── Edge AI Handlers ──
 
     async def _handle_detect_edge_hardware(self, args):
+        """Detect edge AI hardware on this system (Apple ANE, Qualcomm NPU, Intel NPU, Jetson, Coral)"""
         return self.sdk.detect_edge_hardware()
 
     async def _handle_list_edge_profiles(self, args):
+        """List edge hardware profiles with optional filtering"""
         return self.sdk.list_edge_profiles(
             hardware=args.get("hardware", ""),
             platform=args.get("platform", ""),
         )
 
     async def _handle_find_edge_profile(self, args):
+        """Find optimal edge profile for a task within power/memory constraints"""
         result = self.sdk.find_optimal_edge_profile(
             task_type=args["task_type"],
             max_power_watts=args.get("max_power_watts", 100),
@@ -1956,26 +2082,31 @@ class MCPGenerationTools:
         return result or {"error": "No suitable edge profile found"}
 
     async def _handle_generate_edge_template(self, args):
+        """Generate deployment template for edge AI hardware"""
         return self.sdk.generate_edge_template(
             hardware=args["hardware"],
             task_type=args["task_type"],
         )
 
     async def _handle_get_edge_ai_stats(self, args):
+        """Get edge AI layer statistics and detected hardware"""
         return self.sdk.get_edge_ai_stats()
 
     # ── Edge AI Handlers ──
 
     async def _handle_detect_edge_hardware(self, args):
+        """Detect edge AI hardware on this system (Apple ANE, Qualcomm NPU, Intel NPU, Jetson, Coral)"""
         return self.sdk.detect_edge_hardware()
 
     async def _handle_list_edge_profiles(self, args):
+        """List edge hardware profiles with optional filtering"""
         return self.sdk.list_edge_profiles(
             hardware=args.get("hardware", ""),
             platform=args.get("platform", ""),
         )
 
     async def _handle_find_edge_profile(self, args):
+        """Find optimal edge profile for a task within power/memory constraints"""
         result = self.sdk.find_optimal_edge_profile(
             task_type=args["task_type"],
             max_power_watts=args.get("max_power_watts", 100),
@@ -1984,41 +2115,50 @@ class MCPGenerationTools:
         return result or {"error": "No suitable edge profile found"}
 
     async def _handle_generate_edge_template(self, args):
+        """Generate deployment template for edge AI hardware"""
         return self.sdk.generate_edge_template(
             hardware=args["hardware"],
             task_type=args["task_type"],
         )
 
     async def _handle_get_edge_ai_stats(self, args):
+        """Get edge AI layer statistics and detected hardware"""
         return self.sdk.get_edge_ai_stats()
 
     # ── Plugin System Handlers ──
 
     async def _handle_list_plugins(self, args):
+        """List all registered plugins with optional type/state filtering"""
         return self.sdk.list_plugins(
             plugin_type=args.get("plugin_type", ""),
             state=args.get("state", ""),
         )
 
     async def _handle_get_plugin(self, args):
+        """Get details of a specific plugin"""
         return self.sdk.get_plugin(args["plugin_id"])
 
     async def _handle_list_plugin_tools(self, args):
+        """List all MCP tools registered by plugins"""
         return self.sdk.list_plugin_tools()
 
     async def _handle_get_plugin_stats(self, args):
+        """Get plugin system statistics"""
         return self.sdk.get_plugin_stats()
 
 
     # ── Observability Handlers ──
 
     async def _handle_get_observability_metrics(self, args):
+        """Get all observability metrics (counters, gauges, histograms)"""
         return self.sdk.get_observability_metrics()
 
     async def _handle_get_observability_traces(self, args):
+        """Get recent distributed traces"""
         return self.sdk.get_observability_traces(limit=args.get("limit", 50))
 
     async def _handle_get_observability_logs(self, args):
+        """Get structured log entries with optional filtering"""
         return self.sdk.get_observability_logs(
             level=args.get("level", ""),
             source=args.get("source", ""),
@@ -2026,12 +2166,14 @@ class MCPGenerationTools:
         )
 
     async def _handle_get_observability_stats(self, args):
+        """Get observability layer statistics"""
         return self.sdk.get_observability_stats()
 
 
     # ── Search Systems Handlers ──
 
     async def _handle_search_index(self, args):
+        """Search a document index with full-text search, filtering, and faceting"""
         return self.sdk.search_index(
             index_name=args["index_name"],
             query=args["query"],
@@ -2041,6 +2183,7 @@ class MCPGenerationTools:
         )
 
     async def _handle_search_providers(self, args):
+        """Search AI providers with filtering by type and tier"""
         return self.sdk.search_providers(
             query=args["query"],
             provider_type=args.get("provider_type", ""),
@@ -2048,6 +2191,7 @@ class MCPGenerationTools:
         )
 
     async def _handle_search_models(self, args):
+        """Search AI models with category and runtime filtering"""
         return self.sdk.search_models(
             query=args["query"],
             category=args.get("category", ""),
@@ -2055,18 +2199,22 @@ class MCPGenerationTools:
         )
 
     async def _handle_list_search_indexes(self, args):
+        """List all available search indexes and their document counts"""
         return self.sdk.list_search_indexes()
 
     async def _handle_get_search_stats(self, args):
+        """Get search system statistics"""
         return self.sdk.get_search_stats()
 
 
     # ── OCR Handlers ──
 
     async def _handle_list_ocr_providers(self, args):
+        """List available OCR provider profiles (Tesseract, PaddleOCR, EasyOCR, Surya)"""
         return self.sdk.list_ocr_providers()
 
     async def _handle_select_ocr_backend(self, args):
+        """Select optimal OCR backend for a document type and language"""
         return {"selected_backend": self.sdk.select_ocr_backend(
             document_type=args.get("document_type", "image"),
             language=args.get("language", "en"),
@@ -2074,6 +2222,7 @@ class MCPGenerationTools:
         )}
 
     async def _handle_process_ocr(self, args):
+        """Route an OCR request to the best available backend"""
         return self.sdk.process_ocr(
             document_type=args.get("document_type", "image"),
             language=args.get("language", "en"),
@@ -2081,15 +2230,18 @@ class MCPGenerationTools:
         )
 
     async def _handle_get_ocr_stats(self, args):
+        """Get OCR engine statistics"""
         return self.sdk.get_ocr_stats()
 
 
     # ── 3D Generation Handlers ──
 
     async def _handle_list_3d_models(self, args):
+        """List available 3D generation models (TRELLIS, Hunyuan3D, Point-E, Shap-E)"""
         return self.sdk.list_3d_models(mode=args.get("mode", ""))
 
     async def _handle_select_3d_model(self, args):
+        """Select optimal 3D model for a generation mode and VRAM budget"""
         model = self.sdk.select_3d_model(
             mode=args.get("mode", "text_to_3d"),
             max_vram_gb=args.get("max_vram_gb", 32),
@@ -2097,18 +2249,22 @@ class MCPGenerationTools:
         return {"selected_model": model}
 
     async def _handle_get_3d_output_formats(self, args):
+        """Get supported output formats for a 3D model"""
         return {"formats": self.sdk.get_3d_output_formats(args["model_id"])}
 
     async def _handle_get_3d_stats(self, args):
+        """Get 3D generation statistics"""
         return self.sdk.get_3d_stats()
 
 
     # ── Regression Detection Handlers ──
 
     async def _handle_detect_regression(self, args):
+        """Auto-detect latency, quality, and stability regressions for a provider"""
         return self.sdk.detect_regression(args["provider"], args["metrics"])
 
     async def _handle_get_regression_alerts(self, args):
+        """Get regression alerts with optional filtering"""
         return self.sdk.get_regression_alerts(
             severity=args.get("severity", ""),
             provider=args.get("provider", ""),
@@ -2116,70 +2272,86 @@ class MCPGenerationTools:
         )
 
     async def _handle_get_regression_stats(self, args):
+        """Get regression detection statistics"""
         return self.sdk.get_regression_stats()
 
 
     # ── Capability Graph Handlers ──
 
     async def _handle_find_capability_path(self, args):
+        """Find execution paths from providers to a capability"""
         return self.sdk.find_capability_path(
             capability=args["capability"],
             preferred_provider=args.get("preferred_provider", ""),
         )
 
     async def _handle_find_fallback_chain(self, args):
+        """Find fallback chain for a capability, excluding failed providers"""
         return self.sdk.find_fallback_chain(
             capability=args["capability"],
             failed_provider=args.get("failed_provider", ""),
         )
 
     async def _handle_estimate_execution_cost(self, args):
+        """Estimate execution cost for a provider-capability pair"""
         return self.sdk.estimate_execution_cost(args["provider"], args["capability"])
 
     async def _handle_get_capability_graph_stats(self, args):
+        """Get capability graph statistics"""
         return self.sdk.get_capability_graph_stats()
 
 
     # ── Security Handlers ──
 
     async def _handle_list_security_users(self, args):
+        """List all platform users and their roles"""
         return self.sdk.list_security_users()
 
     async def _handle_authorize_user(self, args):
+        """Check if a user has a specific permission"""
         return self.sdk.authorize(args["user_id"], args["permission"])
 
     async def _handle_get_security_stats(self, args):
+        """Get security statistics"""
         return self.sdk.get_security_stats()
 
     # ── Phase 28 — Failure Recovery Handlers ──
 
     async def _handle_attempt_recovery(self, args):
+        """Automatically detect failure type and attempt recovery"""
         return self.sdk.attempt_recovery(args["error"], args["task_context"])
 
     async def _handle_recover_gpu_oom(self, args):
+        """Execute GPU OOM recovery playbook"""
         return self.sdk.recover_gpu_oom(args["task_context"])
 
     async def _handle_recover_runtime_crash(self, args):
+        """Execute runtime crash recovery playbook"""
         return self.sdk.recover_runtime_crash(args["task_context"])
 
     async def _handle_recover_gpu_crash(self, args):
+        """Execute GPU crash recovery playbook"""
         return self.sdk.recover_gpu_crash(args["task_context"])
 
     async def _handle_recover_nan_inf(self, args):
+        """Execute NaN/Inf recovery playbook"""
         return self.sdk.recover_nan_inf(args["task_context"])
 
     async def _handle_get_failure_events(self, args):
+        """Get recent failure events"""
         return self.sdk.get_failure_events(
             args.get("limit", 50),
             args.get("failure_type", ""),
         )
 
     async def _handle_get_failure_recovery_stats(self, args):
+        """Get failure recovery statistics"""
         return self.sdk.get_failure_recovery_stats()
 
     # ── Phase 28b — Dynamic Graph Update Handlers ──
 
     async def _handle_dynamic_add_node(self, args):
+        """Add a new node to the capability graph at runtime"""
         return self.sdk.dynamic_graph_add_node(
             args["node_id"],
             args.get("node_type", "capability"),
@@ -2188,6 +2360,7 @@ class MCPGenerationTools:
         )
 
     async def _handle_dynamic_add_edge(self, args):
+        """Add a new edge between nodes in the capability graph"""
         return self.sdk.dynamic_graph_add_edge(
             args["source_id"],
             args["target_id"],
@@ -2197,21 +2370,27 @@ class MCPGenerationTools:
         )
 
     async def _handle_dynamic_update_node(self, args):
+        """Update node attributes (scores, health, etc.) at runtime"""
         return self.sdk.dynamic_graph_update_node(args["node_id"], args["attributes"])
 
     async def _handle_dynamic_remove_node(self, args):
+        """Remove a node and its edges from the capability graph"""
         return self.sdk.dynamic_graph_remove_node(args["node_id"])
 
     async def _handle_dynamic_batch_benchmark(self, args):
+        """Batch update benchmark scores on nodes"""
         return self.sdk.dynamic_graph_batch_benchmark(args["updates"])
 
     async def _handle_dynamic_batch_health(self, args):
+        """Batch update health scores for nodes"""
         return self.sdk.dynamic_graph_batch_health(args["updates"])
 
     async def _handle_dynamic_get_history(self, args):
+        """Get recent graph update history"""
         return self.sdk.dynamic_graph_get_history(args.get("limit", 50))
 
     async def _handle_dynamic_get_stats(self, args):
+        """Get enhanced graph statistics including update count"""
         return self.sdk.dynamic_graph_get_stats()
 
 
@@ -2219,18 +2398,23 @@ class MCPGenerationTools:
     # ── Phase 29 — Local Runtime Handlers ──
 
     async def _handle_discover_local_runtimes(self, args):
+        """Discover available local runtimes (vLLM, llama.cpp, Ollama)"""
         return await self.sdk.discover_local_runtimes()
 
     async def _handle_configure_local_runtime(self, args):
+        """Configure a local runtime endpoint URL"""
         return self.sdk.configure_local_runtime(args["runtime_type"], args["url"])
 
     async def _handle_get_local_runtime_stats(self, args):
+        """Get statistics for local runtime usage"""
         return self.sdk.get_local_runtime_stats()
 
     async def _handle_get_local_runtime_profile(self, args):
+        """Get detailed profile for a specific local runtime"""
         return self.sdk.get_local_runtime_profile(args["runtime_type"])
 
     async def _handle_generate_local(self, args):
+        """Generate text using a local runtime (vLLM, llama.cpp, Ollama)"""
         return await self.sdk.generate_local(
             args["model"], args["prompt"],
             runtime=args.get("runtime", ""),
@@ -2242,30 +2426,38 @@ class MCPGenerationTools:
     # ── Phase 30 — Security Crypto Handlers ──
 
     async def _handle_generate_encryption_key(self, args):
+        """Generate an encryption key for data at rest"""
         return self.sdk.generate_encryption_key(algorithm=args.get("algorithm", "aes-256-gcm"))
 
     async def _handle_encrypt_data(self, args):
+        """Encrypt data using AES-256-GCM"""
         return self.sdk.encrypt_data(args["data"].encode(), args.get("key_id"))
 
     async def _handle_get_encryption_stats(self, args):
+        """Get encryption at rest statistics"""
         return self.sdk.get_encryption_stats()
 
     async def _handle_compute_file_checksum(self, args):
+        """Compute checksum of a file for integrity verification"""
         return self.sdk.compute_file_checksum(args["file_path"], args.get("algorithm", "sha256"))
 
     async def _handle_verify_file_checksum(self, args):
+        """Verify a file's checksum against expected value"""
         return self.sdk.verify_file_checksum(args["file_path"], args.get("expected"), args.get("algorithm", "sha256"))
 
     async def _handle_get_model_security_stats(self, args):
+        """Get model security statistics"""
         return self.sdk.get_model_security_stats()
 
     async def _handle_get_tls_stats(self, args):
+        """Get TLS verification statistics"""
         return self.sdk.get_tls_stats()
 
 
     # ── Phase 31 — Event Bus Handlers ──
 
     async def _handle_event_bus_publish(self, args):
+        """Publish a message to the in-memory event bus"""
         return self.sdk.event_bus_publish_sync(
             args["subject"],
             payload=args.get("payload"),
@@ -2273,44 +2465,55 @@ class MCPGenerationTools:
         )
 
     async def _handle_event_bus_get_history(self, args):
+        """Get recent messages from the event bus"""
         return self.sdk.event_bus_get_history(
             args.get("subject"),
             args.get("limit", 50),
         )
 
     async def _handle_event_bus_get_subscriptions(self, args):
+        """List all active subscriptions"""
         return self.sdk.event_bus_get_subscriptions()
 
     async def _handle_get_event_bus_stats(self, args):
+        """Get event bus statistics"""
         return self.sdk.get_event_bus_stats()
 
     async def _handle_emit_event(self, args):
+        """Emit a kernel event"""
         return self.sdk.emit_event(args["event_type"], args.get("data"), args.get("source", ""))
 
     async def _handle_get_event_kernel_stats(self, args):
+        """Get event-driven kernel statistics"""
         return self.sdk.get_event_kernel_stats()
 
 
     # ── Phase 32 — OpenTelemetry Export Handlers ──
 
     async def _handle_otel_start(self, args):
+        """Start the OTLP exporter background task"""
         await self.sdk.otel_start()
         return {"success": True, "message": "OTLP exporter started"}
 
     async def _handle_otel_stop(self, args):
+        """Stop the OTLP exporter"""
         await self.sdk.otel_stop()
         return {"success": True, "message": "OTLP exporter stopped"}
 
     async def _handle_otel_export_all(self, args):
+        """Export all signals (metrics, traces, logs) to OTLP endpoint"""
         return await self.sdk.otel_export_all()
 
     async def _handle_get_otel_stats(self, args):
+        """Get OTLP exporter statistics"""
         return self.sdk.get_otel_stats()
 
     async def _handle_get_otel_history(self, args):
+        """Get OTLP export history"""
         return self.sdk.get_otel_history(args.get("limit", 50))
 
     async def _handle_scan_secrets(self, args):
+        """Scan code or diff for hardcoded secrets and credentials"""
         code = args.get("code", "")
         file_path = args.get("file_path", "<input>")
         diff = args.get("diff", "")
@@ -2321,17 +2524,20 @@ class MCPGenerationTools:
         return {"findings": [f.to_dict() for f in findings], "count": len(findings)}
 
     async def _handle_analyze_code_static(self, args):
+        """Run static analysis for security and quality issues"""
         code = args.get("code", "")
         file_path = args.get("file_path", "<input>")
         issues = self.sdk.static_analyzer.analyze_code(code, file_path)
         return {"issues": [i.to_dict() for i in issues], "count": len(issues)}
 
     async def _handle_analyze_code_structural(self, args):
+        """Analyze code for dead code, duplication, and complexity"""
         files = args.get("files", {})
         findings = self.sdk.structural_analyzer.analyze(files)
         return {"findings": [f.to_dict() for f in findings], "count": len(findings)}
 
     async def _handle_run_multi_agent_review(self, args):
+        """Run multi-agent code review (security, patterns, performance, style, testing, architecture)"""
         code = args.get("code", "")
         file_path = args.get("file_path", "<input>")
         roles = args.get("roles", None)
@@ -2339,6 +2545,7 @@ class MCPGenerationTools:
         return review.to_dict()
 
     async def _handle_verify_pr(self, args):
+        """Run PR verification checklist (tests, secrets, exceptions, docstrings, type hints)"""
         code = args.get("code", "")
         file_path = args.get("file_path", "<input>")
         checks = args.get("checks", None)
@@ -2346,11 +2553,13 @@ class MCPGenerationTools:
         return result
 
     async def _handle_track_tech_debt(self, args):
+        """Scan codebase for technical debt items (TODOs, FIXMEs, hacks, missing docs)"""
         files = args.get("files", {})
         items = self.sdk.debt_tracker.scan_codebase(files)
         return {"items": [i.to_dict() for i in items], "count": len(items), "stats": self.sdk.debt_tracker.get_stats()}
 
     async def _handle_run_orchestration_pipeline(self, args):
+        """Run full multi-agent orchestration pipeline (intent, planning, QA, review, security, delivery)"""
         code = args.get("code", "")
         file_path = args.get("file_path", "<input>")
         description = args.get("description", "")
@@ -2358,11 +2567,13 @@ class MCPGenerationTools:
         return result
 
     async def _handle_plan_agents(self, args):
+        """Select appropriate review agents for a task"""
         task_description = args.get("task_description", "")
         agents = self.sdk.orchestration_pipeline.plan_agents(task_description)
         return {"agents": agents, "count": len(agents)}
 
     async def _handle_add_kb_entry(self, args):
+        """Add an entry to the knowledge base context"""
         key = args.get("key", "")
         content_val = args.get("content", "")
         source = args.get("source", "")
@@ -2370,12 +2581,14 @@ class MCPGenerationTools:
         return {"success": True, "stats": self.sdk.orchestration_pipeline.knowledge_base.get_stats()}
 
     async def _handle_retrieve_kb(self, args):
+        """Retrieve relevant knowledge base entries for a query"""
         query = args.get("query", "")
         max_results = args.get("max_results", 5)
         results = self.sdk.orchestration_pipeline.knowledge_base.retrieve(query, max_results)
         return {"results": [{"key": r.key, "content": r.content, "source": r.source, "relevance": r.relevance} for r in results], "count": len(results)}
 
     async def _handle_detect_code_smells(self, args):
+        """Detect code smells (long methods, large classes, magic numbers, dead code, etc.)"""
         from .refactoring_engine import SmellDetector
         code = args.get("code", "")
         file_path = args.get("file_path", "<input>")
@@ -2384,6 +2597,7 @@ class MCPGenerationTools:
         return {"smells": [s.to_dict() for s in smells], "count": len(smells)}
 
     async def _handle_suggest_refactoring(self, args):
+        """Analyze code and generate refactoring suggestions with techniques and steps"""
         code = args.get("code", "")
         file_path = args.get("file_path", "<input>")
         files = args.get("files", None)
@@ -2394,16 +2608,20 @@ class MCPGenerationTools:
         return {"suggestions": [s.to_dict() for s in suggestions], "count": len(suggestions), "stats": self.sdk.refactoring_engine.get_stats(suggestions)}
 
     async def _handle_run_quality_dashboard(self, args):
+        """Run comprehensive quality analysis across 6 dimensions (security, quality, complexity, documentation, debt, refactoring)"""
         code = args.get("code", "")
         file_path = args.get("file_path", "<input>")
         report = self.sdk.quality_dashboard.analyze(code, file_path)
         return report.to_dict()
 
     async def _handle_get_quality_history(self, args):
+        """Get history of quality analyses"""
         return {"history": self.sdk.quality_dashboard.get_history()}
 
     async def _handle_get_quality_stats(self, args):
+        """Get quality analysis statistics"""
         return self.sdk.quality_dashboard.get_stats()
 
 def get_mcp_generation_tools():
+    """Return the full MCP tool schema dictionary for AI generation capabilities."""
     return MCP_GENERATION_TOOLS

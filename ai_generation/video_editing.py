@@ -85,6 +85,7 @@ class VideoEditResult:
     created_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
     def to_dict(self) -> Dict[str, Any]:
+        """Serialize the edit result to a dictionary."""
         return {
             "operation": self.operation.value,
             "provider": self.provider,
@@ -119,6 +120,7 @@ class VideoEditProfile:
     supported_formats: List[str] = field(default_factory=lambda: ["mp4", "webm", "avi", "mov", "mkv"])
 
     def to_dict(self) -> Dict[str, Any]:
+        """Serialize the edit result to a dictionary."""
         return {
             "operation": self.operation.value,
             "description": self.description,
@@ -135,14 +137,17 @@ class VideoEditProfile:
 # ── Dependency Detection ─────────────────────────────────────────
 
 def _has_ffmpeg() -> bool:
+    """Return whether the ffmpeg binary is available on PATH."""
     return shutil.which("ffmpeg") is not None
 
 
 def _has_ffprobe() -> bool:
+    """Return whether the ffprobe binary is available on PATH."""
     return shutil.which("ffprobe") is not None
 
 
 def _probe_video(path: str) -> Dict[str, Any]:
+    """Probe a video file with ffprobe and return its metadata."""
     if not _has_ffprobe():
         return {}
     try:
@@ -288,6 +293,7 @@ async def _run_ffmpeg(args: List[str], timeout: int = 300) -> Dict[str, Any]:
 # ── FFmpeg-based Operations ─────────────────────────────────────
 
 async def _ffmpeg_trim(input_path: str, output_path: str, start: float = 0.0, end: float = 0.0, **kw) -> VideoEditResult:
+    """Trim a video to the given start and end times with ffmpeg."""
     args = ["-y", "-i", input_path, "-ss", str(start)]
     if end > 0:
         args += ["-to", str(end)]
@@ -307,6 +313,7 @@ async def _ffmpeg_trim(input_path: str, output_path: str, start: float = 0.0, en
 
 
 async def _ffmpeg_concat(input_paths: List[str], output_path: str, **kw) -> VideoEditResult:
+    """Concatenate multiple videos into one output file with ffmpeg."""
     if len(input_paths) < 2:
         return VideoEditResult(
             operation=VideoEditOperation.CONCAT, status=VideoEditStatus.FAILED,
@@ -333,6 +340,7 @@ async def _ffmpeg_concat(input_paths: List[str], output_path: str, **kw) -> Vide
 
 
 async def _ffmpeg_transition(inputs: List[str], output_path: str, duration: float = 1.0, **kw) -> VideoEditResult:
+    """Crossfade-concatenate input videos with an ffmpeg transition."""
     if len(inputs) < 2:
         return VideoEditResult(
             operation=VideoEditOperation.TRANSITION, status=VideoEditStatus.FAILED,
@@ -375,6 +383,7 @@ async def _ffmpeg_transition(inputs: List[str], output_path: str, duration: floa
 
 
 async def _ffmpeg_speed(input_path: str, output_path: str, speed_factor: float = 1.0, **kw) -> VideoEditResult:
+    """Change the playback speed of a video with ffmpeg."""
     if speed_factor <= 0:
         return VideoEditResult(
             operation=VideoEditOperation.SPEED, status=VideoEditStatus.FAILED,
@@ -416,6 +425,7 @@ async def _ffmpeg_speed(input_path: str, output_path: str, speed_factor: float =
 
 
 async def _ffmpeg_crop(input_path: str, output_path: str, x: int = 0, y: int = 0, width: int = 0, height: int = 0, **kw) -> VideoEditResult:
+    """Crop a video to the given region with ffmpeg."""
     if width <= 0 or height <= 0:
         return VideoEditResult(
             operation=VideoEditOperation.CROP, status=VideoEditStatus.FAILED,
@@ -440,6 +450,7 @@ async def _ffmpeg_crop(input_path: str, output_path: str, x: int = 0, y: int = 0
 
 
 async def _ffmpeg_resize(input_path: str, output_path: str, width: int = 0, height: int = 0, **kw) -> VideoEditResult:
+    """Resize a video to the given dimensions with ffmpeg."""
     if width <= 0 and height <= 0:
         return VideoEditResult(
             operation=VideoEditOperation.RESIZE, status=VideoEditStatus.FAILED,
@@ -465,6 +476,7 @@ async def _ffmpeg_resize(input_path: str, output_path: str, width: int = 0, heig
 
 
 async def _ffmpeg_rotate(input_path: str, output_path: str, angle: float = 0.0, **kw) -> VideoEditResult:
+    """Rotate a video by the given angle with ffmpeg."""
     vf = f"rotate={angle}*PI/180"
     args = [
         "-y", "-i", input_path,
@@ -485,6 +497,7 @@ async def _ffmpeg_rotate(input_path: str, output_path: str, angle: float = 0.0, 
 
 
 async def _ffmpeg_reverse(input_path: str, output_path: str, **kw) -> VideoEditResult:
+    """Reverse a video with ffmpeg."""
     args = [
         "-y", "-i", input_path,
         "-vf", "reverse", "-af", "areverse",
@@ -504,6 +517,7 @@ async def _ffmpeg_reverse(input_path: str, output_path: str, **kw) -> VideoEditR
 
 
 async def _ffmpeg_stabilize(input_path: str, output_path: str, **kw) -> VideoEditResult:
+    """Stabilize a shaky video with ffmpeg's vidstab filter."""
     with tempfile.TemporaryDirectory() as tmpdir:
         transforms = os.path.join(tmpdir, "transforms.trf")
         step1 = await _run_ffmpeg([
@@ -535,6 +549,7 @@ async def _ffmpeg_stabilize(input_path: str, output_path: str, **kw) -> VideoEdi
 
 
 async def _ffmpeg_enhance(input_path: str, output_path: str, denoise: bool = True, sharpen: bool = True, brightness: float = 0.0, contrast: float = 1.0, saturation: float = 1.0, **kw) -> VideoEditResult:
+    """Enhance a video with denoise, sharpen, brightness, and contrast filters."""
     filters = []
     if denoise:
         filters.append("hqdn3d=3:3:3:3")
@@ -564,6 +579,7 @@ async def _ffmpeg_enhance(input_path: str, output_path: str, denoise: bool = Tru
 
 
 async def _ffmpeg_watermark(input_path: str, output_path: str, text: str = "", image_path: str = "", position: str = "top_right", **kw) -> VideoEditResult:
+    """Overlay a text or image watermark on a video with ffmpeg."""
     if text:
         positions = {
             "top_left": "x=10:y=10",
@@ -615,6 +631,7 @@ async def _ffmpeg_watermark(input_path: str, output_path: str, text: str = "", i
 
 
 async def _ffmpeg_audio_extract(input_path: str, output_path: str, **kw) -> VideoEditResult:
+    """Extract the audio track from a video with ffmpeg."""
     args = ["-y", "-i", input_path, "-vn", "-c:a", "aac", output_path]
     res = await _run_ffmpeg(args)
     if res.get("returncode") == 0:
@@ -630,6 +647,7 @@ async def _ffmpeg_audio_extract(input_path: str, output_path: str, **kw) -> Vide
 
 
 async def _ffmpeg_audio_replace(video_path: str, audio_path: str, output_path: str, **kw) -> VideoEditResult:
+    """Replace the audio track of a video with ffmpeg."""
     args = ["-y", "-i", video_path, "-i", audio_path, "-c:v", "copy", "-c:a", "aac", "-map", "0:v:0", "-map", "1:a:0", output_path]
     res = await _run_ffmpeg(args)
     if res.get("returncode") == 0:
@@ -645,6 +663,7 @@ async def _ffmpeg_audio_replace(video_path: str, audio_path: str, output_path: s
 
 
 async def _ffmpeg_subtitle_burn(input_path: str, output_path: str, subtitle_path: str = "", **kw) -> VideoEditResult:
+    """Burn subtitles into a video with ffmpeg."""
     if not subtitle_path:
         return VideoEditResult(
             operation=VideoEditOperation.SUBTITLE_BURN, status=VideoEditStatus.FAILED,
@@ -749,20 +768,24 @@ class VideoEditingEngine:
     """
 
     def __init__(self, config: Optional[Dict[str, Any]] = None):
+        """Initialize the engine and detect local ffmpeg availability."""
         self.config = config or {}
         self._history: List[VideoEditResult] = []
         self._ffmpeg_available = _has_ffmpeg()
         self._ffprobe_available = _has_ffprobe()
 
     def get_profiles(self) -> List[Dict[str, Any]]:
+        """Return the edit profile configurations as dictionaries."""
         return [p.to_dict() for p in EDIT_PROFILES.values()]
 
     def get_available_operations(self) -> List[str]:
+        """Return the operations supported by the local ffmpeg install."""
         if not self._ffmpeg_available:
             return []
         return [op.value for op in EDIT_PROFILES.keys()]
 
     def probe(self, video_path: str) -> Dict[str, Any]:
+        """Probe a video file and return its metadata."""
         return _probe_video(video_path)
 
     async def execute(
@@ -773,6 +796,7 @@ class VideoEditingEngine:
         output_path: str = "",
         **kwargs,
     ) -> VideoEditResult:
+        """Execute a video edit operation through the matching ffmpeg handler."""
         start = time.time()
         if not output_path:
             ext = Path(input_path or "video.mp4").suffix or ".mp4"
@@ -828,45 +852,59 @@ class VideoEditingEngine:
         return result
 
     async def trim(self, input_path: str, output_path: str = "", start: float = 0.0, end: float = 0.0, **kw) -> VideoEditResult:
+        """Trim the input video to the given time range."""
         return await self.execute(VideoEditOperation.TRIM, input_path=input_path, output_path=output_path, start=start, end=end, **kw)
 
     async def concat(self, input_paths: List[str], output_path: str = "", **kw) -> VideoEditResult:
+        """Concatenate the given videos into one output."""
         return await self.execute(VideoEditOperation.CONCAT, input_paths=input_paths, output_path=output_path, **kw)
 
     async def transition(self, input_paths: List[str], output_path: str = "", duration: float = 1.0, **kw) -> VideoEditResult:
+        """Join the given videos with a crossfade transition."""
         return await self.execute(VideoEditOperation.TRANSITION, input_paths=input_paths, output_path=output_path, duration=duration, **kw)
 
     async def speed(self, input_path: str, output_path: str = "", factor: float = 1.0, **kw) -> VideoEditResult:
+        """Change the playback speed of the input video."""
         return await self.execute(VideoEditOperation.SPEED, input_path=input_path, output_path=output_path, speed_factor=factor, **kw)
 
     async def interpolate_frames(self, input_path: str, output_path: str = "", target_fps: float = 60.0, **kw) -> VideoEditResult:
+        """Interpolate frames to raise the video to the target frame rate."""
         return await self.execute(VideoEditOperation.FRAME_INTERPOLATION, input_path=input_path, output_path=output_path, target_fps=target_fps, **kw)
 
     async def upscale(self, input_path: str, output_path: str = "", scale_factor: int = 2, **kw) -> VideoEditResult:
+        """Upscale the input video by the given scale factor."""
         return await self.execute(VideoEditOperation.UPSCALE, input_path=input_path, output_path=output_path, scale_factor=scale_factor, **kw)
 
     async def enhance(self, input_path: str, output_path: str = "", **kw) -> VideoEditResult:
+        """Enhance the input video with quality filters."""
         return await self.execute(VideoEditOperation.ENHANCE, input_path=input_path, output_path=output_path, **kw)
 
     async def crop(self, input_path: str, output_path: str = "", x: int = 0, y: int = 0, width: int = 0, height: int = 0, **kw) -> VideoEditResult:
+        """Crop the input video to the given region."""
         return await self.execute(VideoEditOperation.CROP, input_path=input_path, output_path=output_path, x=x, y=y, width=width, height=height, **kw)
 
     async def resize(self, input_path: str, output_path: str = "", width: int = 0, height: int = 0, **kw) -> VideoEditResult:
+        """Resize the input video to the given dimensions."""
         return await self.execute(VideoEditOperation.RESIZE, input_path=input_path, output_path=output_path, width=width, height=height, **kw)
 
     async def watermark(self, input_path: str, output_path: str = "", text: str = "", image_path: str = "", position: str = "top_right", **kw) -> VideoEditResult:
+        """Overlay a text or image watermark on the input video."""
         return await self.execute(VideoEditOperation.WATERMARK, input_path=input_path, output_path=output_path, text=text, image_path=image_path, position=position, **kw)
 
     async def extract_audio(self, input_path: str, output_path: str = "", **kw) -> VideoEditResult:
+        """Extract the audio track from the input video."""
         return await self.execute(VideoEditOperation.AUDIO_EXTRACT, input_path=input_path, output_path=output_path, **kw)
 
     async def replace_audio(self, video_path: str, audio_path: str, output_path: str = "", **kw) -> VideoEditResult:
+        """Replace the audio track of a video with the given audio file."""
         return await self.execute(VideoEditOperation.AUDIO_REPLACE, input_path=video_path, output_path=output_path, audio_path=audio_path, **kw)
 
     async def burn_subtitles(self, input_path: str, subtitle_path: str, output_path: str = "", **kw) -> VideoEditResult:
+        """Burn subtitles from the given file into the input video."""
         return await self.execute(VideoEditOperation.SUBTITLE_BURN, input_path=input_path, output_path=output_path, subtitle_path=subtitle_path, **kw)
 
     def get_stats(self) -> Dict[str, Any]:
+        """Return aggregate statistics over the video edit history."""
         ops: Dict[str, int] = {}
         for r in self._history:
             ops[r.operation.value] = ops.get(r.operation.value, 0) + 1

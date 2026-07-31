@@ -3,7 +3,7 @@ module: "image_editing"
 type: module-doc
 status: active
 owner: ""
-lines: 464
+lines: 488
 classes: 7
 functions: 0
 tags: [module, documentation]
@@ -19,7 +19,7 @@ relighting, object removal/insertion, style trans
 ## Overview
 
 - **File**: `ai_generation/image_editing.py`
-- **Lines**: 464
+- **Lines**: 488
 - **Classes**: 7
 - **Public Functions**: 0
 

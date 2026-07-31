@@ -64,6 +64,7 @@ class EditResult:
     created_at: str = field(default_factory=lambda: datetime.now().isoformat())
 
     def to_dict(self) -> Dict[str, Any]:
+        """Serialize the edit result to a dictionary."""
         return {
             "operation": self.operation.value,
             "provider": self.provider,
@@ -128,6 +129,7 @@ class EditProvider:
     """Base class for image editing providers."""
 
     def __init__(self, name: str, config: Optional[Dict[str, Any]] = None):
+        """Initialize the provider with its name and configuration."""
         self.name = name
         self.config = config or {}
         self._capabilities = PROVIDER_EDIT_CAPABILITIES.get(name, {})
@@ -136,18 +138,22 @@ class EditProvider:
         self._total_latency_ms = 0.0
 
     def supports(self, operation: EditOperation) -> bool:
+        """Return whether this provider supports the given edit operation."""
         cap = self._capabilities.get(operation, {})
         return cap.get("supported", False)
 
     def get_model(self, operation: EditOperation) -> str:
+        """Return the model name used by this provider for an operation."""
         cap = self._capabilities.get(operation, {})
         return cap.get("model", "")
 
     def record_success(self, latency_ms: float):
+        """Record a successful edit for statistics."""
         self._success_count += 1
         self._total_latency_ms += latency_ms
 
     def record_error(self):
+        """Record a failed edit for statistics."""
         self._error_count += 1
 
     async def execute_edit(
@@ -177,6 +183,7 @@ class StabilityEditProvider(EditProvider):
     """Stability AI image editing via their API."""
 
     def __init__(self, config=None):
+        """Initialize the Stability provider with its API key."""
         super().__init__("stability", config)
         import os
         self._api_key = self.config.get("api_key") or os.environ.get("STABILITY_API_KEY", "")
@@ -258,6 +265,7 @@ class ReplicateEditProvider(EditProvider):
     """Replicate-based image editing."""
 
     def __init__(self, config=None):
+        """Initialize the Replicate provider with its API token."""
         super().__init__("replicate", config)
         import os
         self._api_key = self.config.get("api_key") or os.environ.get("REPLICATE_API_TOKEN", "")
@@ -340,12 +348,14 @@ class ImageEditingEngine:
     """Unified image editing engine with provider failover."""
 
     def __init__(self, config: Optional[Dict[str, Any]] = None):
+        """Initialize the engine and register all configured providers."""
         self.config = config or {}
         self._providers: Dict[str, EditProvider] = {}
         self._history: List[EditResult] = []
         self._init_providers()
 
     def _init_providers(self):
+        """Register the built-in stability and replicate providers."""
         self._providers["stability"] = StabilityEditProvider(self.config.get("stability", {}))
         self._providers["replicate"] = ReplicateEditProvider(self.config.get("replicate", {}))
 
@@ -415,45 +425,59 @@ class ImageEditingEngine:
         return result
 
     async def img2img(self, input_path, prompt, strength=0.75, **kwargs):
+        """Run an image-to-image edit on the input file."""
         return await self.edit(EditOperation.IMG2IMG, input_path, prompt, strength, **kwargs)
 
     async def inpaint(self, input_path, mask_path, prompt, **kwargs):
+        """Run an inpainting edit masked to the given region."""
         return await self.edit(EditOperation.INPAINTING, input_path, prompt, mask_path=mask_path, **kwargs)
 
     async def outpaint(self, input_path, prompt, **kwargs):
+        """Run an outpainting edit beyond the input boundaries."""
         return await self.edit(EditOperation.OUTPAINTING, input_path, prompt, **kwargs)
 
     async def remove_background(self, input_path, **kwargs):
+        """Remove the background from the input image."""
         return await self.edit(EditOperation.BACKGROUND_REMOVAL, input_path, **kwargs)
 
     async def replace_background(self, input_path, prompt, **kwargs):
+        """Replace the background of the input image."""
         return await self.edit(EditOperation.BACKGROUND_REPLACEMENT, input_path, prompt, **kwargs)
 
     async def style_transfer(self, input_path, prompt, **kwargs):
+        """Transfer the prompted style onto the input image."""
         return await self.edit(EditOperation.STYLE_TRANSFER, input_path, prompt, **kwargs)
 
     async def upscale(self, input_path, **kwargs):
+        """Upscale the input image."""
         return await self.edit(EditOperation.UPSCALE, input_path, **kwargs)
 
     async def remove_object(self, input_path, prompt, **kwargs):
+        """Remove the prompted object from the input image."""
         return await self.edit(EditOperation.OBJECT_REMOVAL, input_path, prompt, **kwargs)
 
     async def insert_object(self, input_path, prompt, **kwargs):
+        """Insert the prompted object into the input image."""
         return await self.edit(EditOperation.OBJECT_INSERTION, input_path, prompt, **kwargs)
 
     async def relight(self, input_path, prompt, **kwargs):
+        """Relight the input image according to the prompt."""
         return await self.edit(EditOperation.RELIGHTING, input_path, prompt, **kwargs)
 
     async def preserve_face(self, input_path, prompt, **kwargs):
+        """Run a face preservation edit on the input image."""
         return await self.edit(EditOperation.FACE_PRESERVATION, input_path, prompt, **kwargs)
 
     async def restore(self, input_path, **kwargs):
+        """Restore the input image."""
         return await self.edit(EditOperation.RESTORATION, input_path, **kwargs)
 
     async def restore_face(self, input_path, **kwargs):
+        """Restore faces in the input image."""
         return await self.edit(EditOperation.FACE_RESTORATION, input_path, **kwargs)
 
     def get_stats(self) -> Dict[str, Any]:
+        """Return aggregate statistics over the edit history."""
         ops = {}
         for r in self._history:
             ops[r.operation.value] = ops.get(r.operation.value, 0) + 1

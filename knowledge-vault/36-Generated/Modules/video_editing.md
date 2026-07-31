@@ -3,7 +3,7 @@ module: "video_editing"
 type: module-doc
 status: active
 owner: ""
-lines: 883
+lines: 921
 classes: 7
 functions: 0
 tags: [module, documentation]
@@ -19,7 +19,7 @@ All operations gracefully degrade when depe
 ## Overview
 
 - **File**: `ai_generation/video_editing.py`
-- **Lines**: 883
+- **Lines**: 921
 - **Classes**: 7
 - **Public Functions**: 0
 

@@ -3,7 +3,7 @@ module: "workflow_engine"
 type: module-doc
 status: active
 owner: ""
-lines: 238
+lines: 251
 classes: 4
 functions: 1
 tags: [module, documentation]
@@ -18,7 +18,7 @@ conditional branching, and parallel execution.
 ## Overview
 
 - **File**: `ai_generation/workflow_engine.py`
-- **Lines**: 238
+- **Lines**: 251
 - **Classes**: 4
 - **Public Functions**: 1
 

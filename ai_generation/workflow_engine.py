@@ -39,6 +39,7 @@ class WorkflowStep:
     step_id: str = ""
 
     def __post_init__(self):
+        """Assign a deterministic step id when none was provided."""
         if not self.step_id:
             self.step_id = self.name.replace(" ", "_").lower()
 
@@ -54,16 +55,19 @@ class Workflow:
     status: str = "pending"
 
     def __post_init__(self):
+        """Assign a unique workflow id when none was provided."""
         if not self.workflow_id:
             self.workflow_id = "wf-" + uuid.uuid4().hex[:8]
 
     def get_step(self, name: str):
+        """Return the workflow step matching the given name or step id."""
         for s in self.steps:
             if s.step_id == name or s.name == name:
                 return s
         return None
 
     def get_ready_steps(self):
+        """Return pending steps whose dependencies are all completed."""
         completed = {s.step_id for s in self.steps if s.status == StepStatus.COMPLETED}
         return [
             s for s in self.steps
@@ -76,12 +80,14 @@ class WorkflowEngine:
     """Execute multi-step generation workflows."""
 
     def __init__(self, generation_manager=None, prompt_engine=None):
+        """Initialize the engine with optional generation and prompt managers."""
         self._gm = generation_manager
         self._pe = prompt_engine
         self._workflows: Dict[str, Workflow] = {}
         self._history: List[Dict[str, Any]] = []
 
     def create_workflow(self, name, steps, description="", metadata=None):
+        """Register and return a new workflow built from step definitions."""
         wf = Workflow(
             name=name, description=description,
             steps=[WorkflowStep(**s) if isinstance(s, dict) else s for s in steps],
@@ -91,15 +97,18 @@ class WorkflowEngine:
         return wf
 
     def get_workflow(self, workflow_id):
+        """Return a stored workflow by id, or None when missing."""
         return self._workflows.get(workflow_id)
 
     def list_workflows(self):
+        """Return summary metadata for all registered workflows."""
         return [
             {"id": wf.workflow_id, "name": wf.name, "status": wf.status, "steps": len(wf.steps)}
             for wf in self._workflows.values()
         ]
 
     async def execute(self, workflow_id, context=None):
+        """Execute a workflow to completion, running ready steps in parallel."""
         wf = self._workflows.get(workflow_id)
         if not wf:
             return {"error": f"Workflow {workflow_id} not found"}
@@ -151,6 +160,7 @@ class WorkflowEngine:
         return summary
 
     async def _execute_step(self, step, ctx):
+        """Run a single workflow step through the generation manager."""
         step.status = StepStatus.RUNNING
         step.started_at = datetime.now().isoformat()
 
@@ -204,6 +214,7 @@ class WorkflowEngine:
             step.completed_at = datetime.now().isoformat()
 
     def _resolve_params(self, params, ctx):
+        """Resolve $-prefixed parameter references against the context."""
         resolved = {}
         for k, v in params.items():
             if isinstance(v, str) and v.startswith("$"):
@@ -216,6 +227,7 @@ class WorkflowEngine:
         return resolved
 
     def get_stats(self):
+        """Return aggregate statistics for the workflow engine."""
         return {
             "total_workflows": len(self._workflows),
             "executed": len(self._history),
@@ -225,6 +237,7 @@ class WorkflowEngine:
 
 # Preset workflows
 def create_image_series_workflow(prompts, style="photorealistic", provider_type="image"):
+    """Build a workflow that generates a series of images from prompts."""
     steps = []
     for i, prompt in enumerate(prompts):
         step = {

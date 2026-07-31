@@ -3,7 +3,7 @@ module: "cli"
 type: module-doc
 status: active
 owner: ""
-lines: 778
+lines: 803
 classes: 0
 functions: 40
 tags: [module, documentation]
@@ -17,7 +17,7 @@ generated: "2026-07-31"
 ## Overview
 
 - **File**: `ai_generation/cli.py`
-- **Lines**: 778
+- **Lines**: 803
 - **Classes**: 0
 - **Public Functions**: 40
 

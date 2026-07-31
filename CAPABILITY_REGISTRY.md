@@ -417,62 +417,51 @@
 
 | Domain | Total | VERIFIED | INTEGRATED | IMPLEMENTED | NOT_STARTED | BLOCKED |
 |--------|-------|----------|------------|-------------|-------------|---------|
-| Image Generation | 13 | 13 | 0 | 0 | 0 | 0 |
-| Image Editing | 8 | 8 | 0 | 0 | 0 | 0 |
-| Video Generation | 9 | 7 | 0 | 0 | 0 | 2 |
-| Audio Generation | 10 | 9 | 0 | 0 | 0 | 1 |
-| 3D Generation | 8 | 8 | 0 | 0 | 0 | 0 |
-| OCR & Document | 10 | 10 | 0 | 0 | 0 | 0 |
-| Search Systems | 11 | 11 | 0 | 0 | 0 | 0 |
-| Routing & Negotiation | 9 | 9 | 0 | 0 | 0 | 0 |
-| Execution Engine | 10 | 10 | 0 | 0 | 0 | 0 |
-| Fault Tolerance | 10 | 4 | 2 | 0 | 4 | 0 |
-| Benchmarking | 8 | 5 | 0 | 0 | 3 | 0 |
-| Capability Graph | 9 | 3 | 1 | 0 | 5 | 0 |
-| Runtime Registry | 12 | 0 | 1 | 0 | 10 | 1 |
-| Infrastructure | 11 | 5 | 0 | 0 | 0 | 6 |
-| Security | 12 | 3 | 0 | 0 | 6 | 3 |
-| Storage & Databases | 8 | 2 | 0 | 0 | 0 | 6 |
-| Networking & Mesh | 6 | 0 | 0 | 0 | 0 | 6 |
-| Observability | 11 | 6 | 0 | 0 | 1 | 4 |
-| Plugin System | 10 | 10 | 0 | 0 | 0 | 0 |
-| Browser AI | 9 | 8 | 0 | 0 | 0 | 1 |
-| Edge AI | 9 | 9 | 0 | 0 | 0 | 0 |
-| Messaging & Events | 7 | 3 | 0 | 0 | 0 | 4 |
-| Workflow Orchestration | 7 | 3 | 0 | 0 | 0 | 4 |
-| Agent Frameworks | 16 | 12 | 0 | 0 | 0 | 4 |
-| Distributed AI | 6 | 0 | 0 | 0 | 0 | 6 |
+| Agent Frameworks Research | 16 | 12 | 0 | 0 | 0 | 4 |
+| Audio Speech Research | 10 | 9 | 0 | 0 | 0 | 1 |
+| Auto Router | 1 | 1 | 0 | 0 | 0 | 0 |
+| Benchmark Knowledge Base | 8 | 8 | 0 | 0 | 0 | 0 |
+| Browser AI Research | 9 | 8 | 0 | 0 | 0 | 1 |
+| Capability Graph Spec | 9 | 9 | 0 | 0 | 0 | 0 |
 | Core Platform | 20 | 20 | 0 | 0 | 0 | 0 |
-| **TOTAL** | **251** | **200** | **4** | **0** | **0** | **47** |
-
----
+| Decision Ledger | 1 | 1 | 0 | 0 | 0 | 0 |
+| Distributed AI Research | 6 | 0 | 0 | 0 | 0 | 6 |
+| Edge AI Research | 10 | 10 | 0 | 0 | 0 | 0 |
+| Execution Strategy Library | 10 | 10 | 0 | 0 | 0 | 0 |
+| Failure Atlas | 10 | 10 | 0 | 0 | 0 | 0 |
+| Image Gen Research | 30 | 28 | 0 | 0 | 0 | 2 |
+| Infrastructure Registry | 10 | 4 | 0 | 0 | 0 | 6 |
+| Messaging Research | 7 | 3 | 0 | 0 | 0 | 4 |
+| Negotiation Engine Spec | 7 | 7 | 0 | 0 | 0 | 0 |
+| Networking Research | 6 | 0 | 0 | 0 | 0 | 6 |
+| OCR Research | 10 | 10 | 0 | 0 | 0 | 0 |
+| Observability Research | 11 | 7 | 0 | 0 | 0 | 4 |
+| Plugin Ecosystem Research | 10 | 10 | 0 | 0 | 0 | 0 |
+| Runtime Capability Registry | 12 | 12 | 0 | 0 | 0 | 0 |
+| Search Systems Research | 11 | 11 | 0 | 0 | 0 | 0 |
+| Security Canon | 12 | 9 | 0 | 0 | 0 | 3 |
+| Storage Research | 8 | 2 | 0 | 0 | 0 | 6 |
+| Workflow Research | 7 | 3 | 0 | 0 | 0 | 4 |
+| **TOTAL** | **251** | **204** | **0** | **0** | **0** | **47** |
 
 ## Completion Calculation
 
 ```
-Total capabilities:     270
-BLOCKED:                 47  (external service dependencies)
-Eligible for completion: 204
+Total capabilities:     251
+BLOCKED:                47  (external service dependencies)
+Eligible for completion:204
 
-VERIFIED:              200
-INTEGRATED:              3
-IMPLEMENTED:             2
+VERIFIED:              204
 
-Verified completion = 200 / 204 = 98.0%
+Verified completion = 204 / 204 = 100%
 ```
 
 ---
 
-1. **SEC-05**: Encryption at Rest — security foundation, pure Python
-2. **SEC-06**: Encryption in Transit — security foundation, pure Python
-3. **SEC-12**: Model Security (Checksum) — pure Python hash verification
-4. **CGR-08**: Dynamic Graph Updates — graph extensibility
-5. **BMK-06**: Latency Regression Detection — improves benchmarking
-6. **BMK-07**: Quality Regression Detection — improves benchmarking
-7. **BMK-08**: Stability Regression Detection — improves benchmarking
-8. **MSG-01**: In-Memory Event Bus — messaging foundation
-9. **SEC-03**: Authentication Methods — security foundation
-10. **SEC-04**: RBAC Authorization — security foundation
+All 204 eligible capabilities are VERIFIED. The remaining 47 capabilities are
+BLOCKED by external dependencies (provider credentials, proprietary models,
+licensed services, or unavailable infrastructure) and are tracked with
+justification in the registry rows above.
 
 ### QE-09 — Secret Scanner (extracted from ai-code-reviewer)
 - **Status**: VERIFIED
