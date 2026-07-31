@@ -45,3 +45,13 @@ GROUP BY true
 - [[Architecture Overview]]
 - [[Testing Overview]]
 - [[Benchmarks Overview]]
+
+## Unified Tool Registry
+
+`configs/tools.json` is the single canonical code-quality tool registry:
+**15 tools catalogued — 10 ready, 5 blocked** (distributions verified against
+the PyPI/npm JSON API on 2026-07-31). Surfaces:
+
+- SDK: `ai.list_tools()`, `ai.get_tool()`, `ai.get_tool_registry_stats()`
+- CLI: `python -m ai_generation.cli tools [--category|--status|--search]`
+- MCP: `list_tools`, `get_tool`

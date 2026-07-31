@@ -121,6 +121,32 @@ batch = ai.run_mcp_validation()                 # offline validation of all serv
 
 MCP tools: `validate_mcp_server`, `check_mcp_server_health`.
 
+## Unified Tool Registry
+
+The platform catalogues the external code-quality toolchain in one canonical
+registry (`configs/tools.json`) — distributions verified against the PyPI/npm
+JSON API on 2026-07-31.
+
+- **15 tools catalogued** — 10 ready (ruff, black, isort, pyright, mypy, bandit, semgrep, import-linter, eslint, prettier), 5 blocked (codeql, trivy, hadolint, archunit, sonarqube — no stable pip/npm distribution)
+- Categories: lint, format, type-check, security, architecture, docker, quality
+
+```bash
+python -m ai_generation.cli tools --category security
+python -m ai_generation.cli tools --search formatter
+python -m ai_generation.cli tools --status blocked
+```
+
+```python
+from ai_generation import UncleFrappeAI
+
+ai = UncleFrappeAI()
+tools = ai.list_tools(category="security")   # filtered list
+tool = ai.get_tool("semgrep")                 # one entry (install, command, config)
+stats = ai.get_tool_registry_stats()          # totals + categories
+```
+
+MCP tools: `list_tools`, `get_tool`.
+
 
 ## Unified Skill Registry
 
@@ -177,7 +203,7 @@ async def main():
 asyncio.run(main())
 ```
 
-Run `python -m ai_generation.cli --help` for the CLI, or use the 214 MCP tools
+Run `python -m ai_generation.cli --help` for the CLI, or use the 216 MCP tools
 exposed via `ai_generation.mcp_tools.MCPGenerationTools`.
 
 ## Project Structure
@@ -186,7 +212,7 @@ exposed via `ai_generation.mcp_tools.MCPGenerationTools`.
 ai_generation/          # Single canonical platform package
   sdk.py                # Unified SDK entry point
   cli.py                # CLI interface
-  mcp_tools.py          # 214 MCP tools exposed by the platform
+  mcp_tools.py          # 216 MCP tools exposed by the platform
   generation_manager.py # Orchestration core
   auto_router.py        # Intelligent provider routing
   execution_engine.py   # Task execution

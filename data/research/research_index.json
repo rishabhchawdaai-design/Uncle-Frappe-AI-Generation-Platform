@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-07-31T23:09:33.746154+00:00",
+  "generated_at": "2026-07-31T23:21:34.960594+00:00",
   "research_documents": 57,
-  "capabilities": 254,
+  "capabilities": 255,
   "modules": [
     "agent_interface",
     "agent_planner",
@@ -66,6 +66,7 @@
     "security_crypto",
     "skill_registry",
     "supervisor",
+    "tool_registry",
     "video_editing",
     "video_generation",
     "voice_cloning",
@@ -1260,7 +1261,8 @@
         "search_backends",
         "search_systems",
         "security_crypto",
-        "skill_registry"
+        "skill_registry",
+        "tool_registry"
       ],
       "tests": [
         "test_kimi_k3",
@@ -1270,13 +1272,15 @@
         "test_search_backends",
         "test_search_systems",
         "test_security_crypto",
-        "test_skill_registry"
+        "test_skill_registry",
+        "test_tool_registry"
       ],
       "sdk_interfaces": [
         "capability_registry",
         "model_security",
         "mcp_registry",
         "skill_registry",
+        "tool_registry",
         "search_systems",
         "search_backends"
       ],
@@ -1968,7 +1972,8 @@
         "capability_registry",
         "kimi_k3",
         "mcp_registry",
-        "skill_registry"
+        "skill_registry",
+        "tool_registry"
       ],
       "tests": [
         "test_capability_graph",
@@ -1977,13 +1982,15 @@
         "test_phase11",
         "test_phase13",
         "test_phase15",
-        "test_skill_registry"
+        "test_skill_registry",
+        "test_tool_registry"
       ],
       "sdk_interfaces": [
         "capability_matrix",
         "capability_registry",
         "mcp_registry",
         "skill_registry",
+        "tool_registry",
         "capability_graph"
       ],
       "mcp_tools": [],
@@ -1997,7 +2004,8 @@
         "provider_discovery",
         "provider_intelligence",
         "provider_verifier",
-        "skill_registry"
+        "skill_registry",
+        "tool_registry"
       ],
       "tests": [
         "test_kimi_k3",
@@ -2005,7 +2013,8 @@
         "test_phase11",
         "test_phase13",
         "test_phase15",
-        "test_skill_registry"
+        "test_skill_registry",
+        "test_tool_registry"
       ],
       "sdk_interfaces": [
         "provider_intelligence",
@@ -2014,7 +2023,8 @@
         "provider_discovery_engine",
         "provider_verifier",
         "mcp_registry",
-        "skill_registry"
+        "skill_registry",
+        "tool_registry"
       ],
       "mcp_tools": [],
       "benchmarks": []
@@ -3214,7 +3224,8 @@
     "PLG-06": {
       "modules": [
         "mcp_registry",
-        "mcp_tools"
+        "mcp_tools",
+        "tool_registry"
       ],
       "tests": [
         "test_3d_extensions",
@@ -3247,11 +3258,13 @@
         "test_security",
         "test_security_crypto",
         "test_skill_registry",
+        "test_tool_registry",
         "test_video_editing",
         "test_voice_cloning"
       ],
       "sdk_interfaces": [
-        "mcp_registry"
+        "mcp_registry",
+        "tool_registry"
       ],
       "mcp_tools": [],
       "benchmarks": []
@@ -4137,7 +4150,8 @@
         "code_analysis",
         "mcp_registry",
         "research_agent",
-        "skill_registry"
+        "skill_registry",
+        "tool_registry"
       ],
       "tests": [
         "test_code_analysis",
@@ -4147,7 +4161,8 @@
         "test_phase11",
         "test_phase13",
         "test_phase15",
-        "test_skill_registry"
+        "test_skill_registry",
+        "test_tool_registry"
       ],
       "sdk_interfaces": [
         "multi_agent_review",
@@ -4156,7 +4171,8 @@
         "agent_interface",
         "capability_registry",
         "mcp_registry",
-        "skill_registry"
+        "skill_registry",
+        "tool_registry"
       ],
       "mcp_tools": [
         "get_known_providers",
@@ -4311,6 +4327,7 @@
         "test_security",
         "test_security_crypto",
         "test_skill_registry",
+        "test_tool_registry",
         "test_video_editing",
         "test_voice_cloning"
       ],
@@ -4330,7 +4347,8 @@
         "test_phase13",
         "test_phase14",
         "test_research_integration",
-        "test_skill_registry"
+        "test_skill_registry",
+        "test_tool_registry"
       ],
       "sdk_interfaces": [
         "agent_interface"
@@ -4374,6 +4392,7 @@
         "test_security",
         "test_security_crypto",
         "test_skill_registry",
+        "test_tool_registry",
         "test_video_editing",
         "test_voice_cloning"
       ],
@@ -4388,7 +4407,8 @@
         "capability_registry",
         "mcp_registry",
         "mcp_tools",
-        "skill_registry"
+        "skill_registry",
+        "tool_registry"
       ],
       "tests": [
         "test_3d_extensions",
@@ -4422,13 +4442,15 @@
         "test_security",
         "test_security_crypto",
         "test_skill_registry",
+        "test_tool_registry",
         "test_video_editing",
         "test_voice_cloning"
       ],
       "sdk_interfaces": [
         "capability_registry",
         "mcp_registry",
-        "skill_registry"
+        "skill_registry",
+        "tool_registry"
       ],
       "mcp_tools": [],
       "benchmarks": []
@@ -4437,19 +4459,22 @@
       "modules": [
         "capability_registry",
         "mcp_registry",
-        "skill_registry"
+        "skill_registry",
+        "tool_registry"
       ],
       "tests": [
         "test_kimi_k3",
         "test_mcp_registry",
         "test_phase13",
         "test_phase15",
-        "test_skill_registry"
+        "test_skill_registry",
+        "test_tool_registry"
       ],
       "sdk_interfaces": [
         "capability_registry",
         "mcp_registry",
-        "skill_registry"
+        "skill_registry",
+        "tool_registry"
       ],
       "mcp_tools": [],
       "benchmarks": []
@@ -4490,11 +4515,65 @@
         "test_security",
         "test_security_crypto",
         "test_skill_registry",
+        "test_tool_registry",
         "test_video_editing",
         "test_voice_cloning"
       ],
       "sdk_interfaces": [
         "mcp_registry"
+      ],
+      "mcp_tools": [],
+      "benchmarks": []
+    },
+    "PLT-24": {
+      "modules": [
+        "capability_registry",
+        "mcp_registry",
+        "mcp_tools",
+        "skill_registry",
+        "tool_registry"
+      ],
+      "tests": [
+        "test_3d_extensions",
+        "test_3d_generation",
+        "test_audio",
+        "test_audio_enhancement",
+        "test_browser_ai",
+        "test_capability_graph",
+        "test_document_intelligence",
+        "test_edge_ai",
+        "test_event_bus",
+        "test_failure_recovery",
+        "test_generation",
+        "test_kimi_k3",
+        "test_local_runtimes",
+        "test_mcp_registry",
+        "test_music_generation",
+        "test_observability",
+        "test_ocr",
+        "test_phase11",
+        "test_phase13",
+        "test_phase14",
+        "test_phase15",
+        "test_plugin_extensions",
+        "test_plugin_system",
+        "test_quality_engineering",
+        "test_regression",
+        "test_research_integration",
+        "test_search_backends",
+        "test_search_systems",
+        "test_security",
+        "test_security_crypto",
+        "test_skill_registry",
+        "test_tool_registry",
+        "test_video_editing",
+        "test_voice_cloning"
+      ],
+      "sdk_interfaces": [
+        "capability_registry",
+        "mcp_registry",
+        "skill_registry",
+        "tool_registry"
       ],
       "mcp_tools": [],
       "benchmarks": []
@@ -5260,7 +5339,8 @@
         "PLT-19",
         "PLT-20",
         "PLT-21",
-        "PLT-23"
+        "PLT-23",
+        "PLT-24"
       ]
     },
     {

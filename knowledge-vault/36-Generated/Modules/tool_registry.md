@@ -1,30 +1,36 @@
 ---
-module: "sdk"
+module: "tool_registry"
 type: module-doc
 status: active
 owner: ""
-lines: 1756
+lines: 92
 classes: 1
-functions: 0
+functions: 1
 tags: [module, documentation]
 generated: "2026-07-31"
 ---
 
-# sdk
+# tool_registry
 
-> SDK — Python SDK for the AI Generation Platform.
-High-level API for consumers.
+> Tool Registry — unified registry of external code-quality tools.
+
+Single source of truth: ``configs/tools.json`` (canonical — no parallel
+tool registry). Every ready entry records a distribution verif
 
 ## Overview
 
-- **File**: `ai_generation/sdk.py`
-- **Lines**: 1756
+- **File**: `ai_generation/tool_registry.py`
+- **Lines**: 92
 - **Classes**: 1
-- **Public Functions**: 0
+- **Public Functions**: 1
 
 ## Classes
 
-- `{{UncleFrappeAI}}`
+- `{{ToolRegistry}}`
+
+## Public API
+
+- `get_tool_registry()`
 
 ## Integration
 

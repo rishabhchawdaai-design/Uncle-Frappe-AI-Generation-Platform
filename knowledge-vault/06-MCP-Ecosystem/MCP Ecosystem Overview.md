@@ -7,7 +7,7 @@ tags: [mcp, overview, index]
 
 # MCP Ecosystem Overview
 
-## 214 MCP Tools
+## 216 MCP Tools
 
 The MCP (Model Context Protocol) ecosystem exposes all platform capabilities as structured tools.
 
@@ -20,7 +20,7 @@ install target, required env vars, and exposed tools. Surfaces:
 
 - SDK: `ai.list_mcp_servers()`, `ai.get_mcp_server()`, `ai.get_mcp_registry_stats()`
 - CLI: `python -m ai_generation.cli mcp-servers [--category|--status|--search]`
-- MCP: `list_mcp_servers`, `get_mcp_server`, `validate_mcp_server`, `check_mcp_server_health`
+- MCP: `list_mcp_servers`, `get_mcp_server`, `validate_mcp_server`, `check_mcp_server_health`, `list_tools`, `get_tool`
 
 ## Tool Categories
 

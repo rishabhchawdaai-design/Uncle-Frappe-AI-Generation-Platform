@@ -1188,6 +1188,30 @@ MCP_GENERATION_TOOLS = {
             "required": ["server_id"],
         },
     },
+    "list_tools": {
+        "name": "list_tools",
+        "description": "List code-quality tools from the unified tool registry (filter by category, status, search).",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "category": {"type": "string", "description": "Filter by category (e.g. lint, security, format)", "default": ""},
+                "status": {"type": "string", "enum": ["ready", "blocked"], "description": "Filter by distribution status", "default": ""},
+                "search": {"type": "string", "description": "Free-text search over id/name/purpose/package", "default": ""},
+            },
+            "required": [],
+        },
+    },
+    "get_tool": {
+        "name": "get_tool",
+        "description": "Get one code-quality tool entry (install type, command, config) from the unified registry.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "tool_id": {"type": "string", "description": "Registry id, e.g. ruff, semgrep, codeql"},
+            },
+            "required": ["tool_id"],
+        },
+    },
 
 }
 class MCPGenerationTools:
@@ -1420,6 +1444,8 @@ class MCPGenerationTools:
             "get_skill": self._handle_get_skill,
             "validate_mcp_server": self._handle_validate_mcp_server,
             "check_mcp_server_health": self._handle_check_mcp_server_health,
+            "list_tools": self._handle_list_tools,
+            "get_tool": self._handle_get_tool,
             "kimi_k3_health": self._handle_kimi_k3_health,
             "kimi_k3_benchmark": self._handle_kimi_k3_benchmark,
         }
@@ -1509,6 +1535,21 @@ class MCPGenerationTools:
             args.get("server_id", ""),
             timeout=float(args.get("timeout", 5.0)),
         )
+
+    async def _handle_list_tools(self, args):
+        """List code-quality tools from the unified registry."""
+        return {"tools": self.sdk.list_tools(
+            category=args.get("category", ""),
+            status=args.get("status", ""),
+            search=args.get("search", ""),
+        )}
+
+    async def _handle_get_tool(self, args):
+        """Get one code-quality tool entry from the unified registry."""
+        tool = self.sdk.get_tool(args.get("tool_id", ""))
+        if tool is None:
+            return {"error": f"unknown tool: {args.get('tool_id', '')}"}
+        return {"tool": tool}
 
     async def _handle_list_styles(self, args):
         """List all available style presets for image generation"""

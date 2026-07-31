@@ -108,6 +108,8 @@ class UncleFrappeAI:
         self._mcp_registry = None
         # Unified Skill Registry
         self._skill_registry = None
+        # Unified Tool Registry
+        self._tool_registry = None
         # Phase 30 — Security Crypto Layer
         self._encryption_at_rest = None
         # Phase 31 — In-Memory Event Bus
@@ -635,6 +637,28 @@ class UncleFrappeAI:
     def get_skill_registry_stats(self) -> dict:
         """Get unified skill registry statistics."""
         return self.skill_registry.stats()
+
+    @property
+    def tool_registry(self):
+        """Unified Tool Registry (canonical: configs/tools.json)."""
+        if self._tool_registry is None:
+            from .tool_registry import ToolRegistry
+            self._tool_registry = ToolRegistry()
+        return self._tool_registry
+
+    def list_tools(self, category: str = "", status: str = "",
+                   search: str = "") -> list:
+        """List code-quality tools from the unified registry (filterable)."""
+        return self.tool_registry.list_tools(category=category, status=status,
+                                             search=search)
+
+    def get_tool(self, tool_id: str) -> dict:
+        """Get one tool entry from the unified registry."""
+        return self.tool_registry.get_tool(tool_id)
+
+    def get_tool_registry_stats(self) -> dict:
+        """Get unified tool registry statistics."""
+        return self.tool_registry.stats()
 
     @property
     def event_kernel(self):
