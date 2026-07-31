@@ -524,10 +524,15 @@ class UncleFrappeAI:
 
     @property
     def kimi_k3(self):
-        """Kimi K3 manager — cloud API + self-hosted vLLM/SGLang execution."""
+        """Kimi K3 manager — cloud API + self-hosted vLLM/SGLang execution.
+
+        Wired to the platform Event Bus so every K3 request publishes
+        kimi_k3.request.complete / kimi_k3.provider.failed /
+        kimi_k3.request.failed domain events.
+        """
         if self._kimi_k3 is None:
             from .kimi_k3 import KimiK3Manager
-            self._kimi_k3 = KimiK3Manager(self.config)
+            self._kimi_k3 = KimiK3Manager(self.config, event_bus=self.event_bus)
         return self._kimi_k3
 
     @property
