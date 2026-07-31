@@ -1403,12 +1403,51 @@
       "success": true,
       "error": "",
       "timestamp": "2026-07-28T09:26:17.586427+00:00"
+    },
+    {
+      "benchmark_id": "2f4c1c3a",
+      "provider": "test",
+      "model": "m1",
+      "category": "realism",
+      "prompt": "test",
+      "quality_score": 0.8,
+      "prompt_adherence": 0.9,
+      "latency_ms": 1000,
+      "success": true,
+      "error": "",
+      "timestamp": "2026-07-28T09:29:37.577420+00:00"
+    },
+    {
+      "benchmark_id": "fa283ce9",
+      "provider": "a",
+      "model": "m1",
+      "category": "realism",
+      "prompt": "t",
+      "quality_score": 0.9,
+      "prompt_adherence": 0.8,
+      "latency_ms": 500,
+      "success": true,
+      "error": "",
+      "timestamp": "2026-07-28T09:29:37.591494+00:00"
+    },
+    {
+      "benchmark_id": "0f5127d7",
+      "provider": "b",
+      "model": "m2",
+      "category": "realism",
+      "prompt": "t",
+      "quality_score": 0.7,
+      "prompt_adherence": 0.6,
+      "latency_ms": 2000,
+      "success": true,
+      "error": "",
+      "timestamp": "2026-07-28T09:29:37.594369+00:00"
     }
   ],
   "scores": [
     {
       "provider": "test",
-      "total_benchmarks": 36,
+      "total_benchmarks": 37,
       "avg_quality": 0.8,
       "avg_prompt_adherence": 0.9,
       "avg_latency_ms": 1000.0,
@@ -1420,7 +1459,7 @@
     },
     {
       "provider": "a",
-      "total_benchmarks": 36,
+      "total_benchmarks": 37,
       "avg_quality": 0.9,
       "avg_prompt_adherence": 0.8,
       "avg_latency_ms": 500.0,
@@ -1432,7 +1471,7 @@
     },
     {
       "provider": "b",
-      "total_benchmarks": 36,
+      "total_benchmarks": 37,
       "avg_quality": 0.7,
       "avg_prompt_adherence": 0.6,
       "avg_latency_ms": 2000.0,
@@ -1443,5 +1482,5 @@
       }
     }
   ],
-  "updated_at": "2026-07-28T09:26:17.586688+00:00"
+  "updated_at": "2026-07-28T09:29:37.594611+00:00"
 }
