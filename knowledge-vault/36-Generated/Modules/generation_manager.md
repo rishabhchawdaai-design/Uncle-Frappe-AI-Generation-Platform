@@ -3,7 +3,7 @@ module: "generation_manager"
 type: module-doc
 status: active
 owner: ""
-lines: 289
+lines: 298
 classes: 3
 functions: 0
 tags: [module, documentation]
@@ -18,7 +18,7 @@ automatic failover, and request orchestration.
 ## Overview
 
 - **File**: `ai_generation/generation_manager.py`
-- **Lines**: 289
+- **Lines**: 298
 - **Classes**: 3
 - **Public Functions**: 0
 

@@ -1159,3 +1159,56 @@ def test_record_kimi_k3_regression_baseline_and_detect():
     alerts = record_kimi_k3_regression(detector, bad)
     assert len(alerts) >= 2
     assert len(detector.get_provider_history("kimi_k3_vllm")) == 2
+
+
+# ── Generation Manager / TEXT provider integration ───────────────
+
+def test_kimi_k3_text_provider_registered():
+    from ai_generation.providers.base import ProviderType, TextProvider
+    from ai_generation.providers.registry import get_registry
+    registry = get_registry()
+    provider = registry.get("kimi_k3")
+    assert provider is not None
+    assert isinstance(provider, TextProvider)
+    assert provider.provider_type == ProviderType.TEXT
+    assert provider.supported_models == ["kimi-k3"]
+
+
+@pytest.mark.asyncio
+async def test_kimi_k3_text_provider_direct(monkeypatch):
+    from ai_generation.providers.kimi_k3_provider import KimiK3TextProvider
+    monkeypatch.setattr("ai_generation.kimi_k3._post_json", make_post())
+    provider = KimiK3TextProvider()
+    result = await provider.generate_text("hi", provider="kimi_k3_vllm")
+    assert result.status == "success"
+    assert result.metadata["text"] == "Hello from Kimi K3"
+    assert result.metadata["reasoning"]
+    assert provider.success_rate == 100.0
+
+
+@pytest.mark.asyncio
+async def test_kimi_k3_text_provider_error(monkeypatch):
+    from ai_generation.kimi_k3 import KimiK3Error
+    from ai_generation.providers.kimi_k3_provider import KimiK3TextProvider
+
+    async def fail(url, api_key, payload, timeout=120.0):
+        raise KimiK3Error("down")
+
+    monkeypatch.setattr("ai_generation.kimi_k3._post_json", fail)
+    provider = KimiK3TextProvider()
+    result = await provider.generate_text("boom")
+    assert result.status == "error"
+    assert provider.success_rate == 0.0
+
+
+@pytest.mark.asyncio
+async def test_generation_manager_generate_text(monkeypatch):
+    from ai_generation.generation_manager import GenerationManager
+    monkeypatch.setattr("ai_generation.kimi_k3._post_json", make_post())
+    monkeypatch.setenv("MOONSHOT_API_KEY", "test-key")
+    manager = GenerationManager()
+    result = await manager.generate_text("hello kimi")
+    assert result.status == "success"
+    assert result.metadata["text"] == "Hello from Kimi K3"
+    assert result.metadata["reasoning"]
+    assert result.latency_ms >= 0

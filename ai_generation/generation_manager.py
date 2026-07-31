@@ -162,6 +162,15 @@ class GenerationManager:
         )
         return await self.generate(request)
 
+    async def generate_text(self, prompt: str, **kwargs) -> GenerationResult:
+        """Generate a text/chat response (Kimi K3 and other TEXT providers)."""
+        request = GenerationRequest(
+            prompt=prompt,
+            provider_type=ProviderType.TEXT,
+            **kwargs,
+        )
+        return await self.generate(request)
+
     async def batch_generate(
         self, prompts: List[str], provider_type: ProviderType = ProviderType.IMAGE,
         concurrency: int = 3, **kwargs,

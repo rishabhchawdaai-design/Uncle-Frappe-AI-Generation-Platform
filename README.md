@@ -69,6 +69,7 @@ asyncio.run(main())
 
 CLI: `python -m ai_generation.cli kimi-chat "prompt"` · `kimi-info`
 Agent Interface: `await agent.chat("prompt", strategy="negotiate")`
+Generation Manager: `await GenerationManager().generate_text("prompt")`
 MCP tools: `kimi_k3_chat`, `kimi_k3_spec`, `kimi_k3_info`, `kimi_k3_health`, `kimi_k3_benchmark`
 
 Kimi K3 specs and deployment recipes (TP/EP/PP, DSpark speculative decoding,

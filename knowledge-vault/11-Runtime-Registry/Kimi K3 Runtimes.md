@@ -56,6 +56,8 @@ multi-node parallelism requires a StatefulSet plus `--dist-init-addr`.
   MONITOR worker per K3 endpoint (fail-fast on unhealthy / not serving kimi-k3).
 - **Regression Detection**: `record_kimi_k3_regression()` feeds benchmark
   runs into the Regression Detector (latency / quality / error-rate baselines).
+- **Generation Manager**: `KimiK3TextProvider` (auto-discovered TEXT provider)
+  makes K3 reachable via `GenerationManager.generate_text()`.
 - **Decision Ledger**: every completion records a chat decision entry.
 
 ## Health Checks

@@ -308,3 +308,21 @@ class STTProvider(Provider):
 
     async def generate(self, prompt: str, **kwargs) -> GenerationResult:
         return await self.transcribe_audio(**kwargs)
+
+
+class TextProvider(Provider):
+    """Base class for text/chat generation providers."""
+    provider_type: ProviderType = ProviderType.TEXT
+
+    @abstractmethod
+    async def generate_text(
+        self,
+        prompt: str,
+        system_prompt: str = "",
+        model: str = "",
+        **kwargs,
+    ) -> GenerationResult:
+        raise NotImplementedError
+
+    async def generate(self, prompt: str, **kwargs) -> GenerationResult:
+        return await self.generate_text(prompt, **kwargs)
