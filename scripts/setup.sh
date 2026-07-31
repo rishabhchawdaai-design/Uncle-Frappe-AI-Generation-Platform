@@ -10,8 +10,8 @@ python3 -m venv venv
 source venv/bin/activate
 pip install --upgrade pip
 
-echo "[2/4] Installing test dependencies..."
-pip install pytest pytest-asyncio
+echo "[2/4] Installing runtime and test dependencies..."
+pip install -r requirements.txt pytest pytest-asyncio
 
 echo "[3/4] Environment config..."
 if [ ! -f .env ]; then
