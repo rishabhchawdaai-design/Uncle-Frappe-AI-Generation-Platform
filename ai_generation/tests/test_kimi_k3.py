@@ -1238,3 +1238,23 @@ def test_cli_kimi_benchmark(capsys, monkeypatch):
     out = capsys.readouterr().out
     assert "run 1: OK" in out
     assert "kimi_k3_vllm" in out
+
+
+# ── SDK graph wiring (Knowledge + Capability graphs) ─────────────
+
+def test_sdk_knowledge_graph_includes_kimi_k3():
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    kg = ai.knowledge_graph
+    assert kg.get_node("provider:kimi_k3") is not None
+    assert kg.get_node("model:kimi-k3") is not None
+    assert kg.get_node("capability:chat") is not None
+
+
+def test_sdk_capability_graph_includes_kimi_k3():
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    cg = ai.capability_graph
+    for pid in ("kimi_k3_cloud", "kimi_k3_vllm", "kimi_k3_sglang"):
+        assert cg.get_node(pid) is not None
+    assert cg.get_node("chat") is not None
