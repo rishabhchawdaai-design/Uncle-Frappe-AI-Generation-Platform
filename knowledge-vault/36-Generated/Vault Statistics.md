@@ -12,7 +12,7 @@ tags: [statistics, generated]
 |--------|-------|
 | Total Knowledge Pages | 345+ |
 | Module Documentation | 64 |
-| Capability Pages | 254 |
+| Capability Pages | 255 |
 | Architecture Layer Pages | 13 |
 | Dashboard Pages | 6 |
 | Templates | 5 |
@@ -64,7 +64,7 @@ uncle-frappe-knowledge-vault/
 ├── 35-Templates/                     # Templater templates
 ├── 36-Generated/                     # Auto-generated content
 │   ├── Modules/                      # 64 module pages
-│   ├── Capabilities/                 # 254 capability pages
+│   ├── Capabilities/                 # 255 capability pages
 │   ├── Dashboards/                   # Architecture dashboards
 │   ├── Module Summary.md
 │   └── Vault Statistics.md

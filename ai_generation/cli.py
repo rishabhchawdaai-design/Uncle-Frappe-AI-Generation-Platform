@@ -766,6 +766,24 @@ async def cmd_kimi_benchmark(prompt="Explain Mixture of Experts.", runs=2,
     return result
 
 
+async def cmd_tools(category="", status="", search=""):
+    """List code-quality tools from the unified registry."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    tools = ai.list_tools(category=category, status=status, search=search)
+    stats = ai.get_tool_registry_stats()
+    print(f"\n  Tool Registry — {len(tools)} shown / {stats['total_tools']} total"
+          f" ({stats['ready']} ready, {stats['blocked']} blocked)")
+    print(f"  {'ID':<16s} {'STATUS':<8s} {'VERIFIED':<9s} {'CATEGORY':<14s} PACKAGE")
+    for t in tools:
+        verified = "yes" if t.get("verified") else "no"
+        print(f"  {t['id']:<16s} {t.get('status','ready'):<8s} {verified:<9s} "
+              f"{t.get('category','-'):<14s} {t.get('package','-') or '-'}")
+        if t.get("note"):
+            print(f"    {t['note'][:110]}")
+    return {"tools": tools, "stats": stats}
+
+
 async def cmd_mcp_check(server_id="", live=False):
     """Validate one MCP server (offline config) or live probe it (--live)."""
     from ai_generation.sdk import UncleFrappeAI
@@ -1114,6 +1132,21 @@ async def main():
         await cmd_kimi_info()
     elif args[0] == "kimi-health":
         await cmd_kimi_health()
+    elif args[0] == "tools":
+        category = ""
+        status = ""
+        search = ""
+        i = 1
+        while i < len(args):
+            if args[i] == "--category" and i + 1 < len(args):
+                category = args[i + 1]; i += 2
+            elif args[i] == "--status" and i + 1 < len(args):
+                status = args[i + 1]; i += 2
+            elif args[i] == "--search" and i + 1 < len(args):
+                search = args[i + 1]; i += 2
+            else:
+                i += 1
+        await cmd_tools(category=category, status=status, search=search)
     elif args[0] == "mcp-check":
         server_id = ""
         live = False
