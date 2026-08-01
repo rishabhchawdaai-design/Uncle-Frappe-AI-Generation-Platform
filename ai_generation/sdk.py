@@ -748,6 +748,23 @@ class UncleFrappeAI:
             "summary": report["summary"],
         }
 
+    async def run_provider_health_cycle(self, health_path=None, registry_path=None):
+        """Run one persisted provider health cycle (check, auto-disable, auto-re-enable)."""
+        from .health_monitor import ProviderHealthCycle
+        cycle = ProviderHealthCycle(
+            health_path=health_path, discovery_registry_path=registry_path)
+        return await cycle.run_cycle()
+
+    def get_provider_health_report(self, health_path=None):
+        """Read the persisted provider health registry."""
+        from .health_monitor import ProviderHealthCycle
+        cycle = ProviderHealthCycle(health_path=health_path)
+        cycle._load_persisted()
+        return {
+            "statuses": cycle._monitor.get_all_statuses(),
+            "stats": cycle._monitor.get_stats(),
+        }
+
     def get_provider_discovery_stats(self):
         """Summary of the persisted provider network state."""
         from .provider_discovery_registrar import ProviderDiscoveryRegistrar

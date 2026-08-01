@@ -373,6 +373,26 @@ async def cmd_discover():
         print(f"    {r['name']:20s}  priority={r['priority']:8s}  score={r['recommendation_score']:.1f}  free={r['free_tier']}  status={r['status']}")
 
 
+async def cmd_health_cycle():
+    """Run a persisted provider health cycle (check, auto-disable, auto-re-enable)."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    report = await ai.run_provider_health_cycle()
+    print(f"\n  Provider Health Cycle")
+    print(f"  Checked:     {len(report['checked_providers'])} providers")
+    print(f"  Healthy:     {len(report['healthy'])}")
+    print(f"  Unhealthy:   {len(report['unhealthy'])}")
+    print(f"  Disabled:    {report['changes']['disabled'] or 'none'}")
+    print(f"  Re-enabled:  {report['changes']['re_enabled'] or 'none'}")
+    print(f"  Degraded:    {report['changes']['degraded'] or 'none'}")
+    for name in report['unhealthy']:
+        statuses = {s['provider']: s for s in report['statuses']}
+        s = statuses.get(name, {})
+        print(f"    -- {name}: {s.get('last_error', '')}")
+    print(f"\n  Persisted:   {report['checked_at']}")
+    return report
+
+
 async def cmd_provider_rank(provider_type=""):
     """Refresh and print the ranked provider network (Discovery Registrar)."""
     from ai_generation.sdk import UncleFrappeAI
@@ -993,6 +1013,7 @@ async def main():
     python -m ai_generation.cli cap-matrix                Capability registry
     python -m ai_generation.cli discover                  Provider discovery
     python -m ai_generation.cli provider-rank [TYPE]   Refresh + rank provider network
+    python -m ai_generation.cli health-cycle           Run persisted provider health cycle
     python -m ai_generation.cli add-endpoint <name> <url> Add remote endpoint
     python -m ai_generation.cli classify <request>        Classify a request
 
@@ -1116,6 +1137,8 @@ async def main():
         await cmd_health()
     elif args[0] == "cap-matrix":
         await cmd_cap_matrix()
+    elif args[0] == "health-cycle":
+        await cmd_health_cycle()
     elif args[0] == "provider-rank":
         provider_type = args[1] if len(args) > 1 else ""
         await cmd_provider_rank(provider_type)
