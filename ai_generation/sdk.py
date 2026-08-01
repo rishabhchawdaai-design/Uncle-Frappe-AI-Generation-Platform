@@ -725,6 +725,34 @@ class UncleFrappeAI:
             result.metadata["system_prompt"] = system_prompt
         return result
 
+    def get_provider_ranking(self, provider_type="", prefer_free=True,
+                           registry_path=None):
+        """Rank registered providers by fitness (free-first, benchmark-aware).
+
+        Reads the persisted Discovery Registrar snapshot; use
+        ``refresh_provider_discovery()`` to regenerate it first.
+        """
+        from .provider_discovery_registrar import ProviderDiscoveryRegistrar
+        registrar = ProviderDiscoveryRegistrar(registry_path=registry_path)
+        return registrar.rank(
+            provider_type=provider_type, prefer_free=prefer_free)
+
+    def refresh_provider_discovery(self, registry_path=None):
+        """Regenerate and persist the provider discovery registry snapshot."""
+        from .provider_discovery_registrar import ProviderDiscoveryRegistrar
+        registrar = ProviderDiscoveryRegistrar(registry_path=registry_path)
+        report = registrar.refresh()
+        return {
+            "path": str(registrar.registry_path),
+            "generated_at": report["generated_at"],
+            "summary": report["summary"],
+        }
+
+    def get_provider_discovery_stats(self):
+        """Summary of the persisted provider network state."""
+        from .provider_discovery_registrar import ProviderDiscoveryRegistrar
+        return ProviderDiscoveryRegistrar().get_stats()
+
     async def batch_generate(self, prompts, concurrency=3, **kwargs):
         return await self.generation_manager.batch_generate(
             prompts, concurrency=concurrency, **kwargs,

@@ -255,6 +255,30 @@ scripts/                # Setup & utility scripts
 | SiliconFlow | ✅ Active | ✅ | ❌ | ❌ |
 | Craiyon | ✅ Active | ✅ | ❌ | ❌ |
 
+## Provider Network & Discovery Registrar
+
+The platform maintains a persisted provider network snapshot at
+`data/registry/provider_discovery.json`, regenerated from the live provider
+registry and benchmark scores. It ranks every provider per modality using a
+deterministic free-first, benchmark-aware score, and the Generation Manager
+uses that ranked order for automatic routing (falling back to tier ordering
+when no snapshot exists).
+
+```bash
+# Refresh the provider network and print the ranked list
+python -m ai_generation.cli provider-rank [TYPE]
+
+# Via the unified SDK
+python -c "from ai_generation import UncleFrappeAI; ai = UncleFrappeAI(); print(ai.get_provider_ranking('image'))"
+```
+
+Ranking factors: tier (free first), key availability (keyless first),
+availability/status, success rate, latency, and benchmark composite score.
+Key-gated providers are marked `needs key` and remain listed but rank below
+usable providers. The registrar is also exposed as the `get_provider_ranking`
+MCP tool.
+
+## Verified Generation Matrix
 ## Verified Generation Matrix
 
 `scripts/verify_generation.py` proves every modality by execution on the

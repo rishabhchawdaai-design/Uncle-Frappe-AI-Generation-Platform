@@ -373,6 +373,27 @@ async def cmd_discover():
         print(f"    {r['name']:20s}  priority={r['priority']:8s}  score={r['recommendation_score']:.1f}  free={r['free_tier']}  status={r['status']}")
 
 
+async def cmd_provider_rank(provider_type=""):
+    """Refresh and print the ranked provider network (Discovery Registrar)."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    refreshed = ai.refresh_provider_discovery()
+    print(f"\n  Discovery registry: {refreshed['path']}")
+    print(f"  Generated:   {refreshed['generated_at']}")
+    summary = refreshed["summary"]
+    print(f"  Providers:   {summary['total_providers']} total, "
+          f"{summary['available']} available, {summary['free']} free")
+    ranked = ai.get_provider_ranking(provider_type=provider_type)
+    print("\n  Ranked providers:")
+    for entry in ranked[:12]:
+        flag = "OK" if entry["available"] else "--"
+        key = "" if (not entry["requires_api_key"] or entry["has_api_key"]) else " (needs key)"
+        print(f"    #{entry['rank']:>2} [{flag}] {entry['name']:22s} "
+              f"{entry['type']:10s} score={entry['rank_score']:6.2f} "
+              f"lat={entry['avg_latency_ms']:.0f}ms{key}")
+    return ranked
+
+
 async def cmd_add_endpoint(name, url):
     """Register a remote execution endpoint by name and URL."""
     from ai_generation.sdk import UncleFrappeAI
@@ -971,6 +992,7 @@ async def main():
     python -m ai_generation.cli health-check              Check provider health
     python -m ai_generation.cli cap-matrix                Capability registry
     python -m ai_generation.cli discover                  Provider discovery
+    python -m ai_generation.cli provider-rank [TYPE]   Refresh + rank provider network
     python -m ai_generation.cli add-endpoint <name> <url> Add remote endpoint
     python -m ai_generation.cli classify <request>        Classify a request
 
@@ -1094,6 +1116,9 @@ async def main():
         await cmd_health()
     elif args[0] == "cap-matrix":
         await cmd_cap_matrix()
+    elif args[0] == "provider-rank":
+        provider_type = args[1] if len(args) > 1 else ""
+        await cmd_provider_rank(provider_type)
     elif args[0] == "discover":
         await cmd_discover()
     elif args[0] == "add-endpoint":

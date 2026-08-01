@@ -25,6 +25,18 @@ MCP_GENERATION_TOOLS = {
             "required": ["prompt"],
         },
     },
+    "get_provider_ranking": {
+        "name": "get_provider_ranking",
+        "description": "Rank registered providers by fitness (free-first, benchmark-aware) from the Discovery Registrar.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "provider_type": {"type": "string", "description": "Filter by provider type: image, video, text, audio, image_edit", "default": ""},
+                "prefer_free": {"type": "boolean", "description": "Prefer free providers", "default": True},
+            },
+            "required": [],
+        },
+    },
     "generate_text": {
         "name": "generate_text",
         "description": "Generate a text/chat response using free anonymous Pollinations API with automatic failover to key-based backends.",
@@ -1247,6 +1259,7 @@ class MCPGenerationTools:
         handlers = {
             "generate_image": self._handle_generate_image,
             "generate_text": self._handle_generate_text,
+            "get_provider_ranking": self._handle_provider_ranking,
             "generate_video": self._handle_generate_video,
             "enhance_prompt": self._handle_enhance_prompt,
             "analyze_prompt": self._handle_analyze_prompt,
@@ -1489,6 +1502,14 @@ class MCPGenerationTools:
             timeout_secs=90,
         )
         return result.to_dict()
+
+    async def _handle_provider_ranking(self, args):
+        """Return the ranked provider network from the Discovery Registrar."""
+        ranking = self.sdk.get_provider_ranking(
+            provider_type=args.get("provider_type", ""),
+            prefer_free=args.get("prefer_free", True),
+        )
+        return {"ranked": ranking, "count": len(ranking)}
 
     async def _handle_generate_video(self, args):
         """Generate a video from a text prompt using AI video models"""
