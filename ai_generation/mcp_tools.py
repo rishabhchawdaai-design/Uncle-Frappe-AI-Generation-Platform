@@ -25,6 +25,11 @@ MCP_GENERATION_TOOLS = {
             "required": ["prompt"],
         },
     },
+    "run_provider_health_cycle": {
+        "name": "run_provider_health_cycle",
+        "description": "Run a persisted provider health cycle: check every cloud provider, auto-disable broken providers, auto-re-enable fixed ones.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
     "get_provider_ranking": {
         "name": "get_provider_ranking",
         "description": "Rank registered providers by fitness (free-first, benchmark-aware) from the Discovery Registrar.",
@@ -1260,6 +1265,7 @@ class MCPGenerationTools:
             "generate_image": self._handle_generate_image,
             "generate_text": self._handle_generate_text,
             "get_provider_ranking": self._handle_provider_ranking,
+            "run_provider_health_cycle": self._handle_health_cycle,
             "generate_video": self._handle_generate_video,
             "enhance_prompt": self._handle_enhance_prompt,
             "analyze_prompt": self._handle_analyze_prompt,
@@ -1510,6 +1516,10 @@ class MCPGenerationTools:
             prefer_free=args.get("prefer_free", True),
         )
         return {"ranked": ranking, "count": len(ranking)}
+
+    async def _handle_health_cycle(self, args):
+        """Run the persisted provider health cycle."""
+        return await self.sdk.run_provider_health_cycle()
 
     async def _handle_generate_video(self, args):
         """Generate a video from a text prompt using AI video models"""

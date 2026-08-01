@@ -1,0 +1,138 @@
+{
+  "checked_at": "2026-08-01T13:50:29.011352",
+  "checked_providers": [
+    "craiyon",
+    "fal",
+    "huggingface",
+    "kimi_k3",
+    "openai_tts",
+    "pollinations",
+    "pollinations_text",
+    "replicate",
+    "replicate_video",
+    "siliconflow",
+    "stability",
+    "together"
+  ],
+  "healthy": [
+    "openai_tts",
+    "craiyon",
+    "fal",
+    "kimi_k3",
+    "pollinations",
+    "pollinations_text",
+    "replicate",
+    "siliconflow",
+    "stability",
+    "together",
+    "replicate_video"
+  ],
+  "unhealthy": [
+    "huggingface"
+  ],
+  "changes": {
+    "disabled": [],
+    "re_enabled": [],
+    "degraded": [
+      "huggingface"
+    ]
+  },
+  "statuses": [
+    {
+      "provider": "openai_tts",
+      "healthy": true,
+      "latency_ms": 1605.4,
+      "consecutive_failures": 0,
+      "last_error": "",
+      "last_check": "2026-08-01T13:50:27.778345"
+    },
+    {
+      "provider": "craiyon",
+      "healthy": true,
+      "latency_ms": 726.4,
+      "consecutive_failures": 0,
+      "last_error": "",
+      "last_check": "2026-08-01T13:50:27.592086"
+    },
+    {
+      "provider": "fal",
+      "healthy": true,
+      "latency_ms": 1389.1,
+      "consecutive_failures": 0,
+      "last_error": "",
+      "last_check": "2026-08-01T13:50:28.292582"
+    },
+    {
+      "provider": "huggingface",
+      "healthy": false,
+      "latency_ms": 432.6,
+      "consecutive_failures": 1,
+      "last_error": "[Errno -5] No address associated with hostname",
+      "last_check": "2026-08-01T13:50:27.374222"
+    },
+    {
+      "provider": "kimi_k3",
+      "healthy": true,
+      "latency_ms": 742.9,
+      "consecutive_failures": 0,
+      "last_error": "",
+      "last_check": "2026-08-01T13:50:27.723922"
+    },
+    {
+      "provider": "pollinations",
+      "healthy": true,
+      "latency_ms": 1334.3,
+      "consecutive_failures": 0,
+      "last_error": "",
+      "last_check": "2026-08-01T13:50:28.354537"
+    },
+    {
+      "provider": "pollinations_text",
+      "healthy": true,
+      "latency_ms": 1948.3,
+      "consecutive_failures": 0,
+      "last_error": "",
+      "last_check": "2026-08-01T13:50:29.005805"
+    },
+    {
+      "provider": "replicate",
+      "healthy": true,
+      "latency_ms": 724.8,
+      "consecutive_failures": 0,
+      "last_error": "",
+      "last_check": "2026-08-01T13:50:27.821746"
+    },
+    {
+      "provider": "siliconflow",
+      "healthy": true,
+      "latency_ms": 1030.3,
+      "consecutive_failures": 0,
+      "last_error": "",
+      "last_check": "2026-08-01T13:50:28.166499"
+    },
+    {
+      "provider": "stability",
+      "healthy": true,
+      "latency_ms": 470.2,
+      "consecutive_failures": 0,
+      "last_error": "",
+      "last_check": "2026-08-01T13:50:27.645226"
+    },
+    {
+      "provider": "together",
+      "healthy": true,
+      "latency_ms": 718.6,
+      "consecutive_failures": 0,
+      "last_error": "",
+      "last_check": "2026-08-01T13:50:27.932336"
+    },
+    {
+      "provider": "replicate_video",
+      "healthy": true,
+      "latency_ms": 1065.5,
+      "consecutive_failures": 0,
+      "last_error": "",
+      "last_check": "2026-08-01T13:50:28.317785"
+    }
+  ]
+}

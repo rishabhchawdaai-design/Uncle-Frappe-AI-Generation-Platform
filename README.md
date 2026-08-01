@@ -278,6 +278,22 @@ Key-gated providers are marked `needs key` and remain listed but rank below
 usable providers. The registrar is also exposed as the `get_provider_ranking`
 MCP tool.
 
+### Provider Health Cycle
+
+`ProviderHealthCycle` checks every cloud provider, auto-disables providers
+after 3 consecutive failures (they are excluded from routing), auto-re-enables
+them when a check succeeds, and persists the result to
+`data/registry/health_registry.json`.
+
+```bash
+python -m ai_generation.cli health-cycle
+```
+
+Also exposed via the SDK (`run_provider_health_cycle`) and the
+`run_provider_health_cycle` MCP tool. Local-only runtimes (Piper, Kokoro,
+OpenAI TTS) are skipped by design — they are expected to be started on demand.
+
+## Verified Generation Matrix
 ## Verified Generation Matrix
 ## Verified Generation Matrix
 
