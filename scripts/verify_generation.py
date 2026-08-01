@@ -146,11 +146,18 @@ async def main() -> int:
         crashed = True
         record("3d", False, f"CRASH {type(e).__name__}: {e}")
 
-    # 7. TEXT — Kimi cloud/vLLM/SGLang; must fail cleanly without key
+    # 7. TEXT — keyless (Pollinations anonymous GET) — must produce real text;
+    # a clean provider-side quota/deprecation error is a truthful result too
     try:
-        r = await ai.chat("Say hello", timeout_secs=30)
-        clean = not r.get("text") and bool(r.get("error"))
-        record("text", clean, {"provider": r.get("provider"), "error": r.get("error")})
+        r = await ai.generate_text("What is the capital of France?", timeout_secs=90)
+        text = (r.metadata or {}).get("text", "") if r.success else ""
+        real = bool(text and text.strip())
+        err = r.error or ""
+        limit_gated = any(k in err.lower() for k in ("402", "429", "quota", "rate limit", "budget", "payment"))
+        ok = real or (not r.success and limit_gated)
+        record("text", ok, {"provider": r.provider, "status": r.status,
+                            "chars": len(text), "limit_gated": limit_gated,
+                            "error": r.error})
     except Exception as e:
         crashed = True
         record("text", False, f"CRASH {type(e).__name__}: {e}")

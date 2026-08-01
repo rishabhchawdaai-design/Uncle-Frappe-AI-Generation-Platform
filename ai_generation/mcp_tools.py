@@ -25,6 +25,19 @@ MCP_GENERATION_TOOLS = {
             "required": ["prompt"],
         },
     },
+    "generate_text": {
+        "name": "generate_text",
+        "description": "Generate a text/chat response using free anonymous Pollinations API with automatic failover to key-based backends.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "prompt": {"type": "string", "description": "Text prompt or question"},
+                "model": {"type": "string", "description": "Model: openai-fast, openai, mistral, searchgpt", "default": "openai"},
+                "system_prompt": {"type": "string", "description": "Optional system instruction"},
+            },
+            "required": ["prompt"],
+        },
+    },
     "generate_video": {
         "name": "generate_video",
         "description": "Generate a video from a text prompt using AI video models.",
@@ -1233,6 +1246,7 @@ class MCPGenerationTools:
         """Dispatch an MCP tool invocation to its handler by tool name."""
         handlers = {
             "generate_image": self._handle_generate_image,
+            "generate_text": self._handle_generate_text,
             "generate_video": self._handle_generate_video,
             "enhance_prompt": self._handle_enhance_prompt,
             "analyze_prompt": self._handle_analyze_prompt,
@@ -1463,6 +1477,16 @@ class MCPGenerationTools:
             prompt=args["prompt"], style=args.get("style", ""),
             width=args.get("width", 1024), height=args.get("height", 1024),
             provider=args.get("provider"), seed=args.get("seed"),
+        )
+        return result.to_dict()
+
+    async def _handle_generate_text(self, args):
+        """Generate a text/chat response through the unified provider layer."""
+        result = await self.sdk.generate_text(
+            prompt=args["prompt"],
+            model=args.get("model", ""),
+            system_prompt=args.get("system_prompt", ""),
+            timeout_secs=90,
         )
         return result.to_dict()
 

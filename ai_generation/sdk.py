@@ -702,6 +702,29 @@ class UncleFrappeAI:
         )
         return await self.generation_manager.generate(request)
 
+    async def generate_text(self, prompt, model="", system_prompt="", **kwargs):
+        """Generate a text/chat response through the unified provider layer.
+
+        Uses automatic routing and failover across TEXT providers (e.g. the
+        keyless Pollinations anonymous API, then key-based providers).
+        Returns a GenerationResult; on success the text is in
+        ``result.metadata["text"]``.
+        """
+        from .generation_manager import GenerationRequest
+        from .providers.base import ProviderType
+        request = GenerationRequest(
+            prompt=prompt, provider_type=ProviderType.TEXT,
+            model=model, **kwargs,
+        )
+        if system_prompt:
+            request.metadata["system_prompt"] = system_prompt
+        result = await self.generation_manager.generate(request)
+        if result.success and not result.metadata.get("text"):
+            result.metadata["text"] = getattr(result, "text", "")
+        if system_prompt:
+            result.metadata["system_prompt"] = system_prompt
+        return result
+
     async def batch_generate(self, prompts, concurrency=3, **kwargs):
         return await self.generation_manager.batch_generate(
             prompts, concurrency=concurrency, **kwargs,

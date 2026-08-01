@@ -112,6 +112,19 @@ INITIAL_REGISTRY = [
                media_type="image", supported_tasks=["text_to_image"],
                supported_resolutions=["1024x1024"],
                free_tier=True, api_key_required=True),
+    # Pollinations — free anonymous text generation (live-verified 2026-08-01)
+    ModelEntry(model_id="pollinations-openai-fast", provider="pollinations_text",
+               model_name="openai-fast", media_type="text",
+               supported_tasks=["chat"], api_key_required=False, free_tier=True,
+               known_limits={
+                   "tier": "anonymous",
+                   "reasoning": True,
+                   "tools": True,
+                   "output_modalities": ["text"],
+               }),
+    ModelEntry(model_id="pollinations-openai", provider="pollinations_text",
+               model_name="openai", media_type="text",
+               supported_tasks=["chat"], api_key_required=False, free_tier=True),
     # Kimi K3 — official execution paths (Moonshot AI)
     ModelEntry(model_id="kimi-k3-cloud", provider="kimi_k3_cloud", model_name="kimi-k3",
                media_type="text", supported_tasks=["chat"],
