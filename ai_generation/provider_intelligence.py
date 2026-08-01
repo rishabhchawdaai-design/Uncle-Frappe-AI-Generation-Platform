@@ -109,6 +109,22 @@ class ProviderIntelligenceEngine:
                 notes="Free, no API key. Good Flux models.",
             ),
             ProviderIntelligence(
+                name="pollinations_text", url="https://text.pollinations.ai",
+                provider_type="text", license=LicenseType.FREE_TIER,
+                verification_status=VerificationStatus.VERIFIED,
+                availability_confirmed=True, free_tier_available=True,
+                models=[
+                    {"name": "openai-fast", "type": "text", "free": True},
+                    {"name": "mistral", "type": "text", "free": True},
+                ],
+                capabilities=["chat"],
+                media_support={"text": "production", "audio": "none", "video": "none"},
+                benchmark_scores={"quality": 70, "speed": 80, "latency": 80},
+                implementation_priority="high",
+                source="github.com/pollinations/pollinations",
+                notes="Free, no API key. Anonymous GET endpoint live-verified 2026-08-01.",
+            ),
+            ProviderIntelligence(
                 name="siliconflow", url="https://siliconflow.cn",
                 provider_type="image", license=LicenseType.FREE_TIER,
                 verification_status=VerificationStatus.VERIFIED,

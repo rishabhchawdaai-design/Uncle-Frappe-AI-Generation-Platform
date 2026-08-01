@@ -168,6 +168,16 @@
       "model": "kimi-k3",
       "engine": "sglang",
       "source": "Official SGLang recipe (docs.sglang.io)"
+    },
+    {
+      "name": "pollinations_text",
+      "url": "https://text.pollinations.ai",
+      "type": "rest_api",
+      "auth": "none",
+      "tasks": [
+        "chat"
+      ],
+      "source": "Official Pollinations docs (live-verified 2026-08-01)"
     }
   ],
   "history": [],

@@ -43,6 +43,21 @@ async def cmd_video(prompt, duration=4.0, width=1280, height=720):
     return result
 
 
+async def cmd_text(prompt, model="", system_prompt=""):
+    """Generate a text/chat response through the unified provider layer (keyless Pollinations + key-based backends)."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    result = await ai.generate_text(prompt, model=model, system_prompt=system_prompt, timeout_secs=90)
+    print(f"\n  Provider:    {result.provider}")
+    print(f"  Status:      {result.status}")
+    print(f"  Latency:     {result.latency_ms}ms")
+    if result.success:
+        print(f"  Answer:      {result.metadata.get('text', '')[:1000]}")
+    if result.error:
+        print(f"  Error:       {result.error}")
+    return result
+
+
 async def cmd_enhance(prompt, style="photorealistic"):
     """Enhance a prompt with cinematic and quality techniques."""
     from ai_generation.sdk import UncleFrappeAI
@@ -904,6 +919,7 @@ async def main():
 
   Usage:
     python -m ai_generation.cli generate <prompt> [--style STYLE] [--width W] [--height H] [--provider NAME]
+    python -m ai_generation.cli text <prompt> [--model MODEL] [--system SYSTEM]
     python -m ai_generation.cli video <prompt> [--duration SECS] [--width W] [--height H]
     python -m ai_generation.cli enhance <prompt> [--style STYLE]
     python -m ai_generation.cli providers               List available providers
@@ -978,6 +994,18 @@ async def main():
             else:
                 i += 1
         await cmd_generate(prompt, style=style, width=width, height=height, provider=provider)
+    elif args[0] == "text":
+        prompt = args[1] if len(args) > 1 else "Explain the unified AI generation platform in one sentence."
+        model, system_prompt = "", ""
+        i = 2
+        while i < len(args):
+            if args[i] == "--model" and i + 1 < len(args):
+                model = args[i + 1]; i += 2
+            elif args[i] == "--system" and i + 1 < len(args):
+                system_prompt = args[i + 1]; i += 2
+            else:
+                i += 1
+        await cmd_text(prompt, model=model, system_prompt=system_prompt)
     elif args[0] == "video":
         prompt = args[1] if len(args) > 1 else "a timelapse of clouds"
         duration, width, height = 4.0, 1280, 720

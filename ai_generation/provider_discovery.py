@@ -100,6 +100,23 @@ class ProviderDiscoveryEngine:
                 implementation_priority="high",
             ),
             ProviderDiscovery(
+                name="pollinations_text", url="https://text.pollinations.ai",
+                source=DiscoverySource.OFFICIAL_DOCS, status=DiscoveryStatus.VERIFIED,
+                provider_type="text",
+                description="Free anonymous text generation via Pollinations.ai (live-verified 2026-08-01)",
+                models=[
+                    {"name": "openai-fast", "type": "text", "free": True},
+                    {"name": "mistral", "type": "text", "free": True},
+                ],
+                capabilities=["chat"],
+                license_info="Free, no API key", free_tier=True,
+                documentation_url="https://pollinations.ai",
+                api_url="https://text.pollinations.ai",
+                health_check_url="https://text.pollinations.ai/models",
+                benchmark_scores={"quality": 70, "speed": 80},
+                implementation_priority="high",
+            ),
+            ProviderDiscovery(
                 name="siliconflow", url="https://siliconflow.cn",
                 source=DiscoverySource.OFFICIAL_DOCS, status=DiscoveryStatus.VERIFIED,
                 provider_type="image",

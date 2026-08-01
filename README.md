@@ -269,7 +269,7 @@ python scripts/verify_generation.py
 | Modality | Keyless on fresh install | Notes |
 |----------|--------------------------|-------|
 | Image | ✅ works | Pollinations (free, no key); Craiyon fallback |
-| Text (chat) | ⛔ needs key | Kimi K3 cloud (`MOONSHOT_API_KEY`) or self-hosted vLLM/SGLang |
+| Text (chat) | ✅ works | Pollinations anonymous API (free, no key); Kimi K3 / self-hosted vLLM/SGLang as key/local backends |
 | Video | ⛔ needs key | Replicate/Runway/fal providers require API tokens |
 | Music / SFX | ⛔ needs local server | AudioCraft HTTP server (`MUSICGEN_URL`) |
 | Speech (TTS) | ⛔ needs local server/key | Kokoro/Piper local, OpenAI key |

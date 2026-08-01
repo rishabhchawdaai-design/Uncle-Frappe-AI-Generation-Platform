@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 from .providers.base import (
-    Provider, ImageProvider, VideoProvider, EditProvider,
+    Provider, ImageProvider, VideoProvider, EditProvider, TextProvider,
     ProviderType, ProviderTier, ProviderStatus, GenerationResult,
 )
 from .providers.registry import get_registry
@@ -97,6 +97,15 @@ class GenerationManager:
                 providers.append(request.preferred_provider)
 
         available = self._registry.get_available(request.provider_type)
+        tier_order = {
+            ProviderTier.FREE: 0, ProviderTier.COMMUNITY: 1,
+            ProviderTier.PAID: 2, ProviderTier.ENTERPRISE: 3,
+        }
+        if request.prefer_free:
+            available = sorted(
+                available, key=lambda p: (tier_order.get(p.tier, 2), p.name))
+        else:
+            available = sorted(available, key=lambda p: p.name)
         for p in available:
             if p.name not in providers:
                 providers.append(p.name)
@@ -221,6 +230,15 @@ class GenerationManager:
                         seed=request.seed,
                         model=request.model,
                     ),
+                    timeout=request.timeout_secs,
+                )
+            elif isinstance(provider, TextProvider):
+                gen_kwargs = {
+                    "model": request.model or None,
+                    "system_prompt": request.metadata.get("system_prompt", ""),
+                }
+                return await asyncio.wait_for(
+                    provider.generate(request.prompt, **gen_kwargs),
                     timeout=request.timeout_secs,
                 )
             else:
