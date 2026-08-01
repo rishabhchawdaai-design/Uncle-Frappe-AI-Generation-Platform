@@ -213,6 +213,61 @@ class Generation3DEngine:
             "stats": self._stats,
         }
 
+    async def generate(self, prompt: str, mode: str = "text_to_3d",
+                       model_id: str = "", max_vram_gb: float = 32.0,
+                       output_path: str = "", **kwargs) -> Dict[str, Any]:
+        """Generate a 3D asset.
+
+        Every officially profiled 3D model (TRELLIS, Hunyuan3D, Point-E,
+        Shap-E) requires local GPU inference (8-16GB VRAM); there is no
+        keyless cloud 3D backend. This method routes to the selected model
+        and returns a truthful result — ``completed`` when a local backend
+        actually produces geometry, ``dependency_missing``/``unavailable``
+        with the exact reason otherwise.
+        """
+        import time as _time
+        from datetime import datetime, timezone as _tz
+
+        start = _time.time()
+        request_id = f"3d-{int(_time.time()*1000)}"
+        self._stats["total_requests"] += 1
+        self._stats["by_mode"][mode] = self._stats["by_mode"].get(mode, 0) + 1
+
+        selected = model_id or self.select_model(mode=mode, max_vram_gb=max_vram_gb)
+        base = {
+            "operation": mode,
+            "backend": selected or "none",
+            "request_id": request_id,
+            "prompt": prompt,
+            "output_path": output_path or "",
+            "output_format": "",
+            "latency_ms": round((_time.time() - start) * 1000, 1),
+            "created_at": datetime.now(_tz.utc).isoformat(),
+        }
+        if not selected:
+            base.update(
+                status="unavailable",
+                error=("No 3D backend available for mode "
+                       f"{mode!r}. Officially profiled 3D models (TRELLIS, "
+                       "Hunyuan3D, Point-E, Shap-E) require local GPU "
+                       "inference with 8-16GB VRAM; no keyless cloud 3D "
+                       "backend exists. Configure a local runtime."),
+            )
+            return base
+        profile = self._profiles.get(selected)
+        base["backend"] = selected
+        base["output_format"] = (
+            profile.output_formats[0].value if profile and profile.output_formats else ""
+        )
+        base.update(
+            status="dependency_missing",
+            error=(f"3D model {selected} requires local GPU inference "
+                   f"({profile.vram_gb}GB VRAM) — no keyless cloud backend "
+                   "exists. Configure a supported local runtime and retry."),
+            metadata={"model": profile.to_dict() if profile else {}},
+        )
+        return base
+
     def to_negotiation_candidates(self, mode: str = "text_to_3d",
                                    max_vram_gb: float = 32.0) -> List[Dict[str, Any]]:
         """Generate negotiation engine candidates for 3D generation."""

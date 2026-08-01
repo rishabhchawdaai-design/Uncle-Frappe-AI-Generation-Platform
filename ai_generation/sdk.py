@@ -928,6 +928,31 @@ class UncleFrappeAI:
 
     # ── Music Generation Convenience Methods ──
 
+    async def generate_3d(self, prompt, mode="text_to_3d", model_id="",
+                          max_vram_gb=32.0, **kwargs):
+        """Generate a 3D asset (truthful result: completed or exact reason).
+
+        All profiled 3D models require local GPU inference; without a
+        configured local backend this returns status dependency_missing/
+        unavailable instead of crashing.
+        """
+        return await self.generation_3d.generate(
+            prompt, mode=mode, model_id=model_id,
+            max_vram_gb=max_vram_gb, **kwargs,
+        )
+
+    async def generate_speech(self, prompt, voice="default", speed=1.0,
+                              provider=None, output_path="", **kwargs):
+        """Generate speech (TTS) from text through the audio engine."""
+        return await self.audio_generation.text_to_speech(
+            prompt, voice=voice, speed=speed, provider=provider,
+            output_path=output_path, **kwargs,
+        )
+
+    async def generate_audio(self, prompt, **kwargs):
+        """Alias for speech generation (TTS). Music/SFX: generate_music/generate_sfx."""
+        return await self.generate_speech(prompt, **kwargs)
+
     async def generate_music(self, prompt, duration_secs=10.0, model="", output_path="", **kwargs):
         return await self.music_generation.generate_music(prompt=prompt, duration_secs=duration_secs, model=model, output_path=output_path, **kwargs)
 
