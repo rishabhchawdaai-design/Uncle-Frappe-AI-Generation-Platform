@@ -201,6 +201,16 @@ class AudioCraftProvider:
                     prompt=prompt, latency_ms=latency_ms,
                     error=f"HTTP {resp.status_code}: {resp.text[:200]}",
                 )
+        except httpx.ConnectError:
+            latency_ms = round((time.time() - start) * 1000, 1)
+            return MusicGenResult(
+                provider="audiocraft", task=MusicTask.TEXT_TO_MUSIC,
+                status=MusicGenStatus.DEPENDENCY_MISSING, request_id=request_id,
+                prompt=prompt, latency_ms=latency_ms,
+                error=(f"AudioCraft server not reachable at {self.base_url} - "
+                       "start the local MusicGen/AudioGen HTTP server or set "
+                       "MUSICGEN_URL; no keyless cloud music backend exists"),
+            )
         except Exception as e:
             latency_ms = round((time.time() - start) * 1000, 1)
             return MusicGenResult(
@@ -239,6 +249,16 @@ class AudioCraftProvider:
                     prompt=prompt, latency_ms=latency_ms,
                     error=f"HTTP {resp.status_code}: {resp.text[:200]}",
                 )
+        except httpx.ConnectError:
+            latency_ms = round((time.time() - start) * 1000, 1)
+            return MusicGenResult(
+                provider="audiocraft", task=MusicTask.TEXT_TO_SFX,
+                status=MusicGenStatus.DEPENDENCY_MISSING, request_id=request_id,
+                prompt=prompt, latency_ms=latency_ms,
+                error=(f"AudioCraft server not reachable at {self.base_url} - "
+                       "start the local MusicGen/AudioGen HTTP server or set "
+                       "MUSICGEN_URL; no keyless cloud music backend exists"),
+            )
         except Exception as e:
             latency_ms = round((time.time() - start) * 1000, 1)
             return MusicGenResult(
@@ -277,6 +297,16 @@ class AudioCraftProvider:
                     prompt=prompt, latency_ms=latency_ms,
                     error=f"HTTP {resp.status_code}: {resp.text[:200]}",
                 )
+        except httpx.ConnectError:
+            latency_ms = round((time.time() - start) * 1000, 1)
+            return MusicGenResult(
+                provider="audiocraft", task=MusicTask.MELODY_CONDITIONED,
+                status=MusicGenStatus.DEPENDENCY_MISSING, request_id=request_id,
+                prompt=prompt, latency_ms=latency_ms,
+                error=(f"AudioCraft server not reachable at {self.base_url} - "
+                       "start the local MusicGen/AudioGen HTTP server or set "
+                       "MUSICGEN_URL; no keyless cloud music backend exists"),
+            )
         except Exception as e:
             latency_ms = round((time.time() - start) * 1000, 1)
             return MusicGenResult(

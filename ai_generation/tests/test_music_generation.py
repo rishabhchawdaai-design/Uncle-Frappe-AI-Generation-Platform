@@ -97,8 +97,9 @@ async def test_music_generate_fails_no_server():
     from ai_generation.music_generation import MusicGenerationEngine, MusicGenStatus
     e = MusicGenerationEngine()
     result = await e.generate_music("happy jazz", duration_secs=5.0)
-    assert result.status == MusicGenStatus.FAILED
-    assert result.error is not None
+    # no local AudioCraft server -> actionable dependency_missing, not generic failure
+    assert result.status == MusicGenStatus.DEPENDENCY_MISSING
+    assert "AudioCraft server not reachable" in result.error
 
 
 @pytest.mark.asyncio
@@ -106,8 +107,8 @@ async def test_sfx_generate_fails_no_server():
     from ai_generation.music_generation import MusicGenerationEngine, MusicGenStatus
     e = MusicGenerationEngine()
     result = await e.generate_sfx("thunder clap")
-    assert result.status == MusicGenStatus.FAILED
-    assert result.error is not None
+    assert result.status == MusicGenStatus.DEPENDENCY_MISSING
+    assert "AudioCraft server not reachable" in result.error
 
 
 # ── SDK Integration ──

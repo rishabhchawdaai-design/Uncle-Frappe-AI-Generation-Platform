@@ -195,6 +195,13 @@ async def main():
     video = await ai.generate_video("A city timelapse at dusk", duration_secs=4.0)
     print(video.status, video.provider)
 
+    # Generate speech (TTS)
+    speech = await ai.generate_speech("Hello from the platform")
+
+    # Generate a 3D asset (truthful result: completed or exact reason)
+    model3d = await ai.generate_3d("a red cube")
+    print(model3d["status"], model3d["error"])
+
     # Enhance a prompt with cinematic techniques
     enhanced = ai.enhance_prompt("A luxury café interior", style="cinematic")
     print(enhanced.enhanced)
@@ -247,6 +254,32 @@ scripts/                # Setup & utility scripts
 | Stability AI | ✅ Active | ✅ | ❌ | ❌ |
 | SiliconFlow | ✅ Active | ✅ | ❌ | ❌ |
 | Craiyon | ✅ Active | ✅ | ❌ | ❌ |
+
+## Verified Generation Matrix
+
+`scripts/verify_generation.py` proves every modality by execution on the
+current machine (stdlib + httpx only, no API keys required). Keyless paths
+must produce real media; credential/local-gated paths must return clean,
+truthful errors with exact reasons — never crashes.
+
+```bash
+python scripts/verify_generation.py
+```
+
+| Modality | Keyless on fresh install | Notes |
+|----------|--------------------------|-------|
+| Image | ✅ works | Pollinations (free, no key); Craiyon fallback |
+| Text (chat) | ⛔ needs key | Kimi K3 cloud (`MOONSHOT_API_KEY`) or self-hosted vLLM/SGLang |
+| Video | ⛔ needs key | Replicate/Runway/fal providers require API tokens |
+| Music / SFX | ⛔ needs local server | AudioCraft HTTP server (`MUSICGEN_URL`) |
+| Speech (TTS) | ⛔ needs local server/key | Kokoro/Piper local, OpenAI key |
+| 3D | ⛔ needs GPU | TRELLIS/Hunyuan3D/Point-E/Shap-E require 8–16 GB VRAM |
+| Embeddings / Reasoning / Tool calls | via chat backends | same credential requirements as Text |
+
+Every failure is returned as a structured result with the exact technical
+reason (e.g. `AudioCraft server not reachable at http://localhost:9876`), and
+the harness writes `output/verification/verify_generation.json` plus any
+produced artifacts.
 
 ## Development
 
