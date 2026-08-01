@@ -1,0 +1,535 @@
+{
+  "generated_at": "2026-08-01T12:23:15.810723+00:00",
+  "provider_types": [
+    "audio",
+    "image",
+    "text",
+    "video"
+  ],
+  "providers": [
+    {
+      "name": "kokoro_tts",
+      "type": "audio",
+      "tier": "free",
+      "available": true,
+      "status": "available",
+      "requires_api_key": false,
+      "has_api_key": false,
+      "cloud_first": false,
+      "models": [
+        "kokoro-v1"
+      ],
+      "capabilities": [
+        "text_to_speech"
+      ],
+      "success_rate": 0.0,
+      "avg_latency_ms": 0.0
+    },
+    {
+      "name": "openai_tts",
+      "type": "audio",
+      "tier": "paid",
+      "available": true,
+      "status": "available",
+      "requires_api_key": true,
+      "has_api_key": false,
+      "cloud_first": true,
+      "models": [
+        "tts-1",
+        "tts-1-hd"
+      ],
+      "capabilities": [
+        "text_to_speech"
+      ],
+      "success_rate": 0.0,
+      "avg_latency_ms": 0.0
+    },
+    {
+      "name": "piper_tts",
+      "type": "audio",
+      "tier": "free",
+      "available": true,
+      "status": "available",
+      "requires_api_key": false,
+      "has_api_key": false,
+      "cloud_first": false,
+      "models": [
+        "en_US-lessac-medium",
+        "en_US-amy-medium",
+        "en_GB-alba-medium"
+      ],
+      "capabilities": [
+        "text_to_speech"
+      ],
+      "success_rate": 0.0,
+      "avg_latency_ms": 0.0
+    },
+    {
+      "name": "whisper_stt",
+      "type": "audio",
+      "tier": "free",
+      "available": true,
+      "status": "available",
+      "requires_api_key": false,
+      "has_api_key": false,
+      "cloud_first": false,
+      "models": [
+        "whisper-large-v3",
+        "whisper-medium",
+        "whisper-small",
+        "whisper-turbo"
+      ],
+      "capabilities": [
+        "speech_to_text"
+      ],
+      "success_rate": 0.0,
+      "avg_latency_ms": 0.0
+    },
+    {
+      "name": "craiyon",
+      "type": "image",
+      "tier": "free",
+      "available": true,
+      "status": "available",
+      "requires_api_key": false,
+      "has_api_key": false,
+      "cloud_first": true,
+      "models": [
+        "craiyon-v3"
+      ],
+      "capabilities": [
+        "text_to_image"
+      ],
+      "success_rate": 0.0,
+      "avg_latency_ms": 0.0
+    },
+    {
+      "name": "fal",
+      "type": "image",
+      "tier": "paid",
+      "available": true,
+      "status": "available",
+      "requires_api_key": true,
+      "has_api_key": false,
+      "cloud_first": true,
+      "models": [
+        "fal-ai/flux/schnell",
+        "fal-ai/flux/dev",
+        "fal-ai/flux/pro/v1.1",
+        "fal-ai/stable-diffusion-v3-medium",
+        "fal-ai/recraft-v3"
+      ],
+      "capabilities": [
+        "text_to_image"
+      ],
+      "success_rate": 0.0,
+      "avg_latency_ms": 0.0
+    },
+    {
+      "name": "huggingface",
+      "type": "image",
+      "tier": "free",
+      "available": true,
+      "status": "available",
+      "requires_api_key": true,
+      "has_api_key": false,
+      "cloud_first": true,
+      "models": [
+        "stabilityai/stable-diffusion-xl-base-1.0",
+        "stabilityai/stable-diffusion-2-1",
+        "runwayml/stable-diffusion-v1-5",
+        "CompVis/stable-diffusion-v1-4",
+        "prompthero/openjourney-v4",
+        "ByteDance/Hyper-SDXL-1Step-T2I",
+        "Kwai-Kolors/Kolors-Virtual-Try-On"
+      ],
+      "capabilities": [
+        "text_to_image"
+      ],
+      "success_rate": 0.0,
+      "avg_latency_ms": 0.0
+    },
+    {
+      "name": "kimi_k3",
+      "type": "text",
+      "tier": "community",
+      "available": true,
+      "status": "available",
+      "requires_api_key": true,
+      "has_api_key": false,
+      "cloud_first": true,
+      "models": [
+        "kimi-k3"
+      ],
+      "capabilities": [],
+      "success_rate": 0.0,
+      "avg_latency_ms": 0.0
+    },
+    {
+      "name": "pollinations",
+      "type": "image",
+      "tier": "free",
+      "available": true,
+      "status": "available",
+      "requires_api_key": false,
+      "has_api_key": false,
+      "cloud_first": true,
+      "models": [
+        "flux",
+        "flux-realism",
+        "flux-anime",
+        "flux-3d",
+        "turbo"
+      ],
+      "capabilities": [
+        "text_to_image"
+      ],
+      "success_rate": 0.0,
+      "avg_latency_ms": 0.0
+    },
+    {
+      "name": "pollinations_text",
+      "type": "text",
+      "tier": "free",
+      "available": true,
+      "status": "available",
+      "requires_api_key": false,
+      "has_api_key": false,
+      "cloud_first": true,
+      "models": [
+        "openai-fast",
+        "openai",
+        "mistral",
+        "searchgpt"
+      ],
+      "capabilities": [
+        "chat"
+      ],
+      "success_rate": 0.0,
+      "avg_latency_ms": 0.0
+    },
+    {
+      "name": "replicate",
+      "type": "image",
+      "tier": "community",
+      "available": true,
+      "status": "available",
+      "requires_api_key": true,
+      "has_api_key": false,
+      "cloud_first": true,
+      "models": [
+        "black-forest-labs/flux-schnell",
+        "black-forest-labs/flux-dev",
+        "stability-ai/sdxl",
+        "adirik/ambient-diffusion",
+        "tencentarc/photomaker"
+      ],
+      "capabilities": [
+        "text_to_image"
+      ],
+      "success_rate": 0.0,
+      "avg_latency_ms": 0.0
+    },
+    {
+      "name": "siliconflow",
+      "type": "image",
+      "tier": "free",
+      "available": true,
+      "status": "available",
+      "requires_api_key": true,
+      "has_api_key": false,
+      "cloud_first": true,
+      "models": [
+        "stabilityai/stable-diffusion-3-5-large",
+        "black-forest-labs/FLUX.1-schnell",
+        "black-forest-labs/FLUX.1-dev",
+        "Pro/black-forest-labs/FLUX.1-schnell"
+      ],
+      "capabilities": [
+        "text_to_image"
+      ],
+      "success_rate": 0.0,
+      "avg_latency_ms": 0.0
+    },
+    {
+      "name": "stability",
+      "type": "image",
+      "tier": "paid",
+      "available": true,
+      "status": "available",
+      "requires_api_key": true,
+      "has_api_key": false,
+      "cloud_first": true,
+      "models": [
+        "stable-diffusion-xl-1024-v1-0",
+        "sd3-medium",
+        "sd3-large",
+        "sd3.5-large"
+      ],
+      "capabilities": [
+        "text_to_image"
+      ],
+      "success_rate": 0.0,
+      "avg_latency_ms": 0.0
+    },
+    {
+      "name": "together",
+      "type": "image",
+      "tier": "free",
+      "available": true,
+      "status": "available",
+      "requires_api_key": true,
+      "has_api_key": false,
+      "cloud_first": true,
+      "models": [
+        "black-forest-labs/FLUX.1-schnell-Free",
+        "black-forest-labs/FLUX.1-dev",
+        "stabilityai/stable-diffusion-xl-base-1.0",
+        "stabilityai/stable-diffusion-3-medium",
+        "Prompthero/stable-diffusion-v1-4"
+      ],
+      "capabilities": [
+        "text_to_image"
+      ],
+      "success_rate": 0.0,
+      "avg_latency_ms": 0.0
+    },
+    {
+      "name": "replicate_video",
+      "type": "video",
+      "tier": "community",
+      "available": true,
+      "status": "available",
+      "requires_api_key": true,
+      "has_api_key": false,
+      "cloud_first": true,
+      "models": [
+        "stability-ai/stable-video-diffusion",
+        "guoyww/animatediff",
+        "lucataco/animate-diff-v2-1",
+        "minimax/video-01"
+      ],
+      "capabilities": [
+        "text_to_video"
+      ],
+      "success_rate": 0.0,
+      "avg_latency_ms": 0.0
+    }
+  ],
+  "ranked_by_type": {
+    "audio": [
+      {
+        "rank": 1,
+        "name": "whisper_stt",
+        "type": "audio",
+        "tier": "free",
+        "status": "available",
+        "available": true,
+        "requires_api_key": false,
+        "has_api_key": false,
+        "rank_score": 60.0,
+        "avg_latency_ms": 0.0,
+        "success_rate": 0.0
+      },
+      {
+        "rank": 2,
+        "name": "piper_tts",
+        "type": "audio",
+        "tier": "free",
+        "status": "available",
+        "available": true,
+        "requires_api_key": false,
+        "has_api_key": false,
+        "rank_score": 60.0,
+        "avg_latency_ms": 0.0,
+        "success_rate": 0.0
+      },
+      {
+        "rank": 3,
+        "name": "kokoro_tts",
+        "type": "audio",
+        "tier": "free",
+        "status": "available",
+        "available": true,
+        "requires_api_key": false,
+        "has_api_key": false,
+        "rank_score": 60.0,
+        "avg_latency_ms": 0.0,
+        "success_rate": 0.0
+      },
+      {
+        "rank": 4,
+        "name": "openai_tts",
+        "type": "audio",
+        "tier": "paid",
+        "status": "available",
+        "available": true,
+        "requires_api_key": true,
+        "has_api_key": false,
+        "rank_score": 20.0,
+        "avg_latency_ms": 0.0,
+        "success_rate": 0.0
+      }
+    ],
+    "image": [
+      {
+        "rank": 1,
+        "name": "pollinations",
+        "type": "image",
+        "tier": "free",
+        "status": "available",
+        "available": true,
+        "requires_api_key": false,
+        "has_api_key": false,
+        "rank_score": 60.0,
+        "avg_latency_ms": 0.0,
+        "success_rate": 0.0
+      },
+      {
+        "rank": 2,
+        "name": "craiyon",
+        "type": "image",
+        "tier": "free",
+        "status": "available",
+        "available": true,
+        "requires_api_key": false,
+        "has_api_key": false,
+        "rank_score": 60.0,
+        "avg_latency_ms": 0.0,
+        "success_rate": 0.0
+      },
+      {
+        "rank": 3,
+        "name": "together",
+        "type": "image",
+        "tier": "free",
+        "status": "available",
+        "available": true,
+        "requires_api_key": true,
+        "has_api_key": false,
+        "rank_score": 50.0,
+        "avg_latency_ms": 0.0,
+        "success_rate": 0.0
+      },
+      {
+        "rank": 4,
+        "name": "siliconflow",
+        "type": "image",
+        "tier": "free",
+        "status": "available",
+        "available": true,
+        "requires_api_key": true,
+        "has_api_key": false,
+        "rank_score": 50.0,
+        "avg_latency_ms": 0.0,
+        "success_rate": 0.0
+      },
+      {
+        "rank": 5,
+        "name": "huggingface",
+        "type": "image",
+        "tier": "free",
+        "status": "available",
+        "available": true,
+        "requires_api_key": true,
+        "has_api_key": false,
+        "rank_score": 50.0,
+        "avg_latency_ms": 0.0,
+        "success_rate": 0.0
+      },
+      {
+        "rank": 6,
+        "name": "replicate",
+        "type": "image",
+        "tier": "community",
+        "status": "available",
+        "available": true,
+        "requires_api_key": true,
+        "has_api_key": false,
+        "rank_score": 35.0,
+        "avg_latency_ms": 0.0,
+        "success_rate": 0.0
+      },
+      {
+        "rank": 7,
+        "name": "stability",
+        "type": "image",
+        "tier": "paid",
+        "status": "available",
+        "available": true,
+        "requires_api_key": true,
+        "has_api_key": false,
+        "rank_score": 20.0,
+        "avg_latency_ms": 0.0,
+        "success_rate": 0.0
+      },
+      {
+        "rank": 8,
+        "name": "fal",
+        "type": "image",
+        "tier": "paid",
+        "status": "available",
+        "available": true,
+        "requires_api_key": true,
+        "has_api_key": false,
+        "rank_score": 20.0,
+        "avg_latency_ms": 0.0,
+        "success_rate": 0.0
+      }
+    ],
+    "text": [
+      {
+        "rank": 1,
+        "name": "pollinations_text",
+        "type": "text",
+        "tier": "free",
+        "status": "available",
+        "available": true,
+        "requires_api_key": false,
+        "has_api_key": false,
+        "rank_score": 60.0,
+        "avg_latency_ms": 0.0,
+        "success_rate": 0.0
+      },
+      {
+        "rank": 2,
+        "name": "kimi_k3",
+        "type": "text",
+        "tier": "community",
+        "status": "available",
+        "available": true,
+        "requires_api_key": true,
+        "has_api_key": false,
+        "rank_score": 35.0,
+        "avg_latency_ms": 0.0,
+        "success_rate": 0.0
+      }
+    ],
+    "video": [
+      {
+        "rank": 1,
+        "name": "replicate_video",
+        "type": "video",
+        "tier": "community",
+        "status": "available",
+        "available": true,
+        "requires_api_key": true,
+        "has_api_key": false,
+        "rank_score": 35.0,
+        "avg_latency_ms": 0.0,
+        "success_rate": 0.0
+      }
+    ]
+  },
+  "summary": {
+    "total_providers": 15,
+    "available": 15,
+    "free": 9,
+    "by_type": {
+      "audio": 4,
+      "image": 8,
+      "text": 2,
+      "video": 1
+    }
+  }
+}

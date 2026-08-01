@@ -117,8 +117,8 @@ class Provider(ABC):
     requires_api_key: bool = False
     requires_docker: bool = False
     cloud_first: bool = True
-    capabilities: List[ProviderCapability] = field(default_factory=list)
-    supported_models: List[str] = field(default_factory=list)
+    capabilities: List[ProviderCapability] = []
+    supported_models: List[str] = []
     default_model: str = ""
     base_url: str = ""
 

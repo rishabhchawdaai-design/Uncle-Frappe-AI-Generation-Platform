@@ -114,7 +114,29 @@ class GenerationManager:
             all_p = self._registry.get_by_type(request.provider_type)
             providers = [p.name for p in all_p]
 
+        providers = self._apply_ranked_order(providers, request)
         return GenerationPlan(request=request, provider_order=providers)
+
+    def _apply_ranked_order(
+        self, providers: List[str], request: "GenerationRequest",
+    ) -> List[str]:
+        """Re-order providers using the persisted Discovery Registrar rankings
+        when a discovery registry snapshot exists; otherwise keep order."""
+        try:
+            from .provider_discovery_registrar import ProviderDiscoveryRegistrar
+            registrar = ProviderDiscoveryRegistrar(
+                registry=self._registry,
+                registry_path=self.config.get("discovery_registry_path"),
+            )
+            ranked = registrar.get_ranked_order(request.provider_type.value)
+        except Exception as e:  # defensive: ranking is advisory only
+            logger.debug("Discovery ranking unavailable: %s", e)
+            return providers
+        if not ranked:
+            return providers
+        order = [name for name in ranked if name in providers]
+        order += [name for name in providers if name not in order]
+        return order
 
     async def generate(self, request: GenerationRequest) -> GenerationResult:
         """Generate media with intelligent routing and automatic failover."""
