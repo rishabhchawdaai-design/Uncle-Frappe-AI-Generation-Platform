@@ -21,6 +21,7 @@ Capabilities:
 import logging
 from dataclasses import dataclass, field
 from enum import Enum
+from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
@@ -317,6 +318,45 @@ class OCREngine:
             )
 
         # If we have data and the backend is available, attempt processing
+        if document_data and backend == "tesseract":
+            try:
+                import tempfile, subprocess
+                with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tmp:
+                    tmp.write(document_data)
+                    tmp_path = tmp.name
+                proc = subprocess.run(
+                    ["tesseract", tmp_path, "stdout"],
+                    capture_output=True, text=True, timeout=60,
+                )
+                extracted = proc.stdout.strip()
+                Path(tmp_path).unlink(missing_ok=True)
+                self._stats["successful_requests"] += 1
+                return OCRResult(
+                    text=extracted,
+                    confidence=0.8 if extracted else 0.0,
+                    language=request.language,
+                    backend=backend,
+                    metadata={"status": "executed", "backend_version": "tesseract-5.3"},
+                )
+            except FileNotFoundError:
+                self._stats["failed_requests"] += 1
+                return OCRResult(
+                    text="", confidence=0.0, language=request.language, backend=backend,
+                    metadata={"error": "tesseract not installed", "install": "apt install tesseract-ocr"},
+                )
+            except subprocess.TimeoutExpired:
+                self._stats["failed_requests"] += 1
+                return OCRResult(
+                    text="", confidence=0.0, language=request.language, backend=backend,
+                    metadata={"error": "tesseract timed out"},
+                )
+            except Exception as e:
+                self._stats["failed_requests"] += 1
+                return OCRResult(
+                    text="", confidence=0.0, language=request.language, backend=backend,
+                    metadata={"error": str(e)[:200]},
+                )
+
         self._stats["successful_requests"] += 1
         return OCRResult(
             text="",

@@ -725,6 +725,124 @@ class UncleFrappeAI:
             result.metadata["system_prompt"] = system_prompt
         return result
 
+    # ── Local Backends (free, self-hostable, CPU) ──
+
+    def list_local_backends(self) -> list:
+        """List the built-in free local backends (embeddings, TTS, STT,
+        translation, upscaling, background removal; OCR is exposed through
+        the OCR engine — see ``list_ocr_providers``/``process_ocr``)."""
+        names = {
+            "sentence_transformers": "Embeddings via all-MiniLM-L6-v2 (384-dim)",
+            "piper_local": "TTS via Piper en_US-lessac-medium",
+            "faster_whisper": "STT via faster-whisper tiny",
+            "helsinki_opus_mt": "Translation via Helsinki-NLP opus-mt",
+            "realesrgan": "Upscaling via Real-ESRGAN x4v3",
+            "rembg": "Background removal via rembg/u2net",
+        }
+        from .providers.registry import get_registry
+        reg = get_registry()
+        out = []
+        for name, description in names.items():
+            provider = reg.get(name)
+            if provider:
+                out.append({
+                    "name": name,
+                    "description": description,
+                    "tier": provider.tier.value,
+                    "requires_api_key": provider.requires_api_key,
+                    "available": provider.is_available,
+                    "models": provider.supported_models,
+                    "capabilities": [c.name for c in provider.capabilities],
+                })
+        return out
+
+    async def generate_embedding(self, text, model="", **kwargs):
+        """Generate a text embedding (384-dim) with the local
+        sentence-transformers backend. Returns a GenerationResult with the
+        embedding vector dimensions in ``metadata``."""
+        from .providers.registry import get_registry
+        provider = get_registry().get("sentence_transformers")
+        if provider is None:
+            return self._local_backend_missing("sentence_transformers")
+        return await provider.generate_text(text, model=model, **kwargs)
+
+    async def translate_text(self, text, target_lang="fr", source_lang="", **kwargs):
+        """Translate text locally with Helsinki-NLP opus-mt (CPU).
+
+        ``source_lang``/``target_lang`` default to ``en``/``fr`` when the
+        requested model pair is not available.
+        """
+        from .providers.registry import get_registry
+        provider = get_registry().get("helsinki_opus_mt")
+        if provider is None:
+            return self._local_backend_missing("helsinki_opus_mt")
+        model = ""
+        if source_lang and target_lang:
+            candidate = f"opus-mt-{source_lang}-{target_lang}"
+            if candidate in provider.supported_models:
+                model = candidate
+        return await provider.generate_text(text, model=model, **kwargs)
+
+    async def transcribe_audio(self, audio_bytes=None, audio_path="", model="", **kwargs):
+        """Transcribe audio with the local faster-whisper backend (CPU).
+
+        Pass either ``audio_bytes`` (raw WAV/MP3 bytes) or ``audio_path``
+        (filesystem path). Returns text in ``result.metadata["text"]``.
+        """
+        from .providers.registry import get_registry
+        provider = get_registry().get("faster_whisper")
+        if provider is None:
+            return self._local_backend_missing("faster_whisper")
+        return await provider.transcribe_audio(
+            audio_path=audio_path or "", audio_bytes=audio_bytes,
+            model=model, **kwargs,
+        )
+
+    async def generate_speech_local(self, text, **kwargs):
+        """Generate speech with the local Piper backend (CPU, no API key).
+
+        Returns WAV bytes in ``result.output_bytes``.
+        """
+        from .providers.registry import get_registry
+        provider = get_registry().get("piper_local")
+        if provider is None:
+            return self._local_backend_missing("piper_local")
+        return await provider.generate_audio(text, **kwargs)
+
+    async def upscale_image_local(self, input_bytes, **kwargs):
+        """Upscale an image 4x locally with Real-ESRGAN (CPU).
+
+        ``input_bytes`` must be PNG/JPEG bytes; returns PNG bytes in
+        ``result.output_bytes``.
+        """
+        from .providers.registry import get_registry
+        provider = get_registry().get("realesrgan")
+        if provider is None:
+            return self._local_backend_missing("realesrgan")
+        return await provider.generate_image(prompt="", output_bytes=input_bytes, **kwargs)
+
+    async def remove_background_local(self, input_bytes, **kwargs):
+        """Remove an image background locally with rembg/u2net (CPU).
+
+        ``input_bytes`` must be PNG/JPEG bytes; returns RGBA PNG bytes in
+        ``result.output_bytes``.
+        """
+        from .providers.registry import get_registry
+        provider = get_registry().get("rembg")
+        if provider is None:
+            return self._local_backend_missing("rembg")
+        return await provider.generate_image(prompt="", output_bytes=input_bytes, **kwargs)
+
+    def _local_backend_missing(self, name):
+        """Build a truthful error result for a missing local backend."""
+        from .providers.base import GenerationResult
+        return GenerationResult(
+            provider=name,
+            provider_type="local",
+            status="error",
+            error=f"Local backend '{name}' is not registered",
+        )
+
     def get_provider_ranking(self, provider_type="", prefer_free=True,
                            registry_path=None):
         """Rank registered providers by fitness (free-first, benchmark-aware).

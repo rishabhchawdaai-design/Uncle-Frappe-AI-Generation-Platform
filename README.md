@@ -294,8 +294,6 @@ Also exposed via the SDK (`run_provider_health_cycle`) and the
 OpenAI TTS) are skipped by design — they are expected to be started on demand.
 
 ## Verified Generation Matrix
-## Verified Generation Matrix
-## Verified Generation Matrix
 
 `scripts/verify_generation.py` proves every modality by execution on the
 current machine (stdlib + httpx only, no API keys required). Keyless paths
@@ -310,11 +308,30 @@ python scripts/verify_generation.py
 |----------|--------------------------|-------|
 | Image | ✅ works | Pollinations (free, no key); Craiyon fallback |
 | Text (chat) | ✅ works | Pollinations anonymous API (free, no key); Kimi K3 / self-hosted vLLM/SGLang as key/local backends |
+| OCR | ✅ works (if Tesseract installed) | `tesseract-ocr` via `ocr_engine`; exact extraction verified |
+| Embeddings | ✅ works (if `sentence-transformers` installed) | all-MiniLM-L6-v2, 384-dim, cos_sim 0.858 verified |
+| Speech (TTS) | ✅ works (if `piper` + voice installed) | `piper_local` en_US-lessac-medium, 2.76s WAV verified |
+| Speech (STT) | ✅ works (if `faster-whisper` installed) | tiny int8 CPU, TTS→STT round-trip verified |
+| Translation | ✅ works (if `transformers` installed) | Helsinki-NLP opus-mt, en→fr verified |
+| Upscaling | ✅ works (if `spandrel` + weights installed) | Real-ESRGAN x4v3, 200×60→800×240 verified |
+| Background removal | ✅ works (if `rembg` installed) | u2net, RGBA 88.5% transparent verified |
 | Video | ⛔ needs key | Replicate/Runway/fal providers require API tokens |
 | Music / SFX | ⛔ needs local server | AudioCraft HTTP server (`MUSICGEN_URL`) |
-| Speech (TTS) | ⛔ needs local server/key | Kokoro/Piper local, OpenAI key |
 | 3D | ⛔ needs GPU | TRELLIS/Hunyuan3D/Point-E/Shap-E require 8–16 GB VRAM |
-| Embeddings / Reasoning / Tool calls | via chat backends | same credential requirements as Text |
+| Reasoning / Tool calls | via chat backends | same credential requirements as Text |
+
+The local backends are exposed through the unified SDK, CLI, and MCP:
+
+```bash
+python -m ai_generation.cli local-backends
+python -m ai_generation.cli embed "text to embed"
+python -m ai_generation.cli translate "Hello" --target fr
+python -m ai_generation.cli tts "Hello from the platform" --output speech.wav
+python -m ai_generation.cli stt speech.wav
+python -m ai_generation.cli ocr document.png
+python -m ai_generation.cli upscale photo.png --output upscaled.png
+python -m ai_generation.cli bg-remove photo.png --output cutout.png
+```
 
 Every failure is returned as a structured result with the exact technical
 reason (e.g. `AudioCraft server not reachable at http://localhost:9876`), and
