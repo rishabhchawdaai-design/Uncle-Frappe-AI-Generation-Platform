@@ -28,6 +28,12 @@ print(f'    All {count} modules import cleanly')
 PYTHONPATH=. pytest ai_generation/tests/ -q
 
 echo ""
+echo "Optional local backends (keyless, CPU — embeddings, TTS, STT, translation,"
+echo "upscaling, background removal, OCR, documents):"
+echo "  bash scripts/install-optional.sh              # all groups"
+echo "  bash scripts/install-optional.sh --group embeddings   # one group"
+echo "  Verify:      python -m ai_generation.cli local-backends"
+echo ""
 echo "Optional Kimi K3 (Moonshot AI):"
 echo "  - Cloud API:   add MOONSHOT_API_KEY to .env (platform.kimi.ai)"
 echo "  - Self-hosted: set KIMI_K3_VLLM_URL / KIMI_K3_SGLANG_URL in .env"

@@ -234,7 +234,7 @@ ai_generation/          # Single canonical platform package
   research_integration.py # Research <-> implementation traceability
   providers/            # Provider implementations
   agents/               # Autonomous agent system
-  tests/                # 1,440 tests
+  tests/                # 1,443 tests
 configs/                # Canonical configuration (env template, MCP server registry)
 data/                   # Runtime registries and benchmarks
 knowledge-vault/        # Obsidian knowledge system (37 sections)
@@ -396,6 +396,14 @@ structured reasons instead of crashes.
 # Setup
 ./scripts/setup.sh
 
+# Optional keyless local backends (embeddings, Piper TTS, faster-whisper STT,
+# Helsinki translation, Real-ESRGAN upscaling, rembg background removal,
+# OCR helpers, document parsing). Core platform works without these; install
+# them to unlock self-hosted CPU generation:
+bash scripts/install-optional.sh                 # all groups
+bash scripts/install-optional.sh --group embeddings   # single group
+bash scripts/install-optional.sh --dry-run            # preview only
+
 # Run tests
 python -m pytest ai_generation/tests/ -v
 
@@ -407,7 +415,7 @@ docker build -t uncle-frappe-ai-generation-platform .
 docker run --rm uncle-frappe-ai-generation-platform
 ```
 
-CI runs the full `ai_generation/tests/` suite (1,440 tests), verifies every
+CI runs the full `ai_generation/tests/` suite (1,443 tests), verifies every
 module imports cleanly, smoke-tests the unified SDK, and builds the Docker
 image on every push to `main` (`.github/workflows/ci.yml`).
 

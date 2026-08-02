@@ -1,0 +1,43 @@
+# Uncle Frappe AI Generation Platform — optional local-backend dependencies.
+#
+# The core platform is stdlib-first (requirements.txt: httpx + cryptography).
+# Install the optional groups below to unlock keyless, self-hosted, CPU
+# generation backends. Usage:
+#
+#   pip install -r optional_requirements.txt            # everything
+#   bash scripts/install-optional.sh                    # everything
+#   bash scripts/install-optional.sh --group embeddings  # one group
+#
+# Group: embeddings (384-dim, all-MiniLM-L6-v2)
+sentence-transformers>=2.2.0
+
+# Group: speech (TTS via Piper, CPU)
+piper-tts>=1.2.0
+
+# Group: speech (STT via faster-whisper, CPU int8)
+faster-whisper>=1.0.0
+
+# Group: translation (Helsinki-NLP opus-mt via transformers)
+transformers>=4.40.0
+sentencepiece>=0.1.99
+sacremoses>=0.1.1
+
+# Group: upscaling (Real-ESRGAN via spandrel)
+spandrel>=0.3.0
+opencv-python-headless>=4.9.0
+
+# Group: background_removal (rembg u2net, CPU)
+rembg>=2.0.50
+onnxruntime>=1.16.0
+
+# Group: ocr (Python helpers; tesseract binary installed separately)
+pytesseract>=0.3.10
+pillow>=10.0.0
+
+# Group: documents (marker PDF->markdown, camelot tables)
+marker-pdf>=1.0.0
+camelot-py[base]>=0.11.0
+
+# Group: search (Meilisearch/OpenSearch clients for remote backends)
+meilisearch>=0.30.0
+opensearch-py>=2.0.0
