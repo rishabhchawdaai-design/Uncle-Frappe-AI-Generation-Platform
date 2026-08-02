@@ -58,6 +58,19 @@ async def cmd_text(prompt, model="", system_prompt=""):
     return result
 
 
+async def cmd_graph_sync():
+    """Synchronize the capability graph from the live registries."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    report = ai.sync_capability_graph()
+    print(f"\n  Capability Graph Sync")
+    print(f"  New nodes:       {report['new_nodes']}")
+    print(f"  New edges:       {report['new_edges']}")
+    print(f"  Total nodes:     {report['total_nodes']}")
+    print(f"  Total edges:     {report['total_edges']}")
+    return report
+
+
 async def cmd_event_classes():
     """List ACOS event taxonomy classes and delivery guarantees."""
     from ai_generation.sdk import UncleFrappeAI
@@ -1255,6 +1268,7 @@ async def main():
     python -m ai_generation.cli event-replay [subject] Replay durable events
     python -m ai_generation.cli event-stats           Durable event log statistics
     python -m ai_generation.cli event-purge [status]  Purge events (default dead_letter)
+    python -m ai_generation.cli cap-graph-sync        Sync capability graph from registries
     python -m ai_generation.cli video <prompt> [--duration SECS] [--width W] [--height H]
     python -m ai_generation.cli enhance <prompt> [--style STYLE]
     python -m ai_generation.cli providers               List available providers
@@ -1458,6 +1472,8 @@ async def main():
     elif args[0] == "event-purge":
         status = args[1] if len(args) > 1 else "dead_letter"
         await cmd_event_purge(status)
+    elif args[0] == "cap-graph-sync":
+        await cmd_graph_sync()
     elif args[0] == "video":
         prompt = args[1] if len(args) > 1 else "a timelapse of clouds"
         duration, width, height = 4.0, 1280, 720

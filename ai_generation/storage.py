@@ -469,8 +469,9 @@ class StorageRegistry:
         self._auto_load(config or {})
 
     def _auto_load(self, config: Dict[str, Any]):
-        sqlite_cfg = config.get("sqlite") or {}
-        json_cfg = config.get("json") or {}
+        nested = config.get("storage") or {}
+        sqlite_cfg = config.get("sqlite") or nested.get("sqlite") or {}
+        json_cfg = config.get("json") or nested.get("json") or {}
         self.register_backend(SQLiteStorageBackend(sqlite_cfg))
         self.register_backend(JSONStorageBackend(json_cfg))
         for profile in EXTERNAL_BACKEND_PROFILES:

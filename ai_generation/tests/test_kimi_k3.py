@@ -722,9 +722,13 @@ def test_capability_graph_has_kimi_k3():
     assert graph.get_node("kimi_k3_sglang") is not None
     paths = graph.find_capability_path("chat")
     providers = {p.nodes[0] for p in paths}
-    assert providers == {"kimi_k3_cloud", "kimi_k3_vllm", "kimi_k3_sglang"}
+    # free anonymous Pollinations text backend plus the three Kimi K3 runtimes
+    assert providers == {"kimi_k3_cloud", "kimi_k3_vllm", "kimi_k3_sglang",
+                         "pollinations_text"}
     chain = graph.find_fallback_chain("chat", failed_provider="kimi_k3_cloud")
-    assert chain and chain[0]["provider"] in ("kimi_k3_vllm", "kimi_k3_sglang")
+    # free-first fallback: pollinations_text, then the two Kimi K3 runtimes
+    assert chain and chain[0]["provider"] == "pollinations_text"
+    assert {c["provider"] for c in chain[1:2]} <= {"kimi_k3_vllm", "kimi_k3_sglang"}
 
 
 def test_register_kimi_k3_capability_graph_idempotent():
@@ -748,7 +752,8 @@ def test_register_kimi_k3_capability_graph_dynamic():
         graph._nodes.pop(pid, None)
     added = register_kimi_k3_capability_graph(graph)
     assert added >= 4  # 3 provider nodes + chat capability node
-    assert len(graph.find_capability_path("chat")) == 3
+    # pollinations_text (free) + the three Kimi K3 runtimes
+    assert len(graph.find_capability_path("chat")) == 4
 
 
 # ── Benchmark Lab integration ─────────────────────────────────────

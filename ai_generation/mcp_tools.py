@@ -60,6 +60,11 @@ MCP_GENERATION_TOOLS = {
         "description": "List built-in free local backends: OCR, embeddings, TTS, STT, translation, upscaling, background removal.",
         "inputSchema": {"type": "object", "properties": {}},
     },
+    "sync_capability_graph": {
+        "name": "sync_capability_graph",
+        "description": "Evolve the capability graph automatically from the live provider, storage, and event-log registries.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
     "emit_durable_event": {
         "name": "emit_durable_event",
         "description": "Persist an event to the durable event log (SQLite) and fan out to the live bus. Uses ACOS event taxonomy delivery guarantees.",
@@ -1440,6 +1445,7 @@ class MCPGenerationTools:
             "list_local_backends": self._handle_list_local_backends,
             "list_storage_backends": self._handle_list_storage_backends,
             "emit_durable_event": self._handle_emit_durable_event,
+            "sync_capability_graph": self._handle_sync_capability_graph,
             "replay_events": self._handle_replay_events,
             "get_event_log_stats": self._handle_get_event_log_stats,
             "purge_events": self._handle_purge_events,
@@ -1702,6 +1708,10 @@ class MCPGenerationTools:
     async def _handle_list_local_backends(self, args):
         """List the built-in free local backends."""
         return {"backends": self.sdk.list_local_backends()}
+
+    async def _handle_sync_capability_graph(self, args):
+        """Synchronize the capability graph from live registries."""
+        return self.sdk.sync_capability_graph()
 
     async def _handle_emit_durable_event(self, args):
         """Persist an event to the durable log."""
