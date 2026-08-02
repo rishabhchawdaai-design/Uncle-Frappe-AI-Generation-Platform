@@ -58,6 +58,74 @@ async def cmd_text(prompt, model="", system_prompt=""):
     return result
 
 
+async def cmd_storage_list():
+    """List all storage backends and profiles."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    backends = ai.list_storage_backends()
+    print(f"\n  Storage Backends ({len(backends)} total)\n")
+    for b in backends:
+        icon = "\u2705" if b.get("available") else "\u274c"
+        status = b.get("status", "unknown")
+        print(f"  {icon} {b['name']:18s}  tasks={','.join(b.get('tasks', [])):24s} status={status}")
+    return backends
+
+
+async def cmd_storage_write(collection, key, value, task="metadata"):
+    """Write a record to the selected storage backend."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    try:
+        import json as _json
+        parsed = _json.loads(value) if value.startswith(("{", "[")) else value
+    except Exception:
+        parsed = value
+    result = ai.storage_write(collection, key, parsed, task=task)
+    print(f"\n  Backend:     {result['collection']}/{result['key']}")
+    print(f"  Task:        {task}")
+    print(f"  Updated:     {result['updated_at']}")
+    return result
+
+
+async def cmd_storage_read(collection, key, task="metadata"):
+    """Read a record from the selected storage backend."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    result = ai.storage_read(collection, key, task=task)
+    if not result:
+        print(f"\n  Not found: {collection}/{key}")
+        return result
+    print(f"\n  Key:         {result['key']}")
+    print(f"  Value:       {result['value']}")
+    print(f"  Metadata:    {result.get('metadata', {})}")
+    return result
+
+
+async def cmd_storage_query(collection, limit=100, task="metadata"):
+    """Query records from the selected storage backend."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    rows = ai.storage_query(collection, limit=limit, task=task)
+    print(f"\n  Records in '{collection}': {len(rows)}\n")
+    for r in rows:
+        print(f"  - {r['key']:30s} {str(r['value'])[:80]}")
+    return rows
+
+
+async def cmd_storage_stats():
+    """Get storage backend statistics and health."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    stats = ai.get_storage_stats()
+    print(f"\n  Storage backends: {stats['backends_total']} "
+          f"(local: {stats['backends_local']}, configured: {stats['backends_configured']})")
+    for name, live in stats.get("live", {}).items():
+        if isinstance(live, dict):
+            print(f"  - {name:16s} records={live.get('records', '?')} "
+                  f"collections={live.get('collections', '?')}")
+    return stats
+
+
 async def cmd_local_backends():
     """List the built-in free local backends (no API key required)."""
     from ai_generation.sdk import UncleFrappeAI
@@ -1117,6 +1185,11 @@ async def main():
     python -m ai_generation.cli upscale <image_file> [--output FILE]  Real-ESRGAN 4x upscale
     python -m ai_generation.cli bg-remove <image_file> [--output FILE]  rembg background removal
     python -m ai_generation.cli local-backends          List free local backends
+    python -m ai_generation.cli storage-list            List storage backends
+    python -m ai_generation.cli storage-write <col> <key> <value> [--task T]  Write a record
+    python -m ai_generation.cli storage-read <col> <key> [--task T]  Read a record
+    python -m ai_generation.cli storage-query <col> [--limit N] [--task T]  Query records
+    python -m ai_generation.cli storage-stats           Storage statistics
     python -m ai_generation.cli video <prompt> [--duration SECS] [--width W] [--height H]
     python -m ai_generation.cli enhance <prompt> [--style STYLE]
     python -m ai_generation.cli providers               List available providers
@@ -1267,6 +1340,44 @@ async def main():
             await cmd_bg_remove(args[1], output_path=output)
     elif args[0] == "local-backends":
         await cmd_local_backends()
+    elif args[0] == "storage-list":
+        await cmd_storage_list()
+    elif args[0] == "storage-write":
+        if len(args) < 4:
+            print("  Usage: storage-write <collection> <key> <value> [--task metadata|ledger|audit|embeddings|artifacts|graph|metrics|cache]")
+        else:
+            task = "metadata"
+            if "--task" in args:
+                idx = args.index("--task")
+                if idx + 1 < len(args):
+                    task = args[idx + 1]
+            await cmd_storage_write(args[1], args[2], args[3], task=task)
+    elif args[0] == "storage-read":
+        if len(args) < 3:
+            print("  Usage: storage-read <collection> <key> [--task T]")
+        else:
+            task = "metadata"
+            if "--task" in args:
+                idx = args.index("--task")
+                if idx + 1 < len(args):
+                    task = args[idx + 1]
+            await cmd_storage_read(args[1], args[2], task=task)
+    elif args[0] == "storage-query":
+        if len(args) < 2:
+            print("  Usage: storage-query <collection> [--limit N] [--task T]")
+        else:
+            limit, task = 100, "metadata"
+            i = 2
+            while i < len(args):
+                if args[i] == "--limit" and i + 1 < len(args):
+                    limit = int(args[i + 1]); i += 2
+                elif args[i] == "--task" and i + 1 < len(args):
+                    task = args[i + 1]; i += 2
+                else:
+                    i += 1
+            await cmd_storage_query(args[1], limit=limit, task=task)
+    elif args[0] == "storage-stats":
+        await cmd_storage_stats()
     elif args[0] == "video":
         prompt = args[1] if len(args) > 1 else "a timelapse of clouds"
         duration, width, height = 4.0, 1280, 720

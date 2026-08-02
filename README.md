@@ -319,6 +319,7 @@ python scripts/verify_generation.py
 | Music / SFX | ⛔ needs local server | AudioCraft HTTP server (`MUSICGEN_URL`) |
 | 3D | ⛔ needs GPU | TRELLIS/Hunyuan3D/Point-E/Shap-E require 8–16 GB VRAM |
 | Reasoning / Tool calls | via chat backends | same credential requirements as Text |
+| Storage (metadata/ledger/audit) | ✅ works | Local SQLite + JSON backends (stdlib, offline); PostgreSQL/Qdrant/MinIO/Neo4j/Prometheus/Redis registered as truthful `not_configured` profiles |
 
 The local backends are exposed through the unified SDK, CLI, and MCP:
 
@@ -331,6 +332,16 @@ python -m ai_generation.cli stt speech.wav
 python -m ai_generation.cli ocr document.png
 python -m ai_generation.cli upscale photo.png --output upscaled.png
 python -m ai_generation.cli bg-remove photo.png --output cutout.png
+```
+
+Storage (ACOS Storage Architecture — SQLite/JSON local, external profiles):
+
+```bash
+python -m ai_generation.cli storage-list
+python -m ai_generation.cli storage-write ledger dec-1 '{"action": "route"}' --task ledger
+python -m ai_generation.cli storage-read ledger dec-1
+python -m ai_generation.cli storage-query ledger --limit 20
+python -m ai_generation.cli storage-stats
 ```
 
 Every failure is returned as a structured result with the exact technical
