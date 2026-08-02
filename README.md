@@ -234,7 +234,7 @@ ai_generation/          # Single canonical platform package
   research_integration.py # Research <-> implementation traceability
   providers/            # Provider implementations
   agents/               # Autonomous agent system
-  tests/                # 1,443 tests
+  tests/                # 1,446 tests
 configs/                # Canonical configuration (env template, MCP server registry)
 data/                   # Runtime registries and benchmarks
 knowledge-vault/        # Obsidian knowledge system (37 sections)
@@ -415,7 +415,7 @@ docker build -t uncle-frappe-ai-generation-platform .
 docker run --rm uncle-frappe-ai-generation-platform
 ```
 
-CI runs the full `ai_generation/tests/` suite (1,443 tests), verifies every
+CI runs the full `ai_generation/tests/` suite (1,446 tests), verifies every
 module imports cleanly, smoke-tests the unified SDK, and builds the Docker
 image on every push to `main` (`.github/workflows/ci.yml`).
 
@@ -423,7 +423,9 @@ image on every push to `main` (`.github/workflows/ci.yml`).
 
 `knowledge-vault/` is an Obsidian vault generated from the codebase — 37
 sections covering architecture, ADRs, capabilities, providers, runtimes,
-benchmarks, and quality engineering. Regenerate with:
+benchmarks, and quality engineering. 9 accepted ADRs (`01-Architecture/
+Decision-Records`) record the architecture decisions behind milestones #33-#40.
+Regenerate with:
 
 ```bash
 python3 knowledge-vault/37-Pipeline/generate_vault.py
