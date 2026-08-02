@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T13:41:40.406789+00:00",
+  "generated_at": "2026-08-02T13:56:51.020080+00:00",
   "research_documents": 57,
   "capabilities": 255,
   "modules": [
@@ -535,8 +535,12 @@
       "benchmarks": []
     },
     "IMG-12": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "prompt_engine"
+      ],
+      "tests": [
+        "test_generation"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
@@ -557,43 +561,67 @@
       "benchmarks": []
     },
     "EDT-01": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "image_editing"
+      ],
+      "tests": [
+        "test_phase11"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
     },
     "EDT-02": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "image_editing"
+      ],
+      "tests": [
+        "test_phase11"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
     },
     "EDT-03": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "image_editing"
+      ],
+      "tests": [
+        "test_phase11"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
     },
     "EDT-04": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "image_editing"
+      ],
+      "tests": [
+        "test_phase11"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
     },
     "EDT-05": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "image_editing"
+      ],
+      "tests": [
+        "test_phase11"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
     },
     "EDT-06": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "image_editing"
+      ],
+      "tests": [
+        "test_phase11"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
@@ -615,8 +643,12 @@
       "benchmarks": []
     },
     "EDT-08": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "image_editing"
+      ],
+      "tests": [
+        "test_phase11"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
@@ -847,68 +879,59 @@
       "benchmarks": []
     },
     "VID-09": {
-      "modules": [
-        "audio_generation",
-        "generation_3d",
-        "generation_3d_extensions",
-        "generation_manager",
-        "music_generation",
-        "quality_engineering",
-        "video_generation"
-      ],
-      "tests": [
-        "test_3d_extensions",
-        "test_3d_generation",
-        "test_audio",
-        "test_generation_surface",
-        "test_kimi_k3",
-        "test_music_generation",
-        "test_phase11",
-        "test_pollinations_text",
-        "test_provider_discovery_registrar",
-        "test_quality_engineering"
-      ],
-      "sdk_interfaces": [
-        "generation_manager",
-        "test_generation",
-        "video_generation",
-        "audio_generation",
-        "music_generation",
-        "generation_3d"
-      ],
-      "mcp_tools": [
-        "generate_tests",
-        "generate_video_ai",
-        "get_music_profiles",
-        "get_provider_stats",
-        "get_video_capabilities"
-      ],
+      "modules": [],
+      "tests": [],
+      "sdk_interfaces": [],
+      "mcp_tools": [],
       "benchmarks": []
     },
     "AUD-01": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "audio_generation",
+        "local_runtimes"
+      ],
+      "tests": [
+        "test_audio",
+        "test_kimi_k3",
+        "test_local_runtimes"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
     },
     "AUD-02": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "audio_generation",
+        "local_runtimes"
+      ],
+      "tests": [
+        "test_audio",
+        "test_kimi_k3",
+        "test_local_runtimes"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
     },
     "AUD-03": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "audio_generation"
+      ],
+      "tests": [
+        "test_audio"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
     },
     "AUD-04": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "local_runtimes"
+      ],
+      "tests": [
+        "test_kimi_k3",
+        "test_local_runtimes"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
@@ -1183,8 +1206,12 @@
       "benchmarks": []
     },
     "OCR-07": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "document_intelligence"
+      ],
+      "tests": [
+        "test_document_intelligence"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
@@ -1201,8 +1228,12 @@
       "benchmarks": []
     },
     "OCR-09": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "document_intelligence"
+      ],
+      "tests": [
+        "test_document_intelligence"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
@@ -1254,15 +1285,23 @@
       "benchmarks": []
     },
     "SRC-02": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "search_systems"
+      ],
+      "tests": [
+        "test_search_systems"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
     },
     "SRC-03": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "search_systems"
+      ],
+      "tests": [
+        "test_search_systems"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
@@ -1433,15 +1472,23 @@
       "benchmarks": []
     },
     "SRC-09": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "search_backends"
+      ],
+      "tests": [
+        "test_search_backends"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
     },
     "SRC-10": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "search_backends"
+      ],
+      "tests": [
+        "test_search_backends"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
@@ -1542,36 +1589,65 @@
       "benchmarks": []
     },
     "RTG-04": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "negotiation_engine"
+      ],
+      "tests": [
+        "test_kimi_k3",
+        "test_phase15"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
     },
     "RTG-05": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "auto_router",
+        "negotiation_engine"
+      ],
+      "tests": [
+        "test_kimi_k3",
+        "test_phase13",
+        "test_phase15"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
     },
     "RTG-06": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "auto_router",
+        "negotiation_engine"
+      ],
+      "tests": [
+        "test_kimi_k3",
+        "test_phase13",
+        "test_phase15"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
     },
     "RTG-07": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "negotiation_engine"
+      ],
+      "tests": [
+        "test_kimi_k3",
+        "test_phase15"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
     },
     "RTG-08": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "auto_router"
+      ],
+      "tests": [
+        "test_kimi_k3",
+        "test_phase13"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
@@ -1623,22 +1699,38 @@
       "benchmarks": []
     },
     "EXE-03": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "execution_engine",
+        "kimi_k3",
+        "local_runtimes"
+      ],
+      "tests": [
+        "test_kimi_k3",
+        "test_local_runtimes",
+        "test_phase13"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
     },
     "EXE-04": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "execution_strategies"
+      ],
+      "tests": [
+        "test_execution_strategies"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
     },
     "EXE-05": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "execution_strategies"
+      ],
+      "tests": [
+        "test_execution_strategies"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
@@ -1662,29 +1754,45 @@
       "benchmarks": []
     },
     "EXE-07": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "execution_strategies"
+      ],
+      "tests": [
+        "test_execution_strategies"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
     },
     "EXE-08": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "execution_strategies"
+      ],
+      "tests": [
+        "test_execution_strategies"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
     },
     "EXE-09": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "execution_strategies"
+      ],
+      "tests": [
+        "test_execution_strategies"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
     },
     "EXE-10": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "execution_strategies"
+      ],
+      "tests": [
+        "test_execution_strategies"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
@@ -1706,8 +1814,12 @@
       "benchmarks": []
     },
     "FLT-02": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "failure_recovery"
+      ],
+      "tests": [
+        "test_failure_recovery"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
@@ -1731,8 +1843,15 @@
       "benchmarks": []
     },
     "FLT-04": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "failure_recovery",
+        "supervisor"
+      ],
+      "tests": [
+        "test_failure_recovery",
+        "test_kimi_k3",
+        "test_phase15"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
@@ -1947,8 +2066,15 @@
       "benchmarks": []
     },
     "BMK-05": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "benchmark_engine",
+        "negotiation_engine"
+      ],
+      "tests": [
+        "test_generation",
+        "test_kimi_k3",
+        "test_phase15"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
@@ -2240,7 +2366,8 @@
       ],
       "tests": [
         "test_compatibility_matrix",
-        "test_research_integration"
+        "test_research_integration",
+        "test_research_traceability"
       ],
       "sdk_interfaces": [
         "research_integration"
@@ -2256,7 +2383,8 @@
       ],
       "tests": [
         "test_compatibility_matrix",
-        "test_research_integration"
+        "test_research_integration",
+        "test_research_traceability"
       ],
       "sdk_interfaces": [
         "research_integration"
@@ -2272,7 +2400,8 @@
       ],
       "tests": [
         "test_compatibility_matrix",
-        "test_research_integration"
+        "test_research_integration",
+        "test_research_traceability"
       ],
       "sdk_interfaces": [
         "research_integration"
@@ -2288,7 +2417,8 @@
       ],
       "tests": [
         "test_compatibility_matrix",
-        "test_research_integration"
+        "test_research_integration",
+        "test_research_traceability"
       ],
       "sdk_interfaces": [
         "research_integration"
@@ -2304,7 +2434,8 @@
       ],
       "tests": [
         "test_compatibility_matrix",
-        "test_research_integration"
+        "test_research_integration",
+        "test_research_traceability"
       ],
       "sdk_interfaces": [
         "research_integration"
@@ -2320,7 +2451,8 @@
       ],
       "tests": [
         "test_compatibility_matrix",
-        "test_research_integration"
+        "test_research_integration",
+        "test_research_traceability"
       ],
       "sdk_interfaces": [
         "research_integration"
@@ -2336,7 +2468,8 @@
       ],
       "tests": [
         "test_compatibility_matrix",
-        "test_research_integration"
+        "test_research_integration",
+        "test_research_traceability"
       ],
       "sdk_interfaces": [
         "research_integration"
@@ -2352,7 +2485,8 @@
       ],
       "tests": [
         "test_compatibility_matrix",
-        "test_research_integration"
+        "test_research_integration",
+        "test_research_traceability"
       ],
       "sdk_interfaces": [
         "research_integration"
@@ -2368,7 +2502,8 @@
       ],
       "tests": [
         "test_compatibility_matrix",
-        "test_research_integration"
+        "test_research_integration",
+        "test_research_traceability"
       ],
       "sdk_interfaces": [
         "research_integration"
@@ -2384,7 +2519,8 @@
       ],
       "tests": [
         "test_compatibility_matrix",
-        "test_research_integration"
+        "test_research_integration",
+        "test_research_traceability"
       ],
       "sdk_interfaces": [
         "research_integration"
@@ -2400,7 +2536,8 @@
       ],
       "tests": [
         "test_compatibility_matrix",
-        "test_research_integration"
+        "test_research_integration",
+        "test_research_traceability"
       ],
       "sdk_interfaces": [
         "research_integration"
@@ -2512,21 +2649,10 @@
       "benchmarks": []
     },
     "INF-07": {
-      "modules": [
-        "orchestration"
-      ],
-      "tests": [
-        "test_orchestration"
-      ],
-      "sdk_interfaces": [
-        "orchestration_pipeline"
-      ],
-      "mcp_tools": [
-        "add_kb_entry",
-        "plan_agents",
-        "retrieve_kb",
-        "run_orchestration_pipeline"
-      ],
+      "modules": [],
+      "tests": [],
+      "sdk_interfaces": [],
+      "mcp_tools": [],
       "benchmarks": []
     },
     "INF-08": {
@@ -2551,18 +2677,10 @@
       "benchmarks": []
     },
     "INF-11": {
-      "modules": [
-        "quality_engineering"
-      ],
-      "tests": [
-        "test_quality_engineering"
-      ],
-      "sdk_interfaces": [
-        "flaky_detection"
-      ],
-      "mcp_tools": [
-        "detect_flaky_tests"
-      ],
+      "modules": [],
+      "tests": [],
+      "sdk_interfaces": [],
+      "mcp_tools": [],
       "benchmarks": []
     },
     "SEC-01": {
@@ -2629,15 +2747,23 @@
       "benchmarks": []
     },
     "SEC-03": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "security"
+      ],
+      "tests": [
+        "test_security"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
     },
     "SEC-04": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "security"
+      ],
+      "tests": [
+        "test_security"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
@@ -2698,57 +2824,17 @@
       "benchmarks": []
     },
     "SEC-08": {
-      "modules": [
-        "plugin_extensions",
-        "plugin_system"
-      ],
-      "tests": [
-        "test_plugin_extensions",
-        "test_plugin_system"
-      ],
-      "sdk_interfaces": [
-        "plugin_system",
-        "plugin_marketplace",
-        "plugin_hot_reloader",
-        "plugin_signer"
-      ],
-      "mcp_tools": [
-        "check_plugin_changes",
-        "get_plugin_signatures",
-        "list_plugin_marketplace",
-        "reload_plugin",
-        "search_plugin_marketplace",
-        "sign_plugin",
-        "verify_plugin_signature",
-        "watch_plugin"
-      ],
+      "modules": [],
+      "tests": [],
+      "sdk_interfaces": [],
+      "mcp_tools": [],
       "benchmarks": []
     },
     "SEC-09": {
-      "modules": [
-        "plugin_extensions",
-        "plugin_system"
-      ],
-      "tests": [
-        "test_plugin_extensions",
-        "test_plugin_system"
-      ],
-      "sdk_interfaces": [
-        "plugin_system",
-        "plugin_marketplace",
-        "plugin_hot_reloader",
-        "plugin_signer"
-      ],
-      "mcp_tools": [
-        "check_plugin_changes",
-        "get_plugin_signatures",
-        "list_plugin_marketplace",
-        "reload_plugin",
-        "search_plugin_marketplace",
-        "sign_plugin",
-        "verify_plugin_signature",
-        "watch_plugin"
-      ],
+      "modules": [],
+      "tests": [],
+      "sdk_interfaces": [],
+      "mcp_tools": [],
       "benchmarks": []
     },
     "SEC-10": {
@@ -2783,18 +2869,9 @@
       "benchmarks": []
     },
     "SEC-11": {
-      "modules": [
-        "security",
-        "security_crypto"
-      ],
-      "tests": [
-        "test_security",
-        "test_security_crypto"
-      ],
-      "sdk_interfaces": [
-        "model_security",
-        "security"
-      ],
+      "modules": [],
+      "tests": [],
+      "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
     },
@@ -2836,20 +2913,9 @@
       "benchmarks": []
     },
     "MSG-02": {
-      "modules": [
-        "event_bus",
-        "event_log"
-      ],
-      "tests": [
-        "test_event_bus",
-        "test_event_log",
-        "test_kimi_k3"
-      ],
-      "sdk_interfaces": [
-        "event_bus",
-        "event_log",
-        "event_kernel"
-      ],
+      "modules": [],
+      "tests": [],
+      "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
     },
@@ -2868,8 +2934,13 @@
       "benchmarks": []
     },
     "MSG-05": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "event_bus"
+      ],
+      "tests": [
+        "test_event_bus",
+        "test_kimi_k3"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
@@ -2914,35 +2985,16 @@
       "benchmarks": []
     },
     "STR-03": {
-      "modules": [
-        "storage"
-      ],
-      "tests": [
-        "test_capability_graph_sync",
-        "test_storage"
-      ],
-      "sdk_interfaces": [
-        "storage_registry"
-      ],
+      "modules": [],
+      "tests": [],
+      "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
     },
     "STR-04": {
-      "modules": [
-        "capability_graph",
-        "kimi_k3",
-        "knowledge_graph"
-      ],
-      "tests": [
-        "test_capability_graph",
-        "test_capability_graph_sync",
-        "test_kimi_k3",
-        "test_phase14"
-      ],
-      "sdk_interfaces": [
-        "knowledge_graph",
-        "capability_graph"
-      ],
+      "modules": [],
+      "tests": [],
+      "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
     },
@@ -3003,51 +3055,24 @@
       "benchmarks": []
     },
     "NET-01": {
-      "modules": [
-        "generation_3d_extensions"
-      ],
-      "tests": [
-        "test_3d_extensions"
-      ],
-      "sdk_interfaces": [
-        "mesh_processing"
-      ],
-      "mcp_tools": [
-        "get_mesh_profiles",
-        "process_mesh"
-      ],
+      "modules": [],
+      "tests": [],
+      "sdk_interfaces": [],
+      "mcp_tools": [],
       "benchmarks": []
     },
     "NET-02": {
-      "modules": [
-        "generation_3d_extensions"
-      ],
-      "tests": [
-        "test_3d_extensions"
-      ],
-      "sdk_interfaces": [
-        "mesh_processing"
-      ],
-      "mcp_tools": [
-        "get_mesh_profiles",
-        "process_mesh"
-      ],
+      "modules": [],
+      "tests": [],
+      "sdk_interfaces": [],
+      "mcp_tools": [],
       "benchmarks": []
     },
     "NET-03": {
-      "modules": [
-        "generation_3d_extensions"
-      ],
-      "tests": [
-        "test_3d_extensions"
-      ],
-      "sdk_interfaces": [
-        "mesh_processing"
-      ],
-      "mcp_tools": [
-        "get_mesh_profiles",
-        "process_mesh"
-      ],
+      "modules": [],
+      "tests": [],
+      "sdk_interfaces": [],
+      "mcp_tools": [],
       "benchmarks": []
     },
     "NET-04": {
@@ -3058,17 +3083,9 @@
       "benchmarks": []
     },
     "NET-05": {
-      "modules": [
-        "provider_discovery",
-        "provider_discovery_registrar"
-      ],
-      "tests": [
-        "test_phase13",
-        "test_provider_discovery_registrar"
-      ],
-      "sdk_interfaces": [
-        "provider_discovery_engine"
-      ],
+      "modules": [],
+      "tests": [],
+      "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
     },
@@ -3080,22 +3097,39 @@
       "benchmarks": []
     },
     "OBS-01": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "observability"
+      ],
+      "tests": [
+        "test_kimi_k3",
+        "test_observability"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
     },
     "OBS-02": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "observability",
+        "otel_export"
+      ],
+      "tests": [
+        "test_kimi_k3",
+        "test_observability",
+        "test_otel_export"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
     },
     "OBS-03": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "observability"
+      ],
+      "tests": [
+        "test_kimi_k3",
+        "test_observability"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
@@ -3161,8 +3195,15 @@
       "benchmarks": []
     },
     "OBS-06": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "failure_recovery",
+        "observability"
+      ],
+      "tests": [
+        "test_failure_recovery",
+        "test_kimi_k3",
+        "test_observability"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
@@ -3179,48 +3220,23 @@
       "benchmarks": []
     },
     "OBS-08": {
-      "modules": [
-        "otel_export"
-      ],
-      "tests": [
-        "test_otel_export"
-      ],
+      "modules": [],
+      "tests": [],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
     },
     "OBS-09": {
-      "modules": [
-        "quality_dashboard",
-        "research_integration"
-      ],
-      "tests": [
-        "test_compatibility_matrix",
-        "test_quality_dashboard",
-        "test_research_integration"
-      ],
-      "sdk_interfaces": [
-        "quality_dashboard",
-        "research_integration"
-      ],
-      "mcp_tools": [
-        "get_quality_history",
-        "get_quality_stats",
-        "research_index",
-        "run_quality_dashboard"
-      ],
+      "modules": [],
+      "tests": [],
+      "sdk_interfaces": [],
+      "mcp_tools": [],
       "benchmarks": []
     },
     "OBS-10": {
-      "modules": [
-        "event_log"
-      ],
-      "tests": [
-        "test_event_log"
-      ],
-      "sdk_interfaces": [
-        "event_log"
-      ],
+      "modules": [],
+      "tests": [],
+      "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
     },
@@ -3539,29 +3555,45 @@
       "benchmarks": []
     },
     "BRW-01": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "browser_ai"
+      ],
+      "tests": [
+        "test_browser_ai"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
     },
     "BRW-02": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "browser_ai"
+      ],
+      "tests": [
+        "test_browser_ai"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
     },
     "BRW-03": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "browser_ai"
+      ],
+      "tests": [
+        "test_browser_ai"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
     },
     "BRW-04": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "browser_ai"
+      ],
+      "tests": [
+        "test_browser_ai"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
@@ -3583,8 +3615,12 @@
       "benchmarks": []
     },
     "BRW-06": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "browser_ai"
+      ],
+      "tests": [
+        "test_browser_ai"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
@@ -3648,7 +3684,8 @@
         "test_phase13",
         "test_phase15",
         "test_refactoring",
-        "test_research_integration"
+        "test_research_integration",
+        "test_research_traceability"
       ],
       "sdk_interfaces": [
         "prompt_engine",
@@ -3723,15 +3760,23 @@
       "benchmarks": []
     },
     "EDG-04": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "edge_ai"
+      ],
+      "tests": [
+        "test_edge_ai"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
     },
     "EDG-05": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "edge_ai"
+      ],
+      "tests": [
+        "test_edge_ai"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
@@ -3795,7 +3840,8 @@
         "test_phase13",
         "test_phase15",
         "test_refactoring",
-        "test_research_integration"
+        "test_research_integration",
+        "test_research_traceability"
       ],
       "sdk_interfaces": [
         "prompt_engine",
@@ -3931,67 +3977,31 @@
       "benchmarks": []
     },
     "WFL-04": {
-      "modules": [
-        "research_integration"
-      ],
-      "tests": [
-        "test_compatibility_matrix",
-        "test_research_integration"
-      ],
-      "sdk_interfaces": [
-        "research_integration"
-      ],
-      "mcp_tools": [
-        "research_index"
-      ],
+      "modules": [],
+      "tests": [],
+      "sdk_interfaces": [],
+      "mcp_tools": [],
       "benchmarks": []
     },
     "WFL-05": {
-      "modules": [
-        "research_integration"
-      ],
-      "tests": [
-        "test_compatibility_matrix",
-        "test_research_integration"
-      ],
-      "sdk_interfaces": [
-        "research_integration"
-      ],
-      "mcp_tools": [
-        "research_index"
-      ],
+      "modules": [],
+      "tests": [],
+      "sdk_interfaces": [],
+      "mcp_tools": [],
       "benchmarks": []
     },
     "WFL-06": {
-      "modules": [
-        "research_integration"
-      ],
-      "tests": [
-        "test_compatibility_matrix",
-        "test_research_integration"
-      ],
-      "sdk_interfaces": [
-        "research_integration"
-      ],
-      "mcp_tools": [
-        "research_index"
-      ],
+      "modules": [],
+      "tests": [],
+      "sdk_interfaces": [],
+      "mcp_tools": [],
       "benchmarks": []
     },
     "WFL-07": {
-      "modules": [
-        "research_integration"
-      ],
-      "tests": [
-        "test_compatibility_matrix",
-        "test_research_integration"
-      ],
-      "sdk_interfaces": [
-        "research_integration"
-      ],
-      "mcp_tools": [
-        "research_index"
-      ],
+      "modules": [],
+      "tests": [],
+      "sdk_interfaces": [],
+      "mcp_tools": [],
       "benchmarks": []
     },
     "AGT-01": {
@@ -4158,7 +4168,8 @@
         "test_kimi_k3",
         "test_phase11",
         "test_phase13",
-        "test_research_integration"
+        "test_research_integration",
+        "test_research_traceability"
       ],
       "sdk_interfaces": [
         "multi_agent_review",
@@ -4277,7 +4288,8 @@
         "test_kimi_k3",
         "test_phase11",
         "test_phase13",
-        "test_research_integration"
+        "test_research_integration",
+        "test_research_traceability"
       ],
       "sdk_interfaces": [
         "multi_agent_review",
@@ -4364,67 +4376,31 @@
       "benchmarks": []
     },
     "AGT-13": {
-      "modules": [
-        "research_integration"
-      ],
-      "tests": [
-        "test_compatibility_matrix",
-        "test_research_integration"
-      ],
-      "sdk_interfaces": [
-        "research_integration"
-      ],
-      "mcp_tools": [
-        "research_index"
-      ],
+      "modules": [],
+      "tests": [],
+      "sdk_interfaces": [],
+      "mcp_tools": [],
       "benchmarks": []
     },
     "AGT-14": {
-      "modules": [
-        "research_integration"
-      ],
-      "tests": [
-        "test_compatibility_matrix",
-        "test_research_integration"
-      ],
-      "sdk_interfaces": [
-        "research_integration"
-      ],
-      "mcp_tools": [
-        "research_index"
-      ],
+      "modules": [],
+      "tests": [],
+      "sdk_interfaces": [],
+      "mcp_tools": [],
       "benchmarks": []
     },
     "AGT-15": {
-      "modules": [
-        "research_integration"
-      ],
-      "tests": [
-        "test_compatibility_matrix",
-        "test_research_integration"
-      ],
-      "sdk_interfaces": [
-        "research_integration"
-      ],
-      "mcp_tools": [
-        "research_index"
-      ],
+      "modules": [],
+      "tests": [],
+      "sdk_interfaces": [],
+      "mcp_tools": [],
       "benchmarks": []
     },
     "AGT-16": {
-      "modules": [
-        "research_integration"
-      ],
-      "tests": [
-        "test_compatibility_matrix",
-        "test_research_integration"
-      ],
-      "sdk_interfaces": [
-        "research_integration"
-      ],
-      "mcp_tools": [
-        "research_index"
-      ],
+      "modules": [],
+      "tests": [],
+      "sdk_interfaces": [],
+      "mcp_tools": [],
       "benchmarks": []
     },
     "DST-01": {
@@ -4449,19 +4425,10 @@
       "benchmarks": []
     },
     "DST-04": {
-      "modules": [
-        "research_integration"
-      ],
-      "tests": [
-        "test_compatibility_matrix",
-        "test_research_integration"
-      ],
-      "sdk_interfaces": [
-        "research_integration"
-      ],
-      "mcp_tools": [
-        "research_index"
-      ],
+      "modules": [],
+      "tests": [],
+      "sdk_interfaces": [],
+      "mcp_tools": [],
       "benchmarks": []
     },
     "DST-05": {

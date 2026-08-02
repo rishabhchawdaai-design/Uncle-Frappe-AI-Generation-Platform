@@ -242,6 +242,56 @@ CAPABILITY_MODULE_ALIASES = {
     "Periodic Discovery": ["capability_graph"],
 }
 
+CAPABILITY_ID_MODULE_ALIASES = {
+    "AUD-01": ["local_runtimes", "audio_generation"],
+    "AUD-02": ["local_runtimes", "audio_generation"],
+    "AUD-03": ["audio_generation"],
+    "AUD-04": ["local_runtimes"],
+    "BMK-05": ["negotiation_engine", "benchmark_engine"],
+    "BRW-01": ["browser_ai"],
+    "BRW-02": ["browser_ai"],
+    "BRW-03": ["browser_ai"],
+    "BRW-04": ["browser_ai"],
+    "BRW-06": ["browser_ai"],
+    "EDG-04": ["edge_ai"],
+    "EDG-05": ["edge_ai"],
+    "EDT-01": ["image_editing"],
+    "EDT-02": ["image_editing"],
+    "EDT-03": ["image_editing"],
+    "EDT-04": ["image_editing"],
+    "EDT-05": ["image_editing"],
+    "EDT-06": ["image_editing"],
+    "EDT-08": ["image_editing"],
+    "EXE-03": ["execution_engine", "kimi_k3", "local_runtimes"],
+    "EXE-04": ["execution_strategies"],
+    "EXE-05": ["execution_strategies"],
+    "EXE-07": ["execution_strategies"],
+    "EXE-08": ["execution_strategies"],
+    "EXE-09": ["execution_strategies"],
+    "EXE-10": ["execution_strategies"],
+    "FLT-02": ["failure_recovery"],
+    "FLT-04": ["supervisor", "failure_recovery"],
+    "IMG-12": ["prompt_engine"],
+    "MSG-05": ["event_bus"],
+    "OBS-01": ["observability"],
+    "OBS-02": ["observability", "otel_export"],
+    "OBS-03": ["observability"],
+    "OBS-06": ["observability", "failure_recovery"],
+    "OCR-07": ["document_intelligence"],
+    "OCR-09": ["document_intelligence"],
+    "RTG-04": ["negotiation_engine"],
+    "RTG-05": ["auto_router", "negotiation_engine"],
+    "RTG-06": ["auto_router", "negotiation_engine"],
+    "RTG-07": ["negotiation_engine"],
+    "RTG-08": ["auto_router"],
+    "SEC-03": ["security"],
+    "SEC-04": ["security"],
+    "SRC-02": ["search_systems"],
+    "SRC-03": ["search_systems"],
+    "SRC-09": ["search_backends"],
+    "SRC-10": ["search_backends"],
+}
+
 
 # ── Engine ────────────────────────────────────────────────────────
 
@@ -454,8 +504,15 @@ class ResearchIntegrationEngine:
         # capability -> module/tests via keyword overlap + curated aliases
         capability_links: Dict[str, Dict[str, Any]] = {}
         for cap_id, row in cap_by_id.items():
+            if row["status"] == "BLOCKED":
+                # blocked capabilities are not implemented: never claim links
+                capability_links[cap_id] = {"modules": [], "tests": [],
+                                            "sdk_interfaces": [], "mcp_tools": [],
+                                            "benchmarks": []}
+                continue
             modules_for, tests_for, sdk_for, mcp_for, benchmarks_for = self._link_capability(
-                row["name"], modules, sdk_map, mcp_map, test_map, benchmark_map
+                row["capability_id"], row["name"], modules,
+                sdk_map, mcp_map, test_map, benchmark_map
             )
             capability_links[cap_id] = {
                 "modules": modules_for,
@@ -556,6 +613,7 @@ class ResearchIntegrationEngine:
 
     def _link_capability(
         self,
+        cap_id: str,
         name: str,
         modules: List[str],
         sdk_map: Dict[str, Dict[str, Any]],
@@ -577,6 +635,9 @@ class ResearchIntegrationEngine:
                 linked_modules.append(module)
         linked_modules.extend(
             m for m in CAPABILITY_MODULE_ALIASES.get(name, []) if m in modules
+        )
+        linked_modules.extend(
+            m for m in CAPABILITY_ID_MODULE_ALIASES.get(cap_id, []) if m in modules
         )
         linked_modules = sorted(set(linked_modules))
         linked_tests = sorted(
