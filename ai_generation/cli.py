@@ -58,6 +58,66 @@ async def cmd_text(prompt, model="", system_prompt=""):
     return result
 
 
+async def cmd_event_classes():
+    """List ACOS event taxonomy classes and delivery guarantees."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    classes = ai.list_event_classes()
+    print("\n  ACOS Event Taxonomy — Delivery Guarantees\n")
+    for name, policy in classes.items():
+        print(f"  {name:12s} guarantee={policy['guarantee']:14s} persist={str(policy['persist']):5s} max_attempts={policy['max_attempts']}")
+    return classes
+
+
+async def cmd_event_emit(subject, payload):
+    """Emit a durable event (persisted + live fan-out)."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    try:
+        import json as _json
+        parsed = _json.loads(payload) if payload.startswith(("{", "[")) else payload
+    except Exception:
+        parsed = payload
+    event = ai.emit_durable_event(subject, parsed)
+    print(f"\n  Event:       {event['subject']} ({event['event_id']})")
+    print(f"  Class:       {event['event_class']} | guarantee={event['guarantee']}")
+    print(f"  Status:      {event['status']}")
+    return event
+
+
+async def cmd_event_replay(subject=""):
+    """Replay events from the durable log."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    events = ai.replay_events(subject=subject, limit=100)
+    print(f"\n  Replayed events{(' for ' + subject) if subject else ''}: {len(events)}\n")
+    for e in events:
+        print(f"  - [{e['event_class']:8s}] {e['subject']:28s} status={e['status']:12s} attempts={e['attempts']}")
+    return events
+
+
+async def cmd_event_stats():
+    """Get durable event log statistics."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    stats = ai.get_event_log_stats()
+    print(f"\n  Durable Event Log: {stats['db_path']}")
+    print(f"  Total events:      {stats['total_events']}")
+    print(f"  By status:         {stats.get('by_status', {})}")
+    print(f"  By class:          {stats.get('by_class', {})}")
+    print(f"  DLQ size:          {stats.get('by_status', {}).get('dead_letter', 0)}")
+    return stats
+
+
+async def cmd_event_purge(status="dead_letter"):
+    """Purge events by status (default: dead-letter queue)."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    count = ai.purge_events(status=status)
+    print(f"\n  Purged {count} events with status='{status}'")
+    return count
+
+
 async def cmd_storage_list():
     """List all storage backends and profiles."""
     from ai_generation.sdk import UncleFrappeAI
@@ -1190,6 +1250,11 @@ async def main():
     python -m ai_generation.cli storage-read <col> <key> [--task T]  Read a record
     python -m ai_generation.cli storage-query <col> [--limit N] [--task T]  Query records
     python -m ai_generation.cli storage-stats           Storage statistics
+    python -m ai_generation.cli event-classes          Event taxonomy + delivery guarantees
+    python -m ai_generation.cli event-emit <subject> <payload>  Emit durable event
+    python -m ai_generation.cli event-replay [subject] Replay durable events
+    python -m ai_generation.cli event-stats           Durable event log statistics
+    python -m ai_generation.cli event-purge [status]  Purge events (default dead_letter)
     python -m ai_generation.cli video <prompt> [--duration SECS] [--width W] [--height H]
     python -m ai_generation.cli enhance <prompt> [--style STYLE]
     python -m ai_generation.cli providers               List available providers
@@ -1378,6 +1443,21 @@ async def main():
             await cmd_storage_query(args[1], limit=limit, task=task)
     elif args[0] == "storage-stats":
         await cmd_storage_stats()
+    elif args[0] == "event-classes":
+        await cmd_event_classes()
+    elif args[0] == "event-emit":
+        if len(args) < 3:
+            print("  Usage: event-emit <subject> <payload>")
+        else:
+            await cmd_event_emit(args[1], args[2])
+    elif args[0] == "event-replay":
+        subject = args[1] if len(args) > 1 else ""
+        await cmd_event_replay(subject)
+    elif args[0] == "event-stats":
+        await cmd_event_stats()
+    elif args[0] == "event-purge":
+        status = args[1] if len(args) > 1 else "dead_letter"
+        await cmd_event_purge(status)
     elif args[0] == "video":
         prompt = args[1] if len(args) > 1 else "a timelapse of clouds"
         duration, width, height = 4.0, 1280, 720

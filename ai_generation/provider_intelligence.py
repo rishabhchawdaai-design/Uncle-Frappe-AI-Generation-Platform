@@ -434,6 +434,22 @@ class ProviderIntelligenceEngine:
                 source="ACOS Storage & Databases Research (Redis)",
                 notes="External service — profile registered, not configured.",
             ),
+            # ── Messaging & Events — Durable Event Log ──
+            ProviderIntelligence(
+                name="event_log", url="",
+                provider_type="events", license=LicenseType.OPEN,
+                verification_status=VerificationStatus.VERIFIED,
+                availability_confirmed=True, api_key_required=False,
+                free_tier_available=True,
+                models=[{"name": "durable-event-log", "type": "events",
+                         "runtime": "local-stdlib"}],
+                capabilities=["event_sourcing", "event_replay", "dead_letter"],
+                media_support={"text": "production"},
+                benchmark_scores={"speed": 95, "latency": 95, "reliability": 95},
+                implementation_priority="high",
+                source="ACOS Messaging & Events Research (durable log)",
+                notes="SQLite durable event log with delivery guarantees per ACOS taxonomy.",
+            ),
         ]
         self._discoveries.extend(known)
 

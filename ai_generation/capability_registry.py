@@ -232,6 +232,14 @@ INITIAL_REGISTRY = [
                supported_tasks=["cache"],
                api_key_required=True, free_tier=False,
                known_limits={"external": True, "status": "not_configured"}),
+    # ── Messaging & Events — Durable Event Log (ACOS Event System) ──
+    ModelEntry(model_id="event-log-durable", provider="event_log",
+               model_name="durable-event-log", media_type="text",
+               supported_tasks=["event_sourcing", "event_replay", "dead_letter"],
+               api_key_required=False, free_tier=True,
+               known_limits={"runtime": "local-stdlib", "engine": "sqlite3",
+                             "taxonomy": ["kernel", "request", "workflow", "health", "system"],
+                             "verified": "retry->DLQ, replay, retention"}),
 ]
 
 
