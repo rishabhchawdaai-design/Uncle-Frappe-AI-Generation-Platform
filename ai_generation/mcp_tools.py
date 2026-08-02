@@ -65,6 +65,47 @@ MCP_GENERATION_TOOLS = {
         "description": "Evolve the capability graph automatically from the live provider, storage, and event-log registries.",
         "inputSchema": {"type": "object", "properties": {}},
     },
+    "compatibility_lookup": {
+        "name": "compatibility_lookup",
+        "description": "Look up a model x runtime x hardware combination in the compatibility matrix.",
+        "inputSchema": {"type": "object", "properties": {
+            "model_id": {"type": "string"},
+            "runtime_id": {"type": "string"},
+            "hardware_id": {"type": "string", "default": "all"},
+        }, "required": ["model_id", "runtime_id"]},
+    },
+    "compatibility_find_runtimes": {
+        "name": "compatibility_find_runtimes",
+        "description": "Best-scoring compatible runtimes for a model.",
+        "inputSchema": {"type": "object", "properties": {
+            "model_id": {"type": "string"},
+            "hardware_id": {"type": "string", "default": ""},
+            "min_score": {"type": "number", "default": 0.0},
+        }, "required": ["model_id"]},
+    },
+    "compatibility_find_models": {
+        "name": "compatibility_find_models",
+        "description": "Best-scoring models for a runtime category and hardware.",
+        "inputSchema": {"type": "object", "properties": {
+            "category": {"type": "string", "default": ""},
+            "hardware_id": {"type": "string", "default": ""},
+            "min_score": {"type": "number", "default": 0.0},
+        }},
+    },
+    "compatibility_validate_path": {
+        "name": "compatibility_validate_path",
+        "description": "Validate an execution path (model x runtime x hardware) against the compatibility matrix.",
+        "inputSchema": {"type": "object", "properties": {
+            "model_id": {"type": "string"},
+            "runtime_id": {"type": "string"},
+            "hardware_id": {"type": "string", "default": "all"},
+        }, "required": ["model_id", "runtime_id"]},
+    },
+    "compatibility_stats": {
+        "name": "compatibility_stats",
+        "description": "Compatibility matrix statistics (entries, models, runtimes, categories, evidence).",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
     "emit_durable_event": {
         "name": "emit_durable_event",
         "description": "Persist an event to the durable event log (SQLite) and fan out to the live bus. Uses ACOS event taxonomy delivery guarantees.",
@@ -1446,6 +1487,11 @@ class MCPGenerationTools:
             "list_storage_backends": self._handle_list_storage_backends,
             "emit_durable_event": self._handle_emit_durable_event,
             "sync_capability_graph": self._handle_sync_capability_graph,
+            "compatibility_lookup": self._handle_compatibility_lookup,
+            "compatibility_find_runtimes": self._handle_compatibility_find_runtimes,
+            "compatibility_find_models": self._handle_compatibility_find_models,
+            "compatibility_validate_path": self._handle_compatibility_validate_path,
+            "compatibility_stats": self._handle_compatibility_stats,
             "replay_events": self._handle_replay_events,
             "get_event_log_stats": self._handle_get_event_log_stats,
             "purge_events": self._handle_purge_events,
@@ -1712,6 +1758,34 @@ class MCPGenerationTools:
     async def _handle_sync_capability_graph(self, args):
         """Synchronize the capability graph from live registries."""
         return self.sdk.sync_capability_graph()
+
+    async def _handle_compatibility_lookup(self, args):
+        """Look up a model x runtime x hardware combination."""
+        return self.sdk.compat_lookup(args.get("model_id", ""),
+                                      args.get("runtime_id", ""),
+                                      args.get("hardware_id", "all"))
+
+    async def _handle_compatibility_find_runtimes(self, args):
+        """Best-scoring compatible runtimes for a model."""
+        return self.sdk.compat_find_runtimes(args.get("model_id", ""),
+                                             args.get("hardware_id", ""),
+                                             float(args.get("min_score", 0.0)))
+
+    async def _handle_compatibility_find_models(self, args):
+        """Best-scoring models for a runtime category and hardware."""
+        return self.sdk.compat_find_models(args.get("category", ""),
+                                           args.get("hardware_id", ""),
+                                           float(args.get("min_score", 0.0)))
+
+    async def _handle_compatibility_validate_path(self, args):
+        """Validate an execution path against the compatibility matrix."""
+        return self.sdk.compat_validate_path(args.get("model_id", ""),
+                                             args.get("runtime_id", ""),
+                                             args.get("hardware_id", "all"))
+
+    async def _handle_compatibility_stats(self, args):
+        """Compatibility matrix statistics."""
+        return self.sdk.compat_get_stats()
 
     async def _handle_emit_durable_event(self, args):
         """Persist an event to the durable log."""

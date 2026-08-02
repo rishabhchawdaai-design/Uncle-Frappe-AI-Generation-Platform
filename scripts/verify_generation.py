@@ -330,7 +330,26 @@ async def main() -> int:
         crashed = True
         record("capability_graph", False, f"CRASH {type(e).__name__}: {e}")
 
-    # 12. Registry + SDK surface sanity (offline)
+    # 12. COMPATIBILITY MATRIX — model x runtime x hardware lookup (offline)
+    try:
+        stats = ai.compat_get_stats()
+        lookup = ai.compat_lookup("llama3_8b", "vllm", "nvidia")
+        validated = ai.compat_validate_path("cogvideox_5b", "comfyui_video", "nvidia")
+        runtimes = ai.compat_find_runtimes("sdxl")
+        ok = bool(stats["total_entries"] >= 150 and lookup is not None
+                  and validated["valid"] and runtimes)
+        record("compatibility_matrix", ok, {
+            "entries": stats["total_entries"], "models": stats["total_models"],
+            "categories": stats["by_category"],
+            "sample_score": lookup["performance_score"],
+            "validated_path": validated["reason"],
+            "top_sdxl_runtime": runtimes[0]["runtime_id"],
+        })
+    except Exception as e:
+        crashed = True
+        record("compatibility_matrix", False, f"CRASH {type(e).__name__}: {e}")
+
+    # 13. Registry + SDK surface sanity (offline)
     try:
         srv = ai.get_mcp_registry_stats()
         skl = ai.get_skill_registry_stats()

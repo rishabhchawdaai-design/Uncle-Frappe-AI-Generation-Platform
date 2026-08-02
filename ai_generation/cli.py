@@ -71,6 +71,69 @@ async def cmd_graph_sync():
     return report
 
 
+async def cmd_compat_stats():
+    """Show compatibility matrix statistics."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    stats = ai.compat_get_stats()
+    print("\n  Compatibility Matrix (COMPATIBILITY_MATRIX.md)")
+    print(f"  Entries:      {stats['total_entries']}")
+    print(f"  Models:       {stats['total_models']}")
+    print(f"  Runtimes:     {stats['total_runtimes']} catalogued / {stats['catalogued_runtimes']} total")
+    print(f"  By category:  {stats['by_category']}")
+    print(f"  By evidence:  {stats['by_evidence']}")
+    return stats
+
+
+async def cmd_compat_lookup(model_id, runtime_id, hardware_id="all"):
+    """Look up a model x runtime x hardware combination."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    entry = ai.compat_lookup(model_id, runtime_id, hardware_id)
+    if entry is None:
+        print(f"\n  No entry for {model_id} x {runtime_id} x {hardware_id}")
+        return None
+    print(f"\n  {model_id} x {runtime_id} x {hardware_id}")
+    print(f"  Score: {entry.get('performance_score')}  Evidence: {entry.get('evidence')}")
+    print(f"  Quantization: {entry.get('quantization')}  Context: {entry.get('max_context')}")
+    return entry
+
+
+async def cmd_compat_runtimes(model_id, hardware_id=""):
+    """List best-scoring runtimes for a model."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    results = ai.compat_find_runtimes(model_id, hardware_id)
+    print(f"\n  Compatible runtimes for {model_id}:")
+    for r in results:
+        print(f"  - {r['runtime_id']:18s} score={r['performance_score']} "
+              f"hw={r['hardware_id']} evidence={r['evidence']}")
+    return results
+
+
+async def cmd_compat_models(category, hardware_id=""):
+    """List best-scoring models for a runtime category."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    results = ai.compat_find_models(category, hardware_id)
+    print(f"\n  Compatible models (category={category or 'all'}):")
+    for r in results[:20]:
+        print(f"  - {r['model_id']:22s} runtime={r['runtime_id']:16s} "
+              f"score={r['performance_score']} evidence={r['evidence']}")
+    return results
+
+
+async def cmd_compat_validate(model_id, runtime_id, hardware_id="all"):
+    """Validate an execution path against the compatibility matrix."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    result = ai.compat_validate_path(model_id, runtime_id, hardware_id)
+    status = "VALID" if result["valid"] else "INVALID"
+    print(f"\n  [{status}] {model_id} x {runtime_id} x {hardware_id}")
+    print(f"  Reason: {result.get('reason', '')}")
+    return result
+
+
 async def cmd_event_classes():
     """List ACOS event taxonomy classes and delivery guarantees."""
     from ai_generation.sdk import UncleFrappeAI
@@ -1269,6 +1332,11 @@ async def main():
     python -m ai_generation.cli event-stats           Durable event log statistics
     python -m ai_generation.cli event-purge [status]  Purge events (default dead_letter)
     python -m ai_generation.cli cap-graph-sync        Sync capability graph from registries
+    python -m ai_generation.cli compat                 Compatibility matrix stats
+    python -m ai_generation.cli compat-lookup <model> <runtime> [hardware]  Lookup combination
+    python -m ai_generation.cli compat-runtimes <model> [hardware]  Best runtimes for model
+    python -m ai_generation.cli compat-models <category> [hardware]  Best models for category
+    python -m ai_generation.cli compat-validate <model> <runtime> [hardware]  Validate path
     python -m ai_generation.cli video <prompt> [--duration SECS] [--width W] [--height H]
     python -m ai_generation.cli enhance <prompt> [--style STYLE]
     python -m ai_generation.cli providers               List available providers
@@ -1474,6 +1542,26 @@ async def main():
         await cmd_event_purge(status)
     elif args[0] == "cap-graph-sync":
         await cmd_graph_sync()
+    elif args[0] == "compat":
+        await cmd_compat_stats()
+    elif args[0] == "compat-lookup":
+        model = args[1] if len(args) > 1 else ""
+        runtime = args[2] if len(args) > 2 else ""
+        hardware = args[3] if len(args) > 3 else "all"
+        await cmd_compat_lookup(model, runtime, hardware)
+    elif args[0] == "compat-runtimes":
+        model = args[1] if len(args) > 1 else ""
+        hardware = args[2] if len(args) > 2 else ""
+        await cmd_compat_runtimes(model, hardware)
+    elif args[0] == "compat-models":
+        category = args[1] if len(args) > 1 else ""
+        hardware = args[2] if len(args) > 2 else ""
+        await cmd_compat_models(category, hardware)
+    elif args[0] == "compat-validate":
+        model = args[1] if len(args) > 1 else ""
+        runtime = args[2] if len(args) > 2 else ""
+        hardware = args[3] if len(args) > 3 else "all"
+        await cmd_compat_validate(model, runtime, hardware)
     elif args[0] == "video":
         prompt = args[1] if len(args) > 1 else "a timelapse of clouds"
         duration, width, height = 4.0, 1280, 720
