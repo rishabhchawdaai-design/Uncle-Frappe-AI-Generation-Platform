@@ -320,6 +320,7 @@ python scripts/verify_generation.py
 | 3D | ⛔ needs GPU | TRELLIS/Hunyuan3D/Point-E/Shap-E require 8–16 GB VRAM |
 | Reasoning / Tool calls | via chat backends | same credential requirements as Text |
 | Storage (metadata/ledger/audit) | ✅ works | Local SQLite + JSON backends (stdlib, offline); PostgreSQL/Qdrant/MinIO/Neo4j/Prometheus/Redis registered as truthful `not_configured` profiles |
+| Event sourcing | ✅ works | Durable event log (SQLite): ACOS taxonomy, per-class delivery guarantees, replay, dead-letter queue, retention |
 
 The local backends are exposed through the unified SDK, CLI, and MCP:
 
@@ -342,6 +343,16 @@ python -m ai_generation.cli storage-write ledger dec-1 '{"action": "route"}' --t
 python -m ai_generation.cli storage-read ledger dec-1
 python -m ai_generation.cli storage-query ledger --limit 20
 python -m ai_generation.cli storage-stats
+```
+
+Durable event log (ACOS Messaging & Events Research):
+
+```bash
+python -m ai_generation.cli event-classes
+python -m ai_generation.cli event-emit request.completed '{"task_id": "t1"}'
+python -m ai_generation.cli event-replay request.*
+python -m ai_generation.cli event-stats
+python -m ai_generation.cli event-purge dead_letter
 ```
 
 Every failure is returned as a structured result with the exact technical

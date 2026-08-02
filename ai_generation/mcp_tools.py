@@ -60,6 +60,55 @@ MCP_GENERATION_TOOLS = {
         "description": "List built-in free local backends: OCR, embeddings, TTS, STT, translation, upscaling, background removal.",
         "inputSchema": {"type": "object", "properties": {}},
     },
+    "emit_durable_event": {
+        "name": "emit_durable_event",
+        "description": "Persist an event to the durable event log (SQLite) and fan out to the live bus. Uses ACOS event taxonomy delivery guarantees.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "subject": {"type": "string", "description": "Event subject, e.g. request.completed, workflow.started, health.critical"},
+                "payload": {"type": "object", "description": "Event payload"},
+                "publisher": {"type": "string", "description": "Publisher name", "default": ""},
+                "event_class": {"type": "string", "description": "kernel|request|workflow|health|system (auto-detected from subject if omitted)"},
+            },
+            "required": ["subject", "payload"],
+        },
+    },
+    "replay_events": {
+        "name": "replay_events",
+        "description": "Replay events from the durable event log (event sourcing).",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "subject": {"type": "string", "description": "Subject pattern (e.g. request.*)"},
+                "event_class": {"type": "string"},
+                "status": {"type": "string", "description": "pending|delivered|dead_letter"},
+                "limit": {"type": "integer", "default": 100},
+            },
+            "required": [],
+        },
+    },
+    "get_event_log_stats": {
+        "name": "get_event_log_stats",
+        "description": "Get durable event log statistics (counts, DLQ size, delivery policies).",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+    "purge_events": {
+        "name": "purge_events",
+        "description": "Purge events from the durable log by status (default dead_letter).",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "status": {"type": "string", "default": "dead_letter"},
+            },
+            "required": [],
+        },
+    },
+    "list_event_classes": {
+        "name": "list_event_classes",
+        "description": "List ACOS event taxonomy classes and their delivery guarantees.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
     "list_storage_backends": {
         "name": "list_storage_backends",
         "description": "List all storage backends and profiles (SQLite/JSON local; PostgreSQL/Qdrant/LanceDB/MinIO/Neo4j/Prometheus/Redis external).",
@@ -1390,6 +1439,11 @@ class MCPGenerationTools:
             "generate_text": self._handle_generate_text,
             "list_local_backends": self._handle_list_local_backends,
             "list_storage_backends": self._handle_list_storage_backends,
+            "emit_durable_event": self._handle_emit_durable_event,
+            "replay_events": self._handle_replay_events,
+            "get_event_log_stats": self._handle_get_event_log_stats,
+            "purge_events": self._handle_purge_events,
+            "list_event_classes": self._handle_list_event_classes,
             "storage_write": self._handle_storage_write,
             "storage_read": self._handle_storage_read,
             "storage_query": self._handle_storage_query,
@@ -1648,6 +1702,34 @@ class MCPGenerationTools:
     async def _handle_list_local_backends(self, args):
         """List the built-in free local backends."""
         return {"backends": self.sdk.list_local_backends()}
+
+    async def _handle_emit_durable_event(self, args):
+        """Persist an event to the durable log."""
+        event = self.sdk.emit_durable_event(
+            args["subject"], args["payload"],
+            publisher=args.get("publisher", ""),
+            event_class=args.get("event_class", ""))
+        return event
+
+    async def _handle_replay_events(self, args):
+        """Replay events from the durable log."""
+        return {"events": self.sdk.replay_events(
+            subject=args.get("subject", ""),
+            event_class=args.get("event_class", ""),
+            status=args.get("status", ""),
+            limit=args.get("limit", 100))}
+
+    async def _handle_get_event_log_stats(self, args):
+        """Get durable event log statistics."""
+        return self.sdk.get_event_log_stats()
+
+    async def _handle_purge_events(self, args):
+        """Purge events by status."""
+        return {"purged": self.sdk.purge_events(status=args.get("status", "dead_letter"))}
+
+    async def _handle_list_event_classes(self, args):
+        """List ACOS event taxonomy classes."""
+        return {"event_classes": self.sdk.list_event_classes()}
 
     async def _handle_list_storage_backends(self, args):
         """List all storage backends and profiles."""

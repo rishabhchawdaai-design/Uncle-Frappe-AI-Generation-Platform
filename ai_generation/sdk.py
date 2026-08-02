@@ -115,6 +115,8 @@ class UncleFrappeAI:
         # Phase 31 — In-Memory Event Bus
         self._event_bus = None
         self._event_kernel = None
+        # Phase 38 — Durable Event Log
+        self._event_log = None
         # Phase 32 — OpenTelemetry Export
         self._otel_exporter = None
         self._encryption_in_transit = None
@@ -583,6 +585,15 @@ class UncleFrappeAI:
             from .event_bus import EventBus
             self._event_bus = EventBus(self.config)
         return self._event_bus
+
+    @property
+    def event_log(self):
+        """Durable event log (SQLite-backed event sourcing + delivery guarantees)."""
+        if self._event_log is None:
+            from .event_log import DurableEventLog
+            self._event_log = DurableEventLog(self.config.get("event_log") or {})
+            self._event_log.attach_bus(self.event_bus)
+        return self._event_log
 
     @property
     def mcp_registry(self):
@@ -1979,6 +1990,42 @@ class UncleFrappeAI:
 
     def get_event_kernel_stats(self) -> dict:
         return self.event_kernel.get_stats()
+
+    # ── Phase 38 — Durable Event Log (Messaging & Events Research) ──
+
+    def emit_durable_event(self, subject: str, payload=None, publisher: str = "",
+                           event_class: str = "") -> dict:
+        """Persist an event to the durable log and fan out to the live bus."""
+        event = self.event_log.append(
+            subject, payload, headers=None, publisher=publisher,
+            event_class=event_class or None)
+        return event.to_dict()
+
+    def replay_events(self, subject: str = "", after_ts: str = "",
+                      limit: int = 100, event_class: str = "",
+                      status: str = "") -> list:
+        """Replay events from the durable log."""
+        return [e.to_dict() for e in self.event_log.replay(
+            subject=subject, after_ts=after_ts, limit=limit,
+            event_class=event_class, status=status)]
+
+    def get_event_log_stats(self) -> dict:
+        """Get durable event log statistics (delivery policies, DLQ, counts)."""
+        return self.event_log.stats()
+
+    def purge_events(self, status: str = "dead_letter") -> int:
+        """Purge events by status (default: dead-letter queue)."""
+        return self.event_log.purge(status=status)
+
+    def dead_letter_queue(self, limit: int = 100) -> list:
+        """Get the dead-letter queue."""
+        return [e.to_dict() for e in self.event_log.dead_letter_queue(limit)]
+
+    def list_event_classes(self) -> dict:
+        """List ACOS event taxonomy classes and their delivery guarantees."""
+        from .event_log import DELIVERY_POLICIES, EventClass
+        return {k.value: v for k, v in DELIVERY_POLICIES.items()}
+
 
     # ── Phase 29 — Local Runtime Convenience Methods ──
 

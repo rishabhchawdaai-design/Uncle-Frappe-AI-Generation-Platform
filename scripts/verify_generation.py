@@ -289,7 +289,30 @@ async def main() -> int:
         crashed = True
         record("storage", False, f"CRASH {type(e).__name__}: {e}")
 
-    # 10. Registry + SDK surface sanity (offline)
+    # 10. DURABLE EVENT LOG — persistence, replay, DLQ (offline)
+    try:
+        import tempfile as _tf
+        with _tf.TemporaryDirectory() as td:
+            from ai_generation.event_log import DurableEventLog
+            elog = DurableEventLog({"db_path": os.path.join(td, "events.db")})
+            elog.append("request.completed", {"task_id": "v1"})
+            elog.append("workflow.started", {"workflow_id": "v1"})
+            replayed = elog.replay(subject="*")
+            e2 = elog.replay(event_class="request")[0]
+            for _ in range(3):
+                elog.record_failure(e2.event_id, "boom")
+            dlq = elog.dead_letter_queue()
+            ok = (len(replayed) == 2 and len(dlq) == 1
+                  and elog.stats()["delivery_policies"]["health"]["guarantee"] == "at_most_once")
+            record("event_log", ok, {
+                "replayed": len(replayed), "dlq_size": len(dlq),
+                "classes": len(elog.stats()["delivery_policies"]),
+            })
+    except Exception as e:
+        crashed = True
+        record("event_log", False, f"CRASH {type(e).__name__}: {e}")
+
+    # 11. Registry + SDK surface sanity (offline)
     try:
         srv = ai.get_mcp_registry_stats()
         skl = ai.get_skill_registry_stats()
