@@ -131,6 +131,8 @@ class UncleFrappeAI:
         self._refactoring_engine = None
         # Phase 36 — Quality Dashboard
         self._quality_dashboard = None
+        # Phase 37 — Storage & Databases
+        self._storage_registry = None
         # Phase 33 — Code Analysis Engines
         self._secret_scanner = None
         self._static_analyzer = None
@@ -1618,6 +1620,71 @@ class UncleFrappeAI:
         req = OCRRequest(document_type=dt, language=language, backend=backend or None)
         return self.ocr_engine.process(req).to_dict()
 
+    # ── Phase 37 — Storage & Databases ──
+
+    def list_storage_backends(self) -> list:
+        """List all storage backends and profiles (SQLite/JSON local,
+        PostgreSQL/Qdrant/LanceDB/MinIO/Neo4j/Prometheus/Redis external)."""
+        return self.storage_registry.list_backends()
+
+    def select_storage_backend(self, task: str = "metadata") -> dict:
+        """Select the best available storage backend for a task."""
+        from .storage import StorageTask
+        try:
+            task_enum = StorageTask(task)
+        except ValueError:
+            task_enum = StorageTask.METADATA
+        backend = self.storage_registry.select_backend(task_enum.value)
+        return backend.to_profile().to_dict() if backend else {}
+
+    def storage_write(self, collection: str, key: str, value, task: str = "metadata",
+                      metadata: dict = None, **kwargs) -> dict:
+        """Write a record to the selected storage backend."""
+        from .storage import StorageTask
+        try:
+            task_enum = StorageTask(task)
+        except ValueError:
+            task_enum = StorageTask.METADATA
+        record = self.storage_registry.write(
+            collection, key, value, task=task_enum.value, metadata=metadata or {},
+            **kwargs)
+        return record.to_dict()
+
+    def storage_read(self, collection: str, key: str, task: str = "metadata") -> dict:
+        """Read a record from the selected storage backend."""
+        from .storage import StorageTask
+        try:
+            task_enum = StorageTask(task)
+        except ValueError:
+            task_enum = StorageTask.METADATA
+        record = self.storage_registry.read(collection, key, task=task_enum.value)
+        return record.to_dict() if record else {}
+
+    def storage_query(self, collection: str, limit: int = 100,
+                      task: str = "metadata") -> list:
+        """Query records from the selected storage backend."""
+        from .storage import StorageTask
+        try:
+            task_enum = StorageTask(task)
+        except ValueError:
+            task_enum = StorageTask.METADATA
+        return [r.to_dict() for r in self.storage_registry.query(
+            collection, limit=limit, task=task_enum.value)]
+
+    def storage_delete(self, collection: str, key: str,
+                       task: str = "metadata") -> bool:
+        """Delete a record from the selected storage backend."""
+        from .storage import StorageTask
+        try:
+            task_enum = StorageTask(task)
+        except ValueError:
+            task_enum = StorageTask.METADATA
+        return self.storage_registry.delete(collection, key, task=task_enum.value)
+
+    def get_storage_stats(self) -> dict:
+        """Get storage backend statistics and health."""
+        return self.storage_registry.get_stats()
+
     # ── Phase 24 — 3D Generation ──
 
     def list_3d_models(self, mode: str = "") -> list:
@@ -1631,6 +1698,14 @@ class UncleFrappeAI:
     def get_3d_output_formats(self, model_id: str) -> list:
         """Get output formats for a 3D model."""
         return self.generation_3d.get_output_formats(model_id)
+
+    @property
+    def storage_registry(self):
+        """Unified storage backend registry (SQLite/JSON local, external profiles)."""
+        if self._storage_registry is None:
+            from .storage import StorageRegistry
+            self._storage_registry = StorageRegistry(self.config)
+        return self._storage_registry
 
     # ── Phase 25 — Regression Detection ──
 

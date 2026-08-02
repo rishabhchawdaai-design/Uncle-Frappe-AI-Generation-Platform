@@ -60,6 +60,56 @@ MCP_GENERATION_TOOLS = {
         "description": "List built-in free local backends: OCR, embeddings, TTS, STT, translation, upscaling, background removal.",
         "inputSchema": {"type": "object", "properties": {}},
     },
+    "list_storage_backends": {
+        "name": "list_storage_backends",
+        "description": "List all storage backends and profiles (SQLite/JSON local; PostgreSQL/Qdrant/LanceDB/MinIO/Neo4j/Prometheus/Redis external).",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+    "storage_write": {
+        "name": "storage_write",
+        "description": "Write a record to the selected storage backend (SQLite local by default).",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "collection": {"type": "string", "description": "Collection/table name"},
+                "key": {"type": "string", "description": "Record key"},
+                "value": {"type": "object", "description": "Record value (JSON object)"},
+                "task": {"type": "string", "description": "metadata|ledger|audit|embeddings|artifacts|graph|metrics|cache", "default": "metadata"},
+            },
+            "required": ["collection", "key", "value"],
+        },
+    },
+    "storage_read": {
+        "name": "storage_read",
+        "description": "Read a record from the selected storage backend.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "collection": {"type": "string"},
+                "key": {"type": "string"},
+                "task": {"type": "string", "default": "metadata"},
+            },
+            "required": ["collection", "key"],
+        },
+    },
+    "storage_query": {
+        "name": "storage_query",
+        "description": "Query records from the selected storage backend.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "collection": {"type": "string"},
+                "limit": {"type": "integer", "default": 100},
+                "task": {"type": "string", "default": "metadata"},
+            },
+            "required": ["collection"],
+        },
+    },
+    "get_storage_stats": {
+        "name": "get_storage_stats",
+        "description": "Get storage backend statistics and health.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
     "generate_embedding": {
         "name": "generate_embedding",
         "description": "Generate a 384-dim text embedding with the local sentence-transformers backend (CPU, no API key).",
@@ -1339,6 +1389,11 @@ class MCPGenerationTools:
             "generate_image": self._handle_generate_image,
             "generate_text": self._handle_generate_text,
             "list_local_backends": self._handle_list_local_backends,
+            "list_storage_backends": self._handle_list_storage_backends,
+            "storage_write": self._handle_storage_write,
+            "storage_read": self._handle_storage_read,
+            "storage_query": self._handle_storage_query,
+            "get_storage_stats": self._handle_get_storage_stats,
             "generate_embedding": self._handle_generate_embedding,
             "translate_text": self._handle_translate_text,
             "generate_speech_local": self._handle_generate_speech_local,
@@ -1593,6 +1648,32 @@ class MCPGenerationTools:
     async def _handle_list_local_backends(self, args):
         """List the built-in free local backends."""
         return {"backends": self.sdk.list_local_backends()}
+
+    async def _handle_list_storage_backends(self, args):
+        """List all storage backends and profiles."""
+        return {"backends": self.sdk.list_storage_backends()}
+
+    async def _handle_storage_write(self, args):
+        """Write a record to the selected storage backend."""
+        record = self.sdk.storage_write(
+            args["collection"], args["key"], args["value"],
+            task=args.get("task", "metadata"))
+        return record
+
+    async def _handle_storage_read(self, args):
+        """Read a record from the selected storage backend."""
+        return self.sdk.storage_read(
+            args["collection"], args["key"], task=args.get("task", "metadata"))
+
+    async def _handle_storage_query(self, args):
+        """Query records from the selected storage backend."""
+        return {"records": self.sdk.storage_query(
+            args["collection"], limit=args.get("limit", 100),
+            task=args.get("task", "metadata"))}
+
+    async def _handle_get_storage_stats(self, args):
+        """Get storage backend statistics and health."""
+        return self.sdk.get_storage_stats()
 
     async def _handle_generate_embedding(self, args):
         """Generate a text embedding with the local sentence-transformers backend."""

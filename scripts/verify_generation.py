@@ -261,7 +261,35 @@ async def main() -> int:
         crashed = True
         record("bg_removal", False, f"CRASH {type(e).__name__}: {e}")
 
-    # 9. Registry + SDK surface sanity (offline)
+    # 9. STORAGE — local SQLite/JSON backends must work offline
+    try:
+        import tempfile
+        with tempfile.TemporaryDirectory() as td:
+            from ai_generation.storage import StorageRegistry
+            sreg = StorageRegistry({
+                "sqlite": {"db_path": os.path.join(td, "verify.db")},
+                "json": {"root": os.path.join(td, "json")},
+            })
+            rec = sreg.write("ledger", "v-1", {"ok": True})
+            read = sreg.read("ledger", "v-1")
+            backends = {b["name"]: b for b in sreg.list_backends()}
+            external_ok = all(b["status"] == "not_configured"
+                              for n, b in backends.items() if n in
+                              ("postgresql", "qdrant", "minio", "neo4j",
+                               "prometheus", "redis"))
+            ok = (read is not None and read.value == {"ok": True}
+                  and backends["sqlite_local"]["status"] == "available"
+                  and external_ok)
+            record("storage", ok, {
+                "sqlite_records": sreg.get_stats()["live"]["sqlite_local"]["records"],
+                "backends": len(backends),
+                "external_truthful": external_ok,
+            })
+    except Exception as e:
+        crashed = True
+        record("storage", False, f"CRASH {type(e).__name__}: {e}")
+
+    # 10. Registry + SDK surface sanity (offline)
     try:
         srv = ai.get_mcp_registry_stats()
         skl = ai.get_skill_registry_stats()
