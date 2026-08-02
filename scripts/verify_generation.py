@@ -162,7 +162,106 @@ async def main() -> int:
         crashed = True
         record("text", False, f"CRASH {type(e).__name__}: {e}")
 
-    # 8. Registry + SDK surface sanity (offline)
+    # 8. LOCAL BACKENDS — free, self-hostable, CPU. Each either produces a
+    # real artifact or fails with a truthful dependency error (never a crash).
+    local = [
+        ("embedding", lambda: ai.generate_embedding("verify me")),
+        ("speech_local", lambda: ai.generate_speech_local("Hello from the platform")),
+        ("translation", lambda: ai.translate_text("Hello", target_lang="fr", source_lang="en")),
+    ]
+    for name, fn in local:
+        try:
+            r = await fn()
+            ok = False
+            detail = {"status": r.status, "error": r.error, "provider": r.provider}
+            if r.success and name == "embedding":
+                ok = r.metadata.get("vector_dim", 0) > 0
+                detail["vector_dim"] = r.metadata.get("vector_dim")
+            elif r.success and name == "speech_local":
+                data = r.output_bytes or b""
+                ok = bool(data) and wav_ok(data)
+                detail["bytes"] = len(data)
+                if ok:
+                    p = out_dir / "speech_local.wav"
+                    p.write_bytes(data)
+                    detail["path"] = str(p)
+            elif r.success and name == "translation":
+                text = (r.metadata or {}).get("text", "")
+                ok = bool(text.strip())
+                detail["text"] = text[:120]
+            else:
+                err = (r.error or "").lower()
+                ok = any(k in err for k in ("no module", "not installed",
+                                            "not registered", "no image bytes"))
+            record(name, ok, detail)
+        except Exception as e:
+            crashed = True
+            record(name, False, f"CRASH {type(e).__name__}: {e}")
+
+    # OCR — Tesseract via the OCR engine
+    try:
+        from ai_generation.ocr_engine import DocumentType, OCRRequest
+        tiny_png = struct.pack(">II", 1, 1) + b"\x00"
+        r = ai.ocr_engine.process(
+            OCRRequest(document_type=DocumentType.IMAGE, backend="tesseract"),
+            document_data=tiny_png,
+        )
+        detail = {"backend": r.backend, "status": r.metadata.get("status"),
+                  "error": r.metadata.get("error")}
+        ok = r.metadata.get("status") in ("executed", "routing_complete")
+        record("ocr", ok, detail)
+    except Exception as e:
+        crashed = True
+        record("ocr", False, f"CRASH {type(e).__name__}: {e}")
+
+    # STT — local faster-whisper
+    try:
+        r = await ai.transcribe_audio(audio_bytes=struct.pack(">II", 1, 1) + b"\x00")
+        detail = {"status": r.status, "error": r.error, "provider": r.provider}
+        ok = r.success or (r.error and "no module" in r.error.lower())
+        record("stt_local", ok, detail)
+    except Exception as e:
+        crashed = True
+        record("stt_local", False, f"CRASH {type(e).__name__}: {e}")
+
+    # Upscaling — Real-ESRGAN
+    try:
+        r = await ai.upscale_image_local(struct.pack(">II", 1, 1) + b"\x00")
+        detail = {"status": r.status, "error": r.error, "provider": r.provider}
+        data = r.output_bytes or b""
+        ok = r.success and png_ok(data)
+        if ok:
+            p = out_dir / "upscaled.png"
+            p.write_bytes(data)
+            detail["path"] = str(p)
+            detail["dims"] = image_dims(data)
+        elif not r.success:
+            err = (r.error or "").lower()
+            ok = any(k in err for k in ("no module", "not installed", "no image bytes"))
+        record("upscale", ok, detail)
+    except Exception as e:
+        crashed = True
+        record("upscale", False, f"CRASH {type(e).__name__}: {e}")
+
+    # Background removal — rembg
+    try:
+        r = await ai.remove_background_local(struct.pack(">II", 1, 1) + b"\x00")
+        detail = {"status": r.status, "error": r.error, "provider": r.provider}
+        data = r.output_bytes or b""
+        ok = r.success and png_ok(data)
+        if ok:
+            p = out_dir / "bg_removed.png"
+            p.write_bytes(data)
+            detail["path"] = str(p)
+        elif not r.success:
+            err = (r.error or "").lower()
+            ok = any(k in err for k in ("no module", "not installed", "no image bytes"))
+        record("bg_removal", ok, detail)
+    except Exception as e:
+        crashed = True
+        record("bg_removal", False, f"CRASH {type(e).__name__}: {e}")
+
+    # 9. Registry + SDK surface sanity (offline)
     try:
         srv = ai.get_mcp_registry_stats()
         skl = ai.get_skill_registry_stats()

@@ -55,6 +55,80 @@ MCP_GENERATION_TOOLS = {
             "required": ["prompt"],
         },
     },
+    "list_local_backends": {
+        "name": "list_local_backends",
+        "description": "List built-in free local backends: OCR, embeddings, TTS, STT, translation, upscaling, background removal.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+    "generate_embedding": {
+        "name": "generate_embedding",
+        "description": "Generate a 384-dim text embedding with the local sentence-transformers backend (CPU, no API key).",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "text": {"type": "string", "description": "Text to embed"},
+            },
+            "required": ["text"],
+        },
+    },
+    "translate_text": {
+        "name": "translate_text",
+        "description": "Translate text locally with Helsinki-NLP opus-mt (CPU, no API key). Defaults to en->fr.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "text": {"type": "string", "description": "Text to translate"},
+                "target_lang": {"type": "string", "description": "Target language code (fr, de, es)", "default": "fr"},
+                "source_lang": {"type": "string", "description": "Source language code (en)", "default": ""},
+            },
+            "required": ["text"],
+        },
+    },
+    "generate_speech_local": {
+        "name": "generate_speech_local",
+        "description": "Generate speech with the local Piper backend (CPU, no API key). Returns WAV audio bytes.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "text": {"type": "string", "description": "Text to speak"},
+            },
+            "required": ["text"],
+        },
+    },
+    "transcribe_audio": {
+        "name": "transcribe_audio",
+        "description": "Transcribe audio with the local faster-whisper backend (CPU, no API key). Pass audio bytes (base64) or a local path.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "audio_path": {"type": "string", "description": "Local filesystem path to an audio file"},
+                "model": {"type": "string", "description": "Model size: tiny, base, small", "default": "tiny"},
+            },
+            "required": [],
+        },
+    },
+    "upscale_image_local": {
+        "name": "upscale_image_local",
+        "description": "Upscale an image 4x with the local Real-ESRGAN backend (CPU, no API key).",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "image_path": {"type": "string", "description": "Local path to a PNG/JPEG image"},
+            },
+            "required": ["image_path"],
+        },
+    },
+    "remove_background_local": {
+        "name": "remove_background_local",
+        "description": "Remove an image background with the local rembg/u2net backend (CPU, no API key).",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "image_path": {"type": "string", "description": "Local path to a PNG/JPEG image"},
+            },
+            "required": ["image_path"],
+        },
+    },
     "generate_video": {
         "name": "generate_video",
         "description": "Generate a video from a text prompt using AI video models.",
@@ -1264,6 +1338,13 @@ class MCPGenerationTools:
         handlers = {
             "generate_image": self._handle_generate_image,
             "generate_text": self._handle_generate_text,
+            "list_local_backends": self._handle_list_local_backends,
+            "generate_embedding": self._handle_generate_embedding,
+            "translate_text": self._handle_translate_text,
+            "generate_speech_local": self._handle_generate_speech_local,
+            "transcribe_audio": self._handle_transcribe_audio,
+            "upscale_image_local": self._handle_upscale_image_local,
+            "remove_background_local": self._handle_remove_background_local,
             "get_provider_ranking": self._handle_provider_ranking,
             "run_provider_health_cycle": self._handle_health_cycle,
             "generate_video": self._handle_generate_video,
@@ -1507,6 +1588,62 @@ class MCPGenerationTools:
             system_prompt=args.get("system_prompt", ""),
             timeout_secs=90,
         )
+        return result.to_dict()
+
+    async def _handle_list_local_backends(self, args):
+        """List the built-in free local backends."""
+        return {"backends": self.sdk.list_local_backends()}
+
+    async def _handle_generate_embedding(self, args):
+        """Generate a text embedding with the local sentence-transformers backend."""
+        result = await self.sdk.generate_embedding(args["text"])
+        return result.to_dict()
+
+    async def _handle_translate_text(self, args):
+        """Translate text with the local Helsinki-NLP opus-mt backend."""
+        result = await self.sdk.translate_text(
+            args["text"],
+            target_lang=args.get("target_lang", "fr"),
+            source_lang=args.get("source_lang", ""),
+        )
+        return result.to_dict()
+
+    async def _handle_generate_speech_local(self, args):
+        """Generate speech with the local Piper backend."""
+        result = await self.sdk.generate_speech_local(args["text"])
+        d = result.to_dict()
+        d["output_bytes"] = None  # keep payload small; bytes available via file/CLI
+        return d
+
+    async def _handle_transcribe_audio(self, args):
+        """Transcribe audio with the local faster-whisper backend."""
+        from pathlib import Path
+        audio_path = args.get("audio_path", "")
+        audio_bytes = None
+        if audio_path and Path(audio_path).exists():
+            audio_bytes = Path(audio_path).read_bytes()
+        result = await self.sdk.transcribe_audio(
+            audio_bytes=audio_bytes, audio_path=audio_path,
+            model=args.get("model", ""),
+        )
+        return result.to_dict()
+
+    async def _handle_upscale_image_local(self, args):
+        """Upscale an image with the local Real-ESRGAN backend."""
+        from pathlib import Path
+        image_path = args.get("image_path", "")
+        if not image_path or not Path(image_path).exists():
+            return {"status": "error", "error": f"image not found: {image_path}"}
+        result = await self.sdk.upscale_image_local(Path(image_path).read_bytes())
+        return result.to_dict()
+
+    async def _handle_remove_background_local(self, args):
+        """Remove an image background with the local rembg backend."""
+        from pathlib import Path
+        image_path = args.get("image_path", "")
+        if not image_path or not Path(image_path).exists():
+            return {"status": "error", "error": f"image not found: {image_path}"}
+        result = await self.sdk.remove_background_local(Path(image_path).read_bytes())
         return result.to_dict()
 
     async def _handle_provider_ranking(self, args):

@@ -58,6 +58,154 @@ async def cmd_text(prompt, model="", system_prompt=""):
     return result
 
 
+async def cmd_local_backends():
+    """List the built-in free local backends (no API key required)."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    backends = ai.list_local_backends()
+    print(f"\n  Local Backends ({len(backends)} total — free, self-hostable, CPU)\n")
+    for b in backends:
+        status_icon = "\u2705" if b["available"] else "\u274c"
+        print(f"  {status_icon} {b['name']:22s}  {b['description']}")
+    return backends
+
+
+async def cmd_embed(text):
+    """Generate a text embedding (384-dim) with the local sentence-transformers backend."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    result = await ai.generate_embedding(text)
+    print(f"\n  Provider:    {result.provider}")
+    print(f"  Status:      {result.status}")
+    print(f"  Latency:     {result.latency_ms}ms")
+    if result.success:
+        print(f"  Vector dim:  {result.metadata.get('vector_dim')}")
+        print(f"  Model:       {result.metadata.get('model')}")
+        print(f"  Head:        {result.metadata.get('vector', [])}")
+    if result.error:
+        print(f"  Error:       {result.error}")
+    return result
+
+
+async def cmd_tts(text, output_path=""):
+    """Generate speech with the local Piper backend (CPU, no API key)."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    result = await ai.generate_speech_local(text)
+    print(f"\n  Provider:    {result.provider}")
+    print(f"  Status:      {result.status}")
+    print(f"  Latency:     {result.latency_ms}ms")
+    print(f"  Bytes:       {len(result.output_bytes or b'')}")
+    if output_path and result.output_bytes:
+        from pathlib import Path as _P
+        _P(output_path).write_bytes(result.output_bytes)
+        print(f"  Saved to:    {output_path}")
+    if result.error:
+        print(f"  Error:       {result.error}")
+    return result
+
+
+async def cmd_stt(audio_path, model=""):
+    """Transcribe an audio file with the local faster-whisper backend (CPU)."""
+    from pathlib import Path as _P
+    if not _P(audio_path).exists():
+        print(f"\n  Error: file not found: {audio_path}")
+        return None
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    result = await ai.transcribe_audio(audio_path=audio_path, model=model)
+    print(f"\n  Provider:    {result.provider}")
+    print(f"  Status:      {result.status}")
+    print(f"  Latency:     {result.latency_ms}ms")
+    if result.success:
+        print(f"  Transcript:  {result.metadata.get('text', '')}")
+    if result.error:
+        print(f"  Error:       {result.error}")
+    return result
+
+
+async def cmd_translate(text, target_lang="fr", source_lang=""):
+    """Translate text locally with Helsinki-NLP opus-mt (CPU)."""
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    result = await ai.translate_text(text, target_lang=target_lang, source_lang=source_lang)
+    print(f"\n  Provider:    {result.provider}")
+    print(f"  Status:      {result.status}")
+    print(f"  Latency:     {result.latency_ms}ms")
+    if result.success:
+        print(f"  Translation: {result.metadata.get('text', '')}")
+    if result.error:
+        print(f"  Error:       {result.error}")
+    return result
+
+
+async def cmd_ocr(image_path):
+    """Extract text from an image with Tesseract OCR (CPU)."""
+    from pathlib import Path as _P
+    if not _P(image_path).exists():
+        print(f"\n  Error: file not found: {image_path}")
+        return None
+    from ai_generation.ocr_engine import DocumentType, OCRRequest
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    result = ai.ocr_engine.process(
+        OCRRequest(document_type=DocumentType.IMAGE, language="en", backend="tesseract"),
+        document_data=_P(image_path).read_bytes(),
+    )
+    print(f"\n  Backend:     {result.backend}")
+    print(f"  Status:      {result.metadata.get('status', 'ok')}")
+    if result.text:
+        print(f"  Text:        {result.text[:2000]}")
+    if result.metadata.get("error"):
+        print(f"  Error:       {result.metadata['error']}")
+    return result
+
+
+async def cmd_upscale(image_path, output_path=""):
+    """Upscale an image 4x locally with Real-ESRGAN (CPU)."""
+    from pathlib import Path as _P
+    if not _P(image_path).exists():
+        print(f"\n  Error: file not found: {image_path}")
+        return None
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    result = await ai.upscale_image_local(_P(image_path).read_bytes())
+    print(f"\n  Provider:    {result.provider}")
+    print(f"  Status:      {result.status}")
+    print(f"  Latency:     {result.latency_ms}ms")
+    if result.success:
+        print(f"  Dimensions:  {result.width}x{result.height}")
+        out = output_path or f"./output/upscale_{result.request_id}.png"
+        _P(out).parent.mkdir(parents=True, exist_ok=True)
+        _P(out).write_bytes(result.output_bytes)
+        print(f"  Saved to:    {out}")
+    if result.error:
+        print(f"  Error:       {result.error}")
+    return result
+
+
+async def cmd_bg_remove(image_path, output_path=""):
+    """Remove an image background locally with rembg/u2net (CPU)."""
+    from pathlib import Path as _P
+    if not _P(image_path).exists():
+        print(f"\n  Error: file not found: {image_path}")
+        return None
+    from ai_generation.sdk import UncleFrappeAI
+    ai = UncleFrappeAI()
+    result = await ai.remove_background_local(_P(image_path).read_bytes())
+    print(f"\n  Provider:    {result.provider}")
+    print(f"  Status:      {result.status}")
+    print(f"  Latency:     {result.latency_ms}ms")
+    if result.success:
+        out = output_path or f"./output/bg_removed_{result.request_id}.png"
+        _P(out).parent.mkdir(parents=True, exist_ok=True)
+        _P(out).write_bytes(result.output_bytes)
+        print(f"  Saved to:    {out}  ({result.width}x{result.height})")
+    if result.error:
+        print(f"  Error:       {result.error}")
+    return result
+
+
 async def cmd_enhance(prompt, style="photorealistic"):
     """Enhance a prompt with cinematic and quality techniques."""
     from ai_generation.sdk import UncleFrappeAI
@@ -961,6 +1109,14 @@ async def main():
   Usage:
     python -m ai_generation.cli generate <prompt> [--style STYLE] [--width W] [--height H] [--provider NAME]
     python -m ai_generation.cli text <prompt> [--model MODEL] [--system SYSTEM]
+    python -m ai_generation.cli embed <text>             Local 384-dim embedding (sentence-transformers)
+    python -m ai_generation.cli translate <text> [--target fr]  Local translation (Helsinki-NLP opus-mt)
+    python -m ai_generation.cli tts <text> [--output FILE]       Local TTS (Piper, no API key)
+    python -m ai_generation.cli stt <audio_file>        Local STT (faster-whisper)
+    python -m ai_generation.cli ocr <image_file>        OCR with Tesseract
+    python -m ai_generation.cli upscale <image_file> [--output FILE]  Real-ESRGAN 4x upscale
+    python -m ai_generation.cli bg-remove <image_file> [--output FILE]  rembg background removal
+    python -m ai_generation.cli local-backends          List free local backends
     python -m ai_generation.cli video <prompt> [--duration SECS] [--width W] [--height H]
     python -m ai_generation.cli enhance <prompt> [--style STYLE]
     python -m ai_generation.cli providers               List available providers
@@ -1049,6 +1205,68 @@ async def main():
             else:
                 i += 1
         await cmd_text(prompt, model=model, system_prompt=system_prompt)
+    elif args[0] == "embed":
+        text = args[1] if len(args) > 1 else "The unified AI generation platform."
+        await cmd_embed(text)
+    elif args[0] == "translate":
+        text = args[1] if len(args) > 1 else "Hello, how are you today?"
+        target_lang, source_lang = "fr", ""
+        i = 2
+        while i < len(args):
+            if args[i] == "--target" and i + 1 < len(args):
+                target_lang = args[i + 1]; i += 2
+            elif args[i] == "--source" and i + 1 < len(args):
+                source_lang = args[i + 1]; i += 2
+            else:
+                i += 1
+        await cmd_translate(text, target_lang=target_lang, source_lang=source_lang)
+    elif args[0] == "tts":
+        text = args[1] if len(args) > 1 else "Hello from the unified AI generation platform."
+        output = ""
+        i = 2
+        while i < len(args):
+            if args[i] == "--output" and i + 1 < len(args):
+                output = args[i + 1]; i += 2
+            else:
+                i += 1
+        await cmd_tts(text, output_path=output)
+    elif args[0] == "stt":
+        if len(args) < 2:
+            print("  Usage: stt <audio_file> [--model tiny|base|small]")
+        else:
+            model = ""
+            if "--model" in args:
+                idx = args.index("--model")
+                if idx + 1 < len(args):
+                    model = args[idx + 1]
+            await cmd_stt(args[1], model=model)
+    elif args[0] == "ocr":
+        if len(args) < 2:
+            print("  Usage: ocr <image_file>")
+        else:
+            await cmd_ocr(args[1])
+    elif args[0] == "upscale":
+        if len(args) < 2:
+            print("  Usage: upscale <image_file> [--output FILE]")
+        else:
+            output = ""
+            if "--output" in args:
+                idx = args.index("--output")
+                if idx + 1 < len(args):
+                    output = args[idx + 1]
+            await cmd_upscale(args[1], output_path=output)
+    elif args[0] == "bg-remove":
+        if len(args) < 2:
+            print("  Usage: bg-remove <image_file> [--output FILE]")
+        else:
+            output = ""
+            if "--output" in args:
+                idx = args.index("--output")
+                if idx + 1 < len(args):
+                    output = args[idx + 1]
+            await cmd_bg_remove(args[1], output_path=output)
+    elif args[0] == "local-backends":
+        await cmd_local_backends()
     elif args[0] == "video":
         prompt = args[1] if len(args) > 1 else "a timelapse of clouds"
         duration, width, height = 4.0, 1280, 720
