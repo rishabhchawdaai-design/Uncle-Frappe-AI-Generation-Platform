@@ -1784,6 +1784,17 @@ class UncleFrappeAI:
         """Get capability graph statistics."""
         return self.capability_graph.get_stats()
 
+    def sync_capability_graph(self) -> dict:
+        """Evolve the capability graph automatically from the live provider,
+        storage, and event-log registries so it always matches implementation."""
+        from .providers.registry import get_registry
+        report = self.capability_graph.synchronize_from_registries(
+            provider_registry=get_registry(),
+            storage_registry=self.storage_registry,
+            event_log=True,
+        )
+        return report
+
     def dynamic_graph_add_node(self, node_id: str, node_type: str = "capability",
                                  name: str = "", attributes: dict = None) -> dict:
         from .capability_graph import NodeType

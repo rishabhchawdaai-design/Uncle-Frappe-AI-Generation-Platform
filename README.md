@@ -234,7 +234,7 @@ ai_generation/          # Single canonical platform package
   research_integration.py # Research <-> implementation traceability
   providers/            # Provider implementations
   agents/               # Autonomous agent system
-  tests/                # 1,306 tests
+  tests/                # 1,412 tests
 configs/                # Canonical configuration (env template, MCP server registry)
 data/                   # Runtime registries and benchmarks
 knowledge-vault/        # Obsidian knowledge system (37 sections)
@@ -321,6 +321,7 @@ python scripts/verify_generation.py
 | Reasoning / Tool calls | via chat backends | same credential requirements as Text |
 | Storage (metadata/ledger/audit) | ✅ works | Local SQLite + JSON backends (stdlib, offline); PostgreSQL/Qdrant/MinIO/Neo4j/Prometheus/Redis registered as truthful `not_configured` profiles |
 | Event sourcing | ✅ works | Durable event log (SQLite): ACOS taxonomy, per-class delivery guarantees, replay, dead-letter queue, retention |
+| Capability graph | ✅ works | Auto-sync from provider/storage/event-log registries; 52 nodes / 48 edges; pathfinding for chat, embeddings, translation, upscaling, bg-removal, storage, events |
 
 The local backends are exposed through the unified SDK, CLI, and MCP:
 
@@ -355,6 +356,15 @@ python -m ai_generation.cli event-stats
 python -m ai_generation.cli event-purge dead_letter
 ```
 
+Capability graph (ACOS Capability Graph — graph evolves automatically from
+live registries via the unified SDK/CLI/MCP `sync_capability_graph` surface):
+
+```bash
+python -m ai_generation.cli cap-graph-sync
+python -m ai_generation.cli capabilities
+python -m ai_generation.cli research-graph
+```
+
 Every failure is returned as a structured result with the exact technical
 reason (e.g. `AudioCraft server not reachable at http://localhost:9876`), and
 the harness writes `output/verification/verify_generation.json` plus any
@@ -377,7 +387,7 @@ docker build -t uncle-frappe-ai-generation-platform .
 docker run --rm uncle-frappe-ai-generation-platform
 ```
 
-CI runs the full `ai_generation/tests/` suite (1,306 tests), verifies every
+CI runs the full `ai_generation/tests/` suite (1,412 tests), verifies every
 module imports cleanly, smoke-tests the unified SDK, and builds the Docker
 image on every push to `main` (`.github/workflows/ci.yml`).
 

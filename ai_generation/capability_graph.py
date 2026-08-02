@@ -122,6 +122,28 @@ class CapabilityGraph:
             ("kokoro", "Kokoro", NodeType.PROVIDER, {"tier": "free", "type": "audio"}),
             ("openai_tts", "OpenAI TTS", NodeType.PROVIDER, {"tier": "paid", "type": "audio"}),
             ("whisper", "Whisper", NodeType.PROVIDER, {"tier": "free", "type": "audio"}),
+            ("pollinations_text", "Pollinations Text", NodeType.PROVIDER,
+             {"tier": "free", "type": "text", "api_key_required": False}),
+            ("sentence_transformers", "Sentence-Transformers", NodeType.PROVIDER,
+             {"tier": "free", "type": "text", "runtime": "local-cpu", "api_key_required": False}),
+            ("helsinki_opus_mt", "Helsinki-NLP opus-mt", NodeType.PROVIDER,
+             {"tier": "free", "type": "text", "runtime": "local-cpu", "api_key_required": False}),
+            ("piper_local", "Piper Local TTS", NodeType.PROVIDER,
+             {"tier": "free", "type": "audio", "runtime": "local-cpu", "api_key_required": False}),
+            ("faster_whisper", "Faster-Whisper", NodeType.PROVIDER,
+             {"tier": "free", "type": "audio", "runtime": "local-cpu", "api_key_required": False}),
+            ("realesrgan", "Real-ESRGAN", NodeType.PROVIDER,
+             {"tier": "free", "type": "image", "runtime": "local-cpu", "api_key_required": False}),
+            ("rembg", "rembg", NodeType.PROVIDER,
+             {"tier": "free", "type": "image", "runtime": "local-cpu", "api_key_required": False}),
+            ("tesseract", "Tesseract OCR", NodeType.PROVIDER,
+             {"tier": "free", "type": "image", "runtime": "local-cpu", "api_key_required": False}),
+            ("sqlite_local", "SQLite Storage", NodeType.PROVIDER,
+             {"tier": "free", "type": "storage", "runtime": "local-stdlib", "api_key_required": False}),
+            ("json_files", "JSON Storage", NodeType.PROVIDER,
+             {"tier": "free", "type": "storage", "runtime": "local-stdlib", "api_key_required": False}),
+            ("event_log", "Durable Event Log", NodeType.PROVIDER,
+             {"tier": "free", "type": "events", "runtime": "local-stdlib", "api_key_required": False}),
             ("kimi_k3_cloud", "Kimi K3 Cloud API", NodeType.PROVIDER,
              {"tier": "paid", "type": "text", "vendor": "Moonshot AI", "context_length": 1048576}),
             ("kimi_k3_vllm", "Kimi K3 vLLM", NodeType.PROVIDER,
@@ -140,6 +162,13 @@ class CapabilityGraph:
             ("image_editing", "Image Editing", NodeType.CAPABILITY),
             ("text_generation", "Text Generation", NodeType.CAPABILITY),
             ("chat", "Chat / Text Reasoning", NodeType.CAPABILITY),
+            ("text_embedding", "Text Embedding", NodeType.CAPABILITY),
+            ("translation", "Translation", NodeType.CAPABILITY),
+            ("upscale", "Image Upscaling", NodeType.CAPABILITY),
+            ("background_removal", "Background Removal", NodeType.CAPABILITY),
+            ("text_extraction", "OCR Text Extraction", NodeType.CAPABILITY),
+            ("storage", "Storage & Databases", NodeType.CAPABILITY),
+            ("event_sourcing", "Event Sourcing", NodeType.CAPABILITY),
         ]
         for cid, name, ntype in capabilities:
             self.add_node(cid, ntype, name)
@@ -159,6 +188,17 @@ class CapabilityGraph:
         self.add_edge("kokoro", "text_to_speech", EdgeType.SUPPORTS)
         self.add_edge("openai_tts", "text_to_speech", EdgeType.SUPPORTS)
         self.add_edge("whisper", "speech_to_text", EdgeType.SUPPORTS)
+        self.add_edge("pollinations_text", "chat", EdgeType.SUPPORTS)
+        self.add_edge("sentence_transformers", "text_embedding", EdgeType.SUPPORTS)
+        self.add_edge("helsinki_opus_mt", "translation", EdgeType.SUPPORTS)
+        self.add_edge("piper_local", "text_to_speech", EdgeType.SUPPORTS)
+        self.add_edge("faster_whisper", "speech_to_text", EdgeType.SUPPORTS)
+        self.add_edge("realesrgan", "upscale", EdgeType.SUPPORTS)
+        self.add_edge("rembg", "background_removal", EdgeType.SUPPORTS)
+        self.add_edge("tesseract", "text_extraction", EdgeType.SUPPORTS)
+        self.add_edge("sqlite_local", "storage", EdgeType.SUPPORTS)
+        self.add_edge("json_files", "storage", EdgeType.SUPPORTS)
+        self.add_edge("event_log", "event_sourcing", EdgeType.SUPPORTS)
         self.add_edge("kimi_k3_cloud", "chat", EdgeType.SUPPORTS)
         self.add_edge("kimi_k3_vllm", "chat", EdgeType.SUPPORTS)
         self.add_edge("kimi_k3_sglang", "chat", EdgeType.SUPPORTS)
@@ -462,6 +502,86 @@ class CapabilityGraph:
         base["update_count"] = len(self._update_history)
         return base
 
+
+    # ── Registry Synchronization ──
+
+    def synchronize_from_registries(self, provider_registry=None,
+                                    storage_registry=None,
+                                    event_log=None) -> Dict[str, Any]:
+        """Evolve the graph automatically from the live registries.
+
+        Adds any registered provider as a node, maps its declared
+        capabilities to graph capability nodes with SUPPORTS edges, and
+        wires fallback chains. Keeps the graph in sync with implementation.
+        """
+        added_nodes = 0
+        added_edges = 0
+
+        if provider_registry is not None:
+            for provider in provider_registry.get_all():
+                pid = provider.name
+                if pid not in self._nodes:
+                    self.add_node(
+                        pid, NodeType.PROVIDER, provider.name,
+                        {"tier": provider.tier.value,
+                         "type": provider.provider_type.value,
+                         "api_key_required": provider.requires_api_key,
+                         "cloud_first": provider.cloud_first})
+                    added_nodes += 1
+                for cap in provider.capabilities:
+                    cid = cap.name
+                    if cid not in self._nodes:
+                        self.add_node(cid, NodeType.CAPABILITY, cap.name,
+                                      {"description": cap.description})
+                        added_nodes += 1
+                    if not any(e.edge_type == EdgeType.SUPPORTS and e.target_id == cid
+                               for e in self._edges.get(pid, [])):
+                        self.add_edge(pid, cid, EdgeType.SUPPORTS, weight=1.0)
+                        added_edges += 1
+
+        if storage_registry is not None:
+            for backend in storage_registry.list_backends():
+                sid = backend["name"]
+                if sid not in self._nodes:
+                    self.add_node(
+                        sid, NodeType.PROVIDER, backend["name"],
+                        {"tier": "free", "type": "storage",
+                         "status": backend.get("status", "available"),
+                         "local": backend.get("local", True)})
+                    added_nodes += 1
+                if "storage" not in self._nodes:
+                    self.add_node("storage", NodeType.CAPABILITY,
+                                  "Storage & Databases")
+                    added_nodes += 1
+                if not any(e.target_id == "storage" for e in self._edges.get(sid, [])):
+                    self.add_edge(sid, "storage", EdgeType.SUPPORTS)
+                    added_edges += 1
+
+        if event_log is not None:
+            if "event_log" not in self._nodes:
+                self.add_node("event_log", NodeType.PROVIDER,
+                              "Durable Event Log",
+                              {"tier": "free", "type": "events"})
+                added_nodes += 1
+            if "event_sourcing" not in self._nodes:
+                self.add_node("event_sourcing", NodeType.CAPABILITY,
+                              "Event Sourcing")
+                added_nodes += 1
+            if not any(e.target_id == "event_sourcing"
+                       for e in self._edges.get("event_log", [])):
+                self.add_edge("event_log", "event_sourcing", EdgeType.SUPPORTS)
+                added_edges += 1
+
+        report = {
+            "new_nodes": added_nodes,
+            "new_edges": added_edges,
+            "total_nodes": len(self._nodes),
+            "total_edges": sum(len(v) for v in self._edges.values()),
+        }
+        self._update_history.append({"action": "synchronize_from_registries",
+                                     "report": report,
+                                     "timestamp": __import__("datetime").datetime.now().isoformat()})
+        return report
 
     # ── Periodic Discovery (CGR-09) ──
 

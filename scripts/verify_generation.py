@@ -312,7 +312,25 @@ async def main() -> int:
         crashed = True
         record("event_log", False, f"CRASH {type(e).__name__}: {e}")
 
-    # 11. Registry + SDK surface sanity (offline)
+    # 11. CAPABILITY GRAPH — auto-sync from live registries + pathfinding (offline)
+    try:
+        sync_report = ai.sync_capability_graph()
+        stats = ai.get_capability_graph_stats()
+        path_caps = {"chat", "text_embedding", "translation", "upscale",
+                     "background_removal", "storage", "event_sourcing"}
+        found = {c: bool(graph.find_capability_path(c)) for c in path_caps}
+        ok = (stats["node_count"] >= 50 and stats["edge_count"] >= 40
+              and all(found.values()))
+        record("capability_graph", ok, {
+            "sync": sync_report,
+            "nodes": stats["node_count"], "edges": stats["edge_count"],
+            "paths": found,
+        })
+    except Exception as e:
+        crashed = True
+        record("capability_graph", False, f"CRASH {type(e).__name__}: {e}")
+
+    # 12. Registry + SDK surface sanity (offline)
     try:
         srv = ai.get_mcp_registry_stats()
         skl = ai.get_skill_registry_stats()
