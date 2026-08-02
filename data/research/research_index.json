@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-01T08:22:37.030881+00:00",
+  "generated_at": "2026-08-02T13:41:40.406789+00:00",
   "research_documents": 57,
   "capabilities": 255,
   "modules": [
@@ -20,11 +20,13 @@
     "cinematic_workflow",
     "cli",
     "code_analysis",
+    "compatibility_matrix",
     "decision_ledger",
     "document_intelligence",
     "dynamic_adapter",
     "edge_ai",
     "event_bus",
+    "event_log",
     "execution_engine",
     "execution_strategies",
     "failure_recovery",
@@ -50,6 +52,7 @@
     "project_manager",
     "prompt_engine",
     "provider_discovery",
+    "provider_discovery_registrar",
     "provider_intelligence",
     "provider_verifier",
     "quality_dashboard",
@@ -65,6 +68,7 @@
     "security",
     "security_crypto",
     "skill_registry",
+    "storage",
     "supervisor",
     "tool_registry",
     "video_editing",
@@ -92,6 +96,8 @@
         "test_kimi_k3",
         "test_music_generation",
         "test_phase11",
+        "test_pollinations_text",
+        "test_provider_discovery_registrar",
         "test_quality_engineering"
       ],
       "sdk_interfaces": [
@@ -133,6 +139,8 @@
         "test_kimi_k3",
         "test_music_generation",
         "test_phase11",
+        "test_pollinations_text",
+        "test_provider_discovery_registrar",
         "test_quality_engineering"
       ],
       "sdk_interfaces": [
@@ -174,6 +182,8 @@
         "test_kimi_k3",
         "test_music_generation",
         "test_phase11",
+        "test_pollinations_text",
+        "test_provider_discovery_registrar",
         "test_quality_engineering"
       ],
       "sdk_interfaces": [
@@ -215,6 +225,8 @@
         "test_kimi_k3",
         "test_music_generation",
         "test_phase11",
+        "test_pollinations_text",
+        "test_provider_discovery_registrar",
         "test_quality_engineering"
       ],
       "sdk_interfaces": [
@@ -260,6 +272,8 @@
         "test_kimi_k3",
         "test_music_generation",
         "test_phase11",
+        "test_pollinations_text",
+        "test_provider_discovery_registrar",
         "test_quality_engineering"
       ],
       "sdk_interfaces": [
@@ -307,6 +321,8 @@
         "test_kimi_k3",
         "test_music_generation",
         "test_phase11",
+        "test_pollinations_text",
+        "test_provider_discovery_registrar",
         "test_quality_engineering"
       ],
       "sdk_interfaces": [
@@ -354,6 +370,8 @@
         "test_kimi_k3",
         "test_music_generation",
         "test_phase11",
+        "test_pollinations_text",
+        "test_provider_discovery_registrar",
         "test_quality_engineering"
       ],
       "sdk_interfaces": [
@@ -397,6 +415,8 @@
         "test_kimi_k3",
         "test_music_generation",
         "test_phase11",
+        "test_pollinations_text",
+        "test_provider_discovery_registrar",
         "test_quality_engineering"
       ],
       "sdk_interfaces": [
@@ -424,6 +444,7 @@
         "auto_router",
         "code_analysis",
         "provider_discovery",
+        "provider_discovery_registrar",
         "provider_intelligence",
         "provider_verifier"
       ],
@@ -431,7 +452,8 @@
         "test_code_analysis",
         "test_kimi_k3",
         "test_phase11",
-        "test_phase13"
+        "test_phase13",
+        "test_provider_discovery_registrar"
       ],
       "sdk_interfaces": [
         "multi_agent_review",
@@ -448,13 +470,15 @@
     "IMG-10": {
       "modules": [
         "provider_discovery",
+        "provider_discovery_registrar",
         "provider_intelligence",
         "provider_verifier"
       ],
       "tests": [
         "test_kimi_k3",
         "test_phase11",
-        "test_phase13"
+        "test_phase13",
+        "test_provider_discovery_registrar"
       ],
       "sdk_interfaces": [
         "provider_intelligence",
@@ -840,6 +864,8 @@
         "test_kimi_k3",
         "test_music_generation",
         "test_phase11",
+        "test_pollinations_text",
+        "test_provider_discovery_registrar",
         "test_quality_engineering"
       ],
       "sdk_interfaces": [
@@ -909,6 +935,8 @@
         "test_music_generation",
         "test_orchestration",
         "test_phase11",
+        "test_pollinations_text",
+        "test_provider_discovery_registrar",
         "test_quality_engineering"
       ],
       "sdk_interfaces": [
@@ -973,6 +1001,8 @@
         "test_kimi_k3",
         "test_music_generation",
         "test_phase11",
+        "test_pollinations_text",
+        "test_provider_discovery_registrar",
         "test_quality_engineering"
       ],
       "sdk_interfaces": [
@@ -1010,6 +1040,8 @@
         "test_kimi_k3",
         "test_music_generation",
         "test_phase11",
+        "test_pollinations_text",
+        "test_provider_discovery_registrar",
         "test_quality_engineering"
       ],
       "sdk_interfaces": [
@@ -1238,6 +1270,7 @@
     "SRC-04": {
       "modules": [
         "provider_discovery",
+        "provider_discovery_registrar",
         "provider_intelligence",
         "provider_verifier",
         "search_backends",
@@ -1247,6 +1280,7 @@
         "test_kimi_k3",
         "test_phase11",
         "test_phase13",
+        "test_provider_discovery_registrar",
         "test_search_backends",
         "test_search_systems"
       ],
@@ -1274,9 +1308,11 @@
         "search_systems",
         "security_crypto",
         "skill_registry",
+        "storage",
         "tool_registry"
       ],
       "tests": [
+        "test_capability_graph_sync",
         "test_kimi_k3",
         "test_mcp_registry",
         "test_phase13",
@@ -1285,6 +1321,7 @@
         "test_search_systems",
         "test_security_crypto",
         "test_skill_registry",
+        "test_storage",
         "test_tool_registry"
       ],
       "sdk_interfaces": [
@@ -1294,7 +1331,8 @@
         "skill_registry",
         "tool_registry",
         "search_systems",
-        "search_backends"
+        "search_backends",
+        "storage_registry"
       ],
       "mcp_tools": [
         "check_search_health",
@@ -1482,6 +1520,8 @@
         "test_kimi_k3",
         "test_music_generation",
         "test_phase11",
+        "test_pollinations_text",
+        "test_provider_discovery_registrar",
         "test_quality_engineering"
       ],
       "sdk_interfaces": [
@@ -1674,14 +1714,17 @@
     },
     "FLT-03": {
       "modules": [
-        "event_bus"
+        "event_bus",
+        "event_log"
       ],
       "tests": [
         "test_event_bus",
+        "test_event_log",
         "test_kimi_k3"
       ],
       "sdk_interfaces": [
         "event_bus",
+        "event_log",
         "event_kernel"
       ],
       "mcp_tools": [],
@@ -1752,6 +1795,7 @@
       "modules": [
         "failure_recovery",
         "provider_discovery",
+        "provider_discovery_registrar",
         "provider_intelligence",
         "provider_verifier"
       ],
@@ -1759,7 +1803,8 @@
         "test_failure_recovery",
         "test_kimi_k3",
         "test_phase11",
-        "test_phase13"
+        "test_phase13",
+        "test_provider_discovery_registrar"
       ],
       "sdk_interfaces": [
         "provider_intelligence",
@@ -1989,16 +2034,19 @@
         "kimi_k3",
         "mcp_registry",
         "skill_registry",
+        "storage",
         "tool_registry"
       ],
       "tests": [
         "test_capability_graph",
+        "test_capability_graph_sync",
         "test_kimi_k3",
         "test_mcp_registry",
         "test_phase11",
         "test_phase13",
         "test_phase15",
         "test_skill_registry",
+        "test_storage",
         "test_tool_registry"
       ],
       "sdk_interfaces": [
@@ -2007,7 +2055,8 @@
         "mcp_registry",
         "skill_registry",
         "tool_registry",
-        "capability_graph"
+        "capability_graph",
+        "storage_registry"
       ],
       "mcp_tools": [],
       "benchmarks": []
@@ -2018,18 +2067,23 @@
         "capability_registry",
         "mcp_registry",
         "provider_discovery",
+        "provider_discovery_registrar",
         "provider_intelligence",
         "provider_verifier",
         "skill_registry",
+        "storage",
         "tool_registry"
       ],
       "tests": [
+        "test_capability_graph_sync",
         "test_kimi_k3",
         "test_mcp_registry",
         "test_phase11",
         "test_phase13",
         "test_phase15",
+        "test_provider_discovery_registrar",
         "test_skill_registry",
+        "test_storage",
         "test_tool_registry"
       ],
       "sdk_interfaces": [
@@ -2040,7 +2094,8 @@
         "provider_verifier",
         "mcp_registry",
         "skill_registry",
-        "tool_registry"
+        "tool_registry",
+        "storage_registry"
       ],
       "mcp_tools": [],
       "benchmarks": []
@@ -2050,10 +2105,13 @@
         "capability_graph",
         "capability_matrix",
         "capability_registry",
+        "compatibility_matrix",
         "kimi_k3"
       ],
       "tests": [
         "test_capability_graph",
+        "test_capability_graph_sync",
+        "test_compatibility_matrix",
         "test_kimi_k3",
         "test_phase11",
         "test_phase13",
@@ -2062,14 +2120,23 @@
       "sdk_interfaces": [
         "capability_matrix",
         "capability_registry",
-        "capability_graph"
+        "capability_graph",
+        "compatibility_matrix"
       ],
       "mcp_tools": [],
       "benchmarks": []
     },
     "CGR-04": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "capability_graph",
+        "compatibility_matrix"
+      ],
+      "tests": [
+        "test_capability_graph",
+        "test_capability_graph_sync",
+        "test_compatibility_matrix",
+        "test_kimi_k3"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
@@ -2082,6 +2149,7 @@
       ],
       "tests": [
         "test_capability_graph",
+        "test_capability_graph_sync",
         "test_kimi_k3",
         "test_phase14"
       ],
@@ -2100,6 +2168,7 @@
       ],
       "tests": [
         "test_capability_graph",
+        "test_capability_graph_sync",
         "test_kimi_k3",
         "test_phase14"
       ],
@@ -2111,8 +2180,16 @@
       "benchmarks": []
     },
     "CGR-07": {
-      "modules": [],
-      "tests": [],
+      "modules": [
+        "capability_graph",
+        "compatibility_matrix"
+      ],
+      "tests": [
+        "test_capability_graph",
+        "test_capability_graph_sync",
+        "test_compatibility_matrix",
+        "test_kimi_k3"
+      ],
       "sdk_interfaces": [],
       "mcp_tools": [],
       "benchmarks": []
@@ -2126,6 +2203,7 @@
       ],
       "tests": [
         "test_capability_graph",
+        "test_capability_graph_sync",
         "test_kimi_k3",
         "test_phase14"
       ],
@@ -2139,10 +2217,16 @@
     },
     "CGR-09": {
       "modules": [
-        "provider_discovery"
+        "capability_graph",
+        "provider_discovery",
+        "provider_discovery_registrar"
       ],
       "tests": [
-        "test_phase13"
+        "test_capability_graph",
+        "test_capability_graph_sync",
+        "test_kimi_k3",
+        "test_phase13",
+        "test_provider_discovery_registrar"
       ],
       "sdk_interfaces": [
         "provider_discovery_engine"
@@ -2155,6 +2239,7 @@
         "research_integration"
       ],
       "tests": [
+        "test_compatibility_matrix",
         "test_research_integration"
       ],
       "sdk_interfaces": [
@@ -2170,6 +2255,7 @@
         "research_integration"
       ],
       "tests": [
+        "test_compatibility_matrix",
         "test_research_integration"
       ],
       "sdk_interfaces": [
@@ -2185,6 +2271,7 @@
         "research_integration"
       ],
       "tests": [
+        "test_compatibility_matrix",
         "test_research_integration"
       ],
       "sdk_interfaces": [
@@ -2200,6 +2287,7 @@
         "research_integration"
       ],
       "tests": [
+        "test_compatibility_matrix",
         "test_research_integration"
       ],
       "sdk_interfaces": [
@@ -2215,6 +2303,7 @@
         "research_integration"
       ],
       "tests": [
+        "test_compatibility_matrix",
         "test_research_integration"
       ],
       "sdk_interfaces": [
@@ -2230,6 +2319,7 @@
         "research_integration"
       ],
       "tests": [
+        "test_compatibility_matrix",
         "test_research_integration"
       ],
       "sdk_interfaces": [
@@ -2245,6 +2335,7 @@
         "research_integration"
       ],
       "tests": [
+        "test_compatibility_matrix",
         "test_research_integration"
       ],
       "sdk_interfaces": [
@@ -2260,6 +2351,7 @@
         "research_integration"
       ],
       "tests": [
+        "test_compatibility_matrix",
         "test_research_integration"
       ],
       "sdk_interfaces": [
@@ -2275,6 +2367,7 @@
         "research_integration"
       ],
       "tests": [
+        "test_compatibility_matrix",
         "test_research_integration"
       ],
       "sdk_interfaces": [
@@ -2290,6 +2383,7 @@
         "research_integration"
       ],
       "tests": [
+        "test_compatibility_matrix",
         "test_research_integration"
       ],
       "sdk_interfaces": [
@@ -2305,6 +2399,7 @@
         "research_integration"
       ],
       "tests": [
+        "test_compatibility_matrix",
         "test_research_integration"
       ],
       "sdk_interfaces": [
@@ -2320,6 +2415,7 @@
         "health_monitor"
       ],
       "tests": [
+        "test_health_cycle",
         "test_health_monitor",
         "test_kimi_k3",
         "test_phase13"
@@ -2395,10 +2491,12 @@
     },
     "INF-05": {
       "modules": [
-        "provider_discovery"
+        "provider_discovery",
+        "provider_discovery_registrar"
       ],
       "tests": [
-        "test_phase13"
+        "test_phase13",
+        "test_provider_discovery_registrar"
       ],
       "sdk_interfaces": [
         "provider_discovery_engine"
@@ -2719,16 +2817,19 @@
     "MSG-01": {
       "modules": [
         "event_bus",
+        "event_log",
         "security_crypto"
       ],
       "tests": [
         "test_event_bus",
+        "test_event_log",
         "test_kimi_k3",
         "test_security_crypto"
       ],
       "sdk_interfaces": [
         "encryption_in_transit",
         "event_bus",
+        "event_log",
         "event_kernel"
       ],
       "mcp_tools": [],
@@ -2736,14 +2837,17 @@
     },
     "MSG-02": {
       "modules": [
-        "event_bus"
+        "event_bus",
+        "event_log"
       ],
       "tests": [
         "test_event_bus",
+        "test_event_log",
         "test_kimi_k3"
       ],
       "sdk_interfaces": [
         "event_bus",
+        "event_log",
         "event_kernel"
       ],
       "mcp_tools": [],
@@ -2779,14 +2883,17 @@
     },
     "MSG-07": {
       "modules": [
-        "event_bus"
+        "event_bus",
+        "event_log"
       ],
       "tests": [
         "test_event_bus",
+        "test_event_log",
         "test_kimi_k3"
       ],
       "sdk_interfaces": [
         "event_bus",
+        "event_log",
         "event_kernel"
       ],
       "mcp_tools": [],
@@ -2807,9 +2914,16 @@
       "benchmarks": []
     },
     "STR-03": {
-      "modules": [],
-      "tests": [],
-      "sdk_interfaces": [],
+      "modules": [
+        "storage"
+      ],
+      "tests": [
+        "test_capability_graph_sync",
+        "test_storage"
+      ],
+      "sdk_interfaces": [
+        "storage_registry"
+      ],
       "mcp_tools": [],
       "benchmarks": []
     },
@@ -2821,6 +2935,7 @@
       ],
       "tests": [
         "test_capability_graph",
+        "test_capability_graph_sync",
         "test_kimi_k3",
         "test_phase14"
       ],
@@ -2872,6 +2987,7 @@
       ],
       "tests": [
         "test_capability_graph",
+        "test_capability_graph_sync",
         "test_kimi_k3",
         "test_orchestration",
         "test_phase14",
@@ -2943,10 +3059,12 @@
     },
     "NET-05": {
       "modules": [
-        "provider_discovery"
+        "provider_discovery",
+        "provider_discovery_registrar"
       ],
       "tests": [
-        "test_phase13"
+        "test_phase13",
+        "test_provider_discovery_registrar"
       ],
       "sdk_interfaces": [
         "provider_discovery_engine"
@@ -3000,6 +3118,8 @@
         "test_kimi_k3",
         "test_music_generation",
         "test_phase11",
+        "test_pollinations_text",
+        "test_provider_discovery_registrar",
         "test_quality_engineering"
       ],
       "sdk_interfaces": [
@@ -3022,13 +3142,15 @@
     "OBS-05": {
       "modules": [
         "provider_discovery",
+        "provider_discovery_registrar",
         "provider_intelligence",
         "provider_verifier"
       ],
       "tests": [
         "test_kimi_k3",
         "test_phase11",
-        "test_phase13"
+        "test_phase13",
+        "test_provider_discovery_registrar"
       ],
       "sdk_interfaces": [
         "provider_intelligence",
@@ -3073,6 +3195,7 @@
         "research_integration"
       ],
       "tests": [
+        "test_compatibility_matrix",
         "test_quality_dashboard",
         "test_research_integration"
       ],
@@ -3089,9 +3212,15 @@
       "benchmarks": []
     },
     "OBS-10": {
-      "modules": [],
-      "tests": [],
-      "sdk_interfaces": [],
+      "modules": [
+        "event_log"
+      ],
+      "tests": [
+        "test_event_log"
+      ],
+      "sdk_interfaces": [
+        "event_log"
+      ],
       "mcp_tools": [],
       "benchmarks": []
     },
@@ -3213,17 +3342,20 @@
     "PLG-05": {
       "modules": [
         "event_bus",
+        "event_log",
         "plugin_extensions",
         "plugin_system"
       ],
       "tests": [
         "test_event_bus",
+        "test_event_log",
         "test_kimi_k3",
         "test_plugin_extensions",
         "test_plugin_system"
       ],
       "sdk_interfaces": [
         "event_bus",
+        "event_log",
         "event_kernel",
         "plugin_system",
         "plugin_marketplace",
@@ -3255,12 +3387,17 @@
         "test_audio_enhancement",
         "test_browser_ai",
         "test_capability_graph",
+        "test_capability_graph_sync",
+        "test_compatibility_matrix",
         "test_document_intelligence",
         "test_edge_ai",
         "test_event_bus",
+        "test_event_log",
         "test_failure_recovery",
         "test_generation",
+        "test_health_cycle",
         "test_kimi_k3",
+        "test_local_backends",
         "test_local_runtimes",
         "test_mcp_registry",
         "test_music_generation",
@@ -3271,6 +3408,8 @@
         "test_phase14",
         "test_plugin_extensions",
         "test_plugin_system",
+        "test_pollinations_text",
+        "test_provider_discovery_registrar",
         "test_quality_engineering",
         "test_regression",
         "test_research_integration",
@@ -3279,6 +3418,7 @@
         "test_security",
         "test_security_crypto",
         "test_skill_registry",
+        "test_storage",
         "test_tool_registry",
         "test_video_editing",
         "test_voice_cloning"
@@ -3467,6 +3607,8 @@
         "test_kimi_k3",
         "test_music_generation",
         "test_phase11",
+        "test_pollinations_text",
+        "test_provider_discovery_registrar",
         "test_quality_engineering"
       ],
       "sdk_interfaces": [
@@ -3499,6 +3641,7 @@
         "workflow_engine"
       ],
       "tests": [
+        "test_compatibility_matrix",
         "test_generation",
         "test_kimi_k3",
         "test_ocr",
@@ -3611,6 +3754,8 @@
         "test_kimi_k3",
         "test_music_generation",
         "test_phase11",
+        "test_pollinations_text",
+        "test_provider_discovery_registrar",
         "test_quality_engineering"
       ],
       "sdk_interfaces": [
@@ -3643,6 +3788,7 @@
         "workflow_engine"
       ],
       "tests": [
+        "test_compatibility_matrix",
         "test_generation",
         "test_kimi_k3",
         "test_ocr",
@@ -3789,6 +3935,7 @@
         "research_integration"
       ],
       "tests": [
+        "test_compatibility_matrix",
         "test_research_integration"
       ],
       "sdk_interfaces": [
@@ -3804,6 +3951,7 @@
         "research_integration"
       ],
       "tests": [
+        "test_compatibility_matrix",
         "test_research_integration"
       ],
       "sdk_interfaces": [
@@ -3819,6 +3967,7 @@
         "research_integration"
       ],
       "tests": [
+        "test_compatibility_matrix",
         "test_research_integration"
       ],
       "sdk_interfaces": [
@@ -3834,6 +3983,7 @@
         "research_integration"
       ],
       "tests": [
+        "test_compatibility_matrix",
         "test_research_integration"
       ],
       "sdk_interfaces": [
@@ -3913,6 +4063,7 @@
         "agent_planner",
         "code_analysis",
         "provider_discovery",
+        "provider_discovery_registrar",
         "research_agent"
       ],
       "tests": [
@@ -3920,7 +4071,8 @@
         "test_generation",
         "test_kimi_k3",
         "test_phase11",
-        "test_phase13"
+        "test_phase13",
+        "test_provider_discovery_registrar"
       ],
       "sdk_interfaces": [
         "multi_agent_review",
@@ -4001,6 +4153,7 @@
       ],
       "tests": [
         "test_code_analysis",
+        "test_compatibility_matrix",
         "test_generation",
         "test_kimi_k3",
         "test_phase11",
@@ -4119,6 +4272,7 @@
       ],
       "tests": [
         "test_code_analysis",
+        "test_compatibility_matrix",
         "test_generation",
         "test_kimi_k3",
         "test_phase11",
@@ -4176,9 +4330,11 @@
         "mcp_registry",
         "research_agent",
         "skill_registry",
+        "storage",
         "tool_registry"
       ],
       "tests": [
+        "test_capability_graph_sync",
         "test_code_analysis",
         "test_generation",
         "test_kimi_k3",
@@ -4187,6 +4343,7 @@
         "test_phase13",
         "test_phase15",
         "test_skill_registry",
+        "test_storage",
         "test_tool_registry"
       ],
       "sdk_interfaces": [
@@ -4197,7 +4354,8 @@
         "capability_registry",
         "mcp_registry",
         "skill_registry",
-        "tool_registry"
+        "tool_registry",
+        "storage_registry"
       ],
       "mcp_tools": [
         "get_known_providers",
@@ -4210,6 +4368,7 @@
         "research_integration"
       ],
       "tests": [
+        "test_compatibility_matrix",
         "test_research_integration"
       ],
       "sdk_interfaces": [
@@ -4225,6 +4384,7 @@
         "research_integration"
       ],
       "tests": [
+        "test_compatibility_matrix",
         "test_research_integration"
       ],
       "sdk_interfaces": [
@@ -4240,6 +4400,7 @@
         "research_integration"
       ],
       "tests": [
+        "test_compatibility_matrix",
         "test_research_integration"
       ],
       "sdk_interfaces": [
@@ -4255,6 +4416,7 @@
         "research_integration"
       ],
       "tests": [
+        "test_compatibility_matrix",
         "test_research_integration"
       ],
       "sdk_interfaces": [
@@ -4291,6 +4453,7 @@
         "research_integration"
       ],
       "tests": [
+        "test_compatibility_matrix",
         "test_research_integration"
       ],
       "sdk_interfaces": [
@@ -4344,6 +4507,7 @@
         "test_phase15",
         "test_plugin_extensions",
         "test_plugin_system",
+        "test_pollinations_text",
         "test_quality_engineering",
         "test_regression",
         "test_research_integration",
@@ -4393,12 +4557,17 @@
         "test_audio_enhancement",
         "test_browser_ai",
         "test_capability_graph",
+        "test_capability_graph_sync",
+        "test_compatibility_matrix",
         "test_document_intelligence",
         "test_edge_ai",
         "test_event_bus",
+        "test_event_log",
         "test_failure_recovery",
         "test_generation",
+        "test_health_cycle",
         "test_kimi_k3",
+        "test_local_backends",
         "test_local_runtimes",
         "test_mcp_registry",
         "test_music_generation",
@@ -4409,6 +4578,8 @@
         "test_phase14",
         "test_plugin_extensions",
         "test_plugin_system",
+        "test_pollinations_text",
+        "test_provider_discovery_registrar",
         "test_quality_engineering",
         "test_regression",
         "test_research_integration",
@@ -4417,6 +4588,7 @@
         "test_security",
         "test_security_crypto",
         "test_skill_registry",
+        "test_storage",
         "test_tool_registry",
         "test_video_editing",
         "test_voice_cloning"
@@ -4433,6 +4605,7 @@
         "mcp_registry",
         "mcp_tools",
         "skill_registry",
+        "storage",
         "tool_registry"
       ],
       "tests": [
@@ -4442,12 +4615,17 @@
         "test_audio_enhancement",
         "test_browser_ai",
         "test_capability_graph",
+        "test_capability_graph_sync",
+        "test_compatibility_matrix",
         "test_document_intelligence",
         "test_edge_ai",
         "test_event_bus",
+        "test_event_log",
         "test_failure_recovery",
         "test_generation",
+        "test_health_cycle",
         "test_kimi_k3",
+        "test_local_backends",
         "test_local_runtimes",
         "test_mcp_registry",
         "test_music_generation",
@@ -4459,6 +4637,8 @@
         "test_phase15",
         "test_plugin_extensions",
         "test_plugin_system",
+        "test_pollinations_text",
+        "test_provider_discovery_registrar",
         "test_quality_engineering",
         "test_regression",
         "test_research_integration",
@@ -4467,6 +4647,7 @@
         "test_security",
         "test_security_crypto",
         "test_skill_registry",
+        "test_storage",
         "test_tool_registry",
         "test_video_editing",
         "test_voice_cloning"
@@ -4475,7 +4656,8 @@
         "capability_registry",
         "mcp_registry",
         "skill_registry",
-        "tool_registry"
+        "tool_registry",
+        "storage_registry"
       ],
       "mcp_tools": [],
       "benchmarks": []
@@ -4485,21 +4667,25 @@
         "capability_registry",
         "mcp_registry",
         "skill_registry",
+        "storage",
         "tool_registry"
       ],
       "tests": [
+        "test_capability_graph_sync",
         "test_kimi_k3",
         "test_mcp_registry",
         "test_phase13",
         "test_phase15",
         "test_skill_registry",
+        "test_storage",
         "test_tool_registry"
       ],
       "sdk_interfaces": [
         "capability_registry",
         "mcp_registry",
         "skill_registry",
-        "tool_registry"
+        "tool_registry",
+        "storage_registry"
       ],
       "mcp_tools": [],
       "benchmarks": []
@@ -4516,12 +4702,17 @@
         "test_audio_enhancement",
         "test_browser_ai",
         "test_capability_graph",
+        "test_capability_graph_sync",
+        "test_compatibility_matrix",
         "test_document_intelligence",
         "test_edge_ai",
         "test_event_bus",
+        "test_event_log",
         "test_failure_recovery",
         "test_generation",
+        "test_health_cycle",
         "test_kimi_k3",
+        "test_local_backends",
         "test_local_runtimes",
         "test_mcp_registry",
         "test_music_generation",
@@ -4532,6 +4723,8 @@
         "test_phase14",
         "test_plugin_extensions",
         "test_plugin_system",
+        "test_pollinations_text",
+        "test_provider_discovery_registrar",
         "test_quality_engineering",
         "test_regression",
         "test_research_integration",
@@ -4540,6 +4733,7 @@
         "test_security",
         "test_security_crypto",
         "test_skill_registry",
+        "test_storage",
         "test_tool_registry",
         "test_video_editing",
         "test_voice_cloning"
@@ -4556,6 +4750,7 @@
         "mcp_registry",
         "mcp_tools",
         "skill_registry",
+        "storage",
         "tool_registry"
       ],
       "tests": [
@@ -4565,12 +4760,17 @@
         "test_audio_enhancement",
         "test_browser_ai",
         "test_capability_graph",
+        "test_capability_graph_sync",
+        "test_compatibility_matrix",
         "test_document_intelligence",
         "test_edge_ai",
         "test_event_bus",
+        "test_event_log",
         "test_failure_recovery",
         "test_generation",
+        "test_health_cycle",
         "test_kimi_k3",
+        "test_local_backends",
         "test_local_runtimes",
         "test_mcp_registry",
         "test_music_generation",
@@ -4582,6 +4782,8 @@
         "test_phase15",
         "test_plugin_extensions",
         "test_plugin_system",
+        "test_pollinations_text",
+        "test_provider_discovery_registrar",
         "test_quality_engineering",
         "test_regression",
         "test_research_integration",
@@ -4590,6 +4792,7 @@
         "test_security",
         "test_security_crypto",
         "test_skill_registry",
+        "test_storage",
         "test_tool_registry",
         "test_video_editing",
         "test_voice_cloning"
@@ -4598,7 +4801,8 @@
         "capability_registry",
         "mcp_registry",
         "skill_registry",
-        "tool_registry"
+        "tool_registry",
+        "storage_registry"
       ],
       "mcp_tools": [],
       "benchmarks": []
@@ -4607,13 +4811,15 @@
       "modules": [
         "auto_router",
         "provider_discovery",
+        "provider_discovery_registrar",
         "provider_intelligence",
         "provider_verifier"
       ],
       "tests": [
         "test_kimi_k3",
         "test_phase11",
-        "test_phase13"
+        "test_phase13",
+        "test_provider_discovery_registrar"
       ],
       "sdk_interfaces": [
         "provider_intelligence",
@@ -4628,6 +4834,7 @@
       "modules": [
         "code_analysis",
         "provider_discovery",
+        "provider_discovery_registrar",
         "provider_intelligence",
         "provider_verifier"
       ],
@@ -4635,7 +4842,8 @@
         "test_code_analysis",
         "test_kimi_k3",
         "test_phase11",
-        "test_phase13"
+        "test_phase13",
+        "test_provider_discovery_registrar"
       ],
       "sdk_interfaces": [
         "pr_verification",
@@ -4653,6 +4861,7 @@
         "health_monitor"
       ],
       "tests": [
+        "test_health_cycle",
         "test_health_monitor",
         "test_kimi_k3",
         "test_phase13"
@@ -4685,6 +4894,7 @@
       ],
       "tests": [
         "test_capability_graph",
+        "test_capability_graph_sync",
         "test_kimi_k3",
         "test_orchestration",
         "test_phase14"
@@ -4766,7 +4976,9 @@
       "tests": [
         "test_kimi_k3",
         "test_phase11",
-        "test_phase14"
+        "test_phase14",
+        "test_pollinations_text",
+        "test_provider_discovery_registrar"
       ],
       "sdk_interfaces": [
         "generation_manager",
@@ -4790,7 +5002,9 @@
       "tests": [
         "test_kimi_k3",
         "test_phase11",
-        "test_phase14"
+        "test_phase14",
+        "test_pollinations_text",
+        "test_provider_discovery_registrar"
       ],
       "sdk_interfaces": [
         "generation_manager",
@@ -4838,6 +5052,7 @@
         "document_intelligence",
         "media_intelligence",
         "provider_discovery",
+        "provider_discovery_registrar",
         "provider_intelligence",
         "provider_verifier"
       ],
@@ -4846,7 +5061,8 @@
         "test_generation",
         "test_kimi_k3",
         "test_phase11",
-        "test_phase13"
+        "test_phase13",
+        "test_provider_discovery_registrar"
       ],
       "sdk_interfaces": [
         "asset_intelligence",
@@ -5027,6 +5243,8 @@
         "test_music_generation",
         "test_phase11",
         "test_phase14",
+        "test_pollinations_text",
+        "test_provider_discovery_registrar",
         "test_quality_engineering"
       ],
       "sdk_interfaces": [

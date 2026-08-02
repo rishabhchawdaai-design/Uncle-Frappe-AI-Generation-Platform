@@ -1,0 +1,2257 @@
+{
+  "generated_at": "2026-08-02T13:31:49.705392+00:00",
+  "entries": [
+    {
+      "model_id": "llama3_8b",
+      "runtime_id": "vllm",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.86,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 8192,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "llama3_8b",
+      "runtime_id": "tensorrt_llm",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.86,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 8192,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "llama3_8b",
+      "runtime_id": "llama_cpp",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.78,
+      "quantization": [
+        "q4_k"
+      ],
+      "max_resolution": "",
+      "max_context": 8192,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "llama3_8b",
+      "runtime_id": "ollama",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.8,
+      "quantization": [
+        "q4_k"
+      ],
+      "max_resolution": "",
+      "max_context": 8192,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "llama3_8b",
+      "runtime_id": "tgi",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.85,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 8192,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "llama3_8b",
+      "runtime_id": "onnx_rt",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.74,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "",
+      "max_context": 8192,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "llama3_8b",
+      "runtime_id": "deepspeed",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.84,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 8192,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "llama3_8b",
+      "runtime_id": "sglang",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.85,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 8192,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "llama3_70b",
+      "runtime_id": "vllm",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.9,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 8192,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "llama3_70b",
+      "runtime_id": "tensorrt_llm",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.9,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 8192,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "llama3_70b",
+      "runtime_id": "llama_cpp",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.72,
+      "quantization": [
+        "q4_k"
+      ],
+      "max_resolution": "",
+      "max_context": 8192,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "llama3_70b",
+      "runtime_id": "ollama",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.74,
+      "quantization": [
+        "q4_k"
+      ],
+      "max_resolution": "",
+      "max_context": 8192,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "llama3_70b",
+      "runtime_id": "tgi",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.89,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 8192,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "llama3_70b",
+      "runtime_id": "onnx_rt",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.68,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "",
+      "max_context": 8192,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "llama3_70b",
+      "runtime_id": "deepspeed",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.89,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 8192,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "mixtral_8x7b",
+      "runtime_id": "vllm",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.87,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 32768,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "mixtral_8x7b",
+      "runtime_id": "tensorrt_llm",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.87,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 32768,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "mixtral_8x7b",
+      "runtime_id": "llama_cpp",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.75,
+      "quantization": [
+        "q4_k"
+      ],
+      "max_resolution": "",
+      "max_context": 32768,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "mixtral_8x7b",
+      "runtime_id": "ollama",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.77,
+      "quantization": [
+        "q4_k"
+      ],
+      "max_resolution": "",
+      "max_context": 32768,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "mixtral_8x7b",
+      "runtime_id": "tgi",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.86,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 32768,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "mixtral_8x7b",
+      "runtime_id": "onnx_rt",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.7,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "",
+      "max_context": 32768,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "mixtral_8x7b",
+      "runtime_id": "deepspeed",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.86,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 32768,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "qwen2_72b",
+      "runtime_id": "vllm",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.88,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 131072,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "qwen2_72b",
+      "runtime_id": "tensorrt_llm",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.88,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 131072,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "qwen2_72b",
+      "runtime_id": "llama_cpp",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.71,
+      "quantization": [
+        "q4_k"
+      ],
+      "max_resolution": "",
+      "max_context": 131072,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "qwen2_72b",
+      "runtime_id": "ollama",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.73,
+      "quantization": [
+        "q4_k"
+      ],
+      "max_resolution": "",
+      "max_context": 131072,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "qwen2_72b",
+      "runtime_id": "tgi",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.87,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 131072,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "qwen2_72b",
+      "runtime_id": "onnx_rt",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.67,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "",
+      "max_context": 131072,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "qwen2_72b",
+      "runtime_id": "deepspeed",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.87,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 131072,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "phi3_4b",
+      "runtime_id": "vllm",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.82,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 4096,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "phi3_4b",
+      "runtime_id": "tensorrt_llm",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.82,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 4096,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "phi3_4b",
+      "runtime_id": "llama_cpp",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.76,
+      "quantization": [
+        "q4_k"
+      ],
+      "max_resolution": "",
+      "max_context": 4096,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "phi3_4b",
+      "runtime_id": "ollama",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.78,
+      "quantization": [
+        "q4_k"
+      ],
+      "max_resolution": "",
+      "max_context": 4096,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "phi3_4b",
+      "runtime_id": "tgi",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.81,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 4096,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "phi3_4b",
+      "runtime_id": "onnx_rt",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.75,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "",
+      "max_context": 4096,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "phi3_4b",
+      "runtime_id": "deepspeed",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.8,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 4096,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "gemma2_27b",
+      "runtime_id": "vllm",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.85,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 8192,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "gemma2_27b",
+      "runtime_id": "tensorrt_llm",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.85,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 8192,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "gemma2_27b",
+      "runtime_id": "llama_cpp",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.73,
+      "quantization": [
+        "q4_k"
+      ],
+      "max_resolution": "",
+      "max_context": 8192,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "gemma2_27b",
+      "runtime_id": "ollama",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.75,
+      "quantization": [
+        "q4_k"
+      ],
+      "max_resolution": "",
+      "max_context": 8192,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "gemma2_27b",
+      "runtime_id": "tgi",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.84,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 8192,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "gemma2_27b",
+      "runtime_id": "onnx_rt",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.69,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "",
+      "max_context": 8192,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "gemma2_27b",
+      "runtime_id": "deepspeed",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.84,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 8192,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "mistral_7b",
+      "runtime_id": "vllm",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.84,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 32768,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "mistral_7b",
+      "runtime_id": "tensorrt_llm",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.84,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 32768,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "mistral_7b",
+      "runtime_id": "llama_cpp",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.77,
+      "quantization": [
+        "q4_k"
+      ],
+      "max_resolution": "",
+      "max_context": 32768,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "mistral_7b",
+      "runtime_id": "ollama",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.79,
+      "quantization": [
+        "q4_k"
+      ],
+      "max_resolution": "",
+      "max_context": 32768,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "mistral_7b",
+      "runtime_id": "tgi",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.83,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 32768,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "mistral_7b",
+      "runtime_id": "onnx_rt",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.73,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "",
+      "max_context": 32768,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "mistral_7b",
+      "runtime_id": "deepspeed",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.83,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 32768,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "starcoder2_15b",
+      "runtime_id": "vllm",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.83,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 16384,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "starcoder2_15b",
+      "runtime_id": "tensorrt_llm",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.83,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 16384,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "starcoder2_15b",
+      "runtime_id": "llama_cpp",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.74,
+      "quantization": [
+        "q4_k"
+      ],
+      "max_resolution": "",
+      "max_context": 16384,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "starcoder2_15b",
+      "runtime_id": "ollama",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.76,
+      "quantization": [
+        "q4_k"
+      ],
+      "max_resolution": "",
+      "max_context": 16384,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "starcoder2_15b",
+      "runtime_id": "tgi",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.82,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 16384,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "starcoder2_15b",
+      "runtime_id": "onnx_rt",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.7,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "",
+      "max_context": 16384,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "starcoder2_15b",
+      "runtime_id": "deepspeed",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.82,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 16384,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "sd_1_5",
+      "runtime_id": "diffusers",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.78,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "512x512",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "sd_1_5",
+      "runtime_id": "comfyui",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.8,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "512x512",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "sd_1_5",
+      "runtime_id": "forge",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.79,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "512x512",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "sd_1_5",
+      "runtime_id": "a1111",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.78,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "512x512",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "sd_1_5",
+      "runtime_id": "invokeai",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.79,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "512x512",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "sd_1_5",
+      "runtime_id": "tensorrt_image",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.82,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "512x512",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "sd_1_5",
+      "runtime_id": "onnx_rt_image",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.76,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "512x512",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "sdxl",
+      "runtime_id": "diffusers",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.86,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "1024x1024",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "sdxl",
+      "runtime_id": "comfyui",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.88,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "1024x1024",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "sdxl",
+      "runtime_id": "forge",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.87,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "1024x1024",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "sdxl",
+      "runtime_id": "a1111",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.86,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "1024x1024",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "sdxl",
+      "runtime_id": "invokeai",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.87,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "1024x1024",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "sdxl",
+      "runtime_id": "tensorrt_image",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.9,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "1024x1024",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "sdxl",
+      "runtime_id": "onnx_rt_image",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.84,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "1024x1024",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "flux_1_dev",
+      "runtime_id": "diffusers",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.93,
+      "quantization": [
+        "fp8"
+      ],
+      "max_resolution": "1024x1024",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "flux_1_dev",
+      "runtime_id": "comfyui",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.93,
+      "quantization": [
+        "fp8"
+      ],
+      "max_resolution": "1024x1024",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "flux_1_dev",
+      "runtime_id": "forge",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.92,
+      "quantization": [
+        "fp8"
+      ],
+      "max_resolution": "1024x1024",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "flux_1_dev",
+      "runtime_id": "tensorrt_image",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.94,
+      "quantization": [
+        "fp8"
+      ],
+      "max_resolution": "1024x1024",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "flux_1_dev",
+      "runtime_id": "onnx_rt_image",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.9,
+      "quantization": [
+        "fp8"
+      ],
+      "max_resolution": "1024x1024",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "flux_1_schnell",
+      "runtime_id": "diffusers",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.91,
+      "quantization": [
+        "fp8"
+      ],
+      "max_resolution": "1024x1024",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "flux_1_schnell",
+      "runtime_id": "comfyui",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.91,
+      "quantization": [
+        "fp8"
+      ],
+      "max_resolution": "1024x1024",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "flux_1_schnell",
+      "runtime_id": "forge",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.9,
+      "quantization": [
+        "fp8"
+      ],
+      "max_resolution": "1024x1024",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "flux_1_schnell",
+      "runtime_id": "tensorrt_image",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.92,
+      "quantization": [
+        "fp8"
+      ],
+      "max_resolution": "1024x1024",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "flux_1_schnell",
+      "runtime_id": "onnx_rt_image",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.89,
+      "quantization": [
+        "fp8"
+      ],
+      "max_resolution": "1024x1024",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "controlnet",
+      "runtime_id": "diffusers",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.84,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "1024x1024",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "controlnet",
+      "runtime_id": "comfyui",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.86,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "1024x1024",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "controlnet",
+      "runtime_id": "forge",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.85,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "1024x1024",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "controlnet",
+      "runtime_id": "a1111",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.84,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "1024x1024",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "controlnet",
+      "runtime_id": "invokeai",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.85,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "1024x1024",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "ip_adapter",
+      "runtime_id": "diffusers",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.85,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "1024x1024",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "ip_adapter",
+      "runtime_id": "comfyui",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.87,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "1024x1024",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "ip_adapter",
+      "runtime_id": "forge",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.86,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "1024x1024",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "ip_adapter",
+      "runtime_id": "a1111",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.85,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "1024x1024",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "ip_adapter",
+      "runtime_id": "invokeai",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.86,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "1024x1024",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "animatediff",
+      "runtime_id": "diffusers",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.83,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "512x512",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "animatediff",
+      "runtime_id": "comfyui",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.84,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "512x512",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "animatediff",
+      "runtime_id": "forge",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.83,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "512x512",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "animatediff",
+      "runtime_id": "a1111",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.82,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "512x512",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "cogvideox_2b",
+      "runtime_id": "diffusers_video",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.82,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "480p",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "cogvideox_2b",
+      "runtime_id": "comfyui_video",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.84,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "480p",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "cogvideox_2b",
+      "runtime_id": "custom_video",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.83,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "480p",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "cogvideox_5b",
+      "runtime_id": "diffusers_video",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.86,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "720p",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "cogvideox_5b",
+      "runtime_id": "comfyui_video",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.88,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "720p",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "cogvideox_5b",
+      "runtime_id": "custom_video",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.87,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "720p",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "open_sora",
+      "runtime_id": "comfyui_video",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.89,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "720p",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "open_sora",
+      "runtime_id": "custom_video",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.9,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "720p",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "ltx_video",
+      "runtime_id": "diffusers_video",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.84,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "720p",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "ltx_video",
+      "runtime_id": "comfyui_video",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.86,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "720p",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "ltx_video",
+      "runtime_id": "custom_video",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.85,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "720p",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "mochi",
+      "runtime_id": "comfyui_video",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.87,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "480p",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "mochi",
+      "runtime_id": "custom_video",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.88,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "480p",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "animatediff_video",
+      "runtime_id": "diffusers_video",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.81,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "512px",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "animatediff_video",
+      "runtime_id": "comfyui_video",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.82,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "512px",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "animatediff_video",
+      "runtime_id": "custom_video",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.81,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "512px",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "whisper_large_v3",
+      "runtime_id": "whisper_py",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.92,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "whisper_large_v3",
+      "runtime_id": "whisper_cpp",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.9,
+      "quantization": [
+        "q8_0"
+      ],
+      "max_resolution": "",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "whisper_medium",
+      "runtime_id": "whisper_py",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.88,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "whisper_medium",
+      "runtime_id": "whisper_cpp",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.86,
+      "quantization": [
+        "q8_0"
+      ],
+      "max_resolution": "",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "whisper_tiny",
+      "runtime_id": "whisper_py",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.76,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "whisper_tiny",
+      "runtime_id": "whisper_cpp",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.75,
+      "quantization": [
+        "q8_0"
+      ],
+      "max_resolution": "",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "piper_v2",
+      "runtime_id": "piper",
+      "hardware_id": "cpu",
+      "compatible": true,
+      "performance_score": 0.85,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "xtts_v2",
+      "runtime_id": "xtts",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.9,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "kokoro_tts",
+      "runtime_id": "kokoro",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.87,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "fish_speech",
+      "runtime_id": "fish_speech",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.89,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "ppocr_v4",
+      "runtime_id": "paddleocr",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.86,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "tesseract_5",
+      "runtime_id": "tesseract",
+      "hardware_id": "cpu",
+      "compatible": true,
+      "performance_score": 0.78,
+      "quantization": [],
+      "max_resolution": "",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "surya_v1",
+      "runtime_id": "surya",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.9,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "surya_v1",
+      "runtime_id": "marker",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.85,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "marker",
+      "runtime_id": "marker",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.88,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "marker",
+      "runtime_id": "surya",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.84,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "nougat",
+      "runtime_id": "docling",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.82,
+      "quantization": [
+        "fp16"
+      ],
+      "max_resolution": "",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "bert_base",
+      "runtime_id": "transformers_js",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.8,
+      "quantization": [
+        "q8"
+      ],
+      "max_resolution": "",
+      "max_context": 512,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "bert_base",
+      "runtime_id": "onnx_rt_web",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.79,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "",
+      "max_context": 512,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "bert_base",
+      "runtime_id": "tfjs",
+      "hardware_id": "webgl",
+      "compatible": true,
+      "performance_score": 0.76,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "",
+      "max_context": 512,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "distilbert",
+      "runtime_id": "transformers_js",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.78,
+      "quantization": [
+        "q8"
+      ],
+      "max_resolution": "",
+      "max_context": 512,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "distilbert",
+      "runtime_id": "onnx_rt_web",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.77,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "",
+      "max_context": 512,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "distilbert",
+      "runtime_id": "tfjs",
+      "hardware_id": "webgl",
+      "compatible": true,
+      "performance_score": 0.74,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "",
+      "max_context": 512,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "t5_small",
+      "runtime_id": "transformers_js",
+      "hardware_id": "wasm",
+      "compatible": true,
+      "performance_score": 0.75,
+      "quantization": [
+        "q8"
+      ],
+      "max_resolution": "",
+      "max_context": 512,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "t5_small",
+      "runtime_id": "tfjs",
+      "hardware_id": "webgl",
+      "compatible": true,
+      "performance_score": 0.72,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "",
+      "max_context": 512,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "phi2",
+      "runtime_id": "webllm",
+      "hardware_id": "webgpu",
+      "compatible": true,
+      "performance_score": 0.81,
+      "quantization": [
+        "q4"
+      ],
+      "max_resolution": "",
+      "max_context": 2048,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "qwen1_5_0_5b",
+      "runtime_id": "webllm",
+      "hardware_id": "webgpu",
+      "compatible": true,
+      "performance_score": 0.77,
+      "quantization": [
+        "q4"
+      ],
+      "max_resolution": "",
+      "max_context": 2048,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "sd_turbo_browser",
+      "runtime_id": "transformers_js",
+      "hardware_id": "webgpu",
+      "compatible": true,
+      "performance_score": 0.83,
+      "quantization": [
+        "q8"
+      ],
+      "max_resolution": "512x512",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "sd_turbo_browser",
+      "runtime_id": "onnx_rt_web",
+      "hardware_id": "webgpu",
+      "compatible": true,
+      "performance_score": 0.82,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "512x512",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "mobilenet_v3",
+      "runtime_id": "coreml",
+      "hardware_id": "apple_silicon",
+      "compatible": true,
+      "performance_score": 0.84,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "mobilenet_v3",
+      "runtime_id": "snpe",
+      "hardware_id": "edge",
+      "compatible": true,
+      "performance_score": 0.82,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "mobilenet_v3",
+      "runtime_id": "openvino",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.83,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "mobilenet_v3",
+      "runtime_id": "tensorrt_edge",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.85,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "mobilenet_v3",
+      "runtime_id": "tflite",
+      "hardware_id": "edge",
+      "compatible": true,
+      "performance_score": 0.81,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "mobilenet_v3",
+      "runtime_id": "onnx_mobile",
+      "hardware_id": "edge",
+      "compatible": true,
+      "performance_score": 0.8,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "efficientnet",
+      "runtime_id": "coreml",
+      "hardware_id": "apple_silicon",
+      "compatible": true,
+      "performance_score": 0.86,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "efficientnet",
+      "runtime_id": "snpe",
+      "hardware_id": "edge",
+      "compatible": true,
+      "performance_score": 0.84,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "efficientnet",
+      "runtime_id": "openvino",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.85,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "efficientnet",
+      "runtime_id": "tensorrt_edge",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.87,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "efficientnet",
+      "runtime_id": "tflite",
+      "hardware_id": "edge",
+      "compatible": true,
+      "performance_score": 0.83,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "efficientnet",
+      "runtime_id": "onnx_mobile",
+      "hardware_id": "edge",
+      "compatible": true,
+      "performance_score": 0.82,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "whisper_tiny_edge",
+      "runtime_id": "openvino",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.78,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "whisper_tiny_edge",
+      "runtime_id": "tensorrt_edge",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.8,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "whisper_tiny_edge",
+      "runtime_id": "tflite",
+      "hardware_id": "edge",
+      "compatible": true,
+      "performance_score": 0.76,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "whisper_tiny_edge",
+      "runtime_id": "onnx_mobile",
+      "hardware_id": "edge",
+      "compatible": true,
+      "performance_score": 0.75,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "production"
+    },
+    {
+      "model_id": "llama3_8b_q4_edge",
+      "runtime_id": "tensorrt_edge",
+      "hardware_id": "jetson",
+      "compatible": true,
+      "performance_score": 0.72,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "",
+      "max_context": 8192,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "sd_turbo_edge",
+      "runtime_id": "coreml",
+      "hardware_id": "apple_silicon",
+      "compatible": true,
+      "performance_score": 0.8,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "512x512",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "sd_turbo_edge",
+      "runtime_id": "openvino",
+      "hardware_id": "all",
+      "compatible": true,
+      "performance_score": 0.81,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "512x512",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "sd_turbo_edge",
+      "runtime_id": "tensorrt_edge",
+      "hardware_id": "nvidia",
+      "compatible": true,
+      "performance_score": 0.83,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "512x512",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    },
+    {
+      "model_id": "sd_turbo_edge",
+      "runtime_id": "onnx_mobile",
+      "hardware_id": "edge",
+      "compatible": true,
+      "performance_score": 0.79,
+      "quantization": [
+        "int8"
+      ],
+      "max_resolution": "512x512",
+      "max_context": 0,
+      "verified_date": "2026-08-02",
+      "evidence": "research"
+    }
+  ]
+}

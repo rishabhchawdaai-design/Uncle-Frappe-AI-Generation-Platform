@@ -232,6 +232,17 @@ class QueueItem:
         return asdict(self)
 
 
+# Curated capability-name -> module aliases for capabilities whose names do
+# not token-overlap with their implementation modules.
+CAPABILITY_MODULE_ALIASES = {
+    "FindCapabilityPath": ["capability_graph", "compatibility_matrix"],
+    "ValidatePath": ["capability_graph", "compatibility_matrix"],
+    "Capability Matrix": ["capability_matrix", "compatibility_matrix"],
+    "EstimateExecutionCost (Graph)": ["capability_graph"],
+    "Periodic Discovery": ["capability_graph"],
+}
+
+
 # ── Engine ────────────────────────────────────────────────────────
 
 
@@ -564,6 +575,9 @@ class ResearchIntegrationEngine:
             module_tokens = set(re.findall(r"[a-z0-9]+", module))
             if tokens & module_tokens:
                 linked_modules.append(module)
+        linked_modules.extend(
+            m for m in CAPABILITY_MODULE_ALIASES.get(name, []) if m in modules
+        )
         linked_modules = sorted(set(linked_modules))
         linked_tests = sorted(
             t for t, mods in test_map.items() if set(mods) & set(linked_modules)

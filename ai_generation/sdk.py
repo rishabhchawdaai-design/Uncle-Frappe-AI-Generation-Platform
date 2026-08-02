@@ -96,6 +96,8 @@ class UncleFrappeAI:
         self._regression_detector = None
         # Phase 26 — Capability Graph
         self._capability_graph = None
+        # Phase 37 — Compatibility Matrix
+        self._compatibility_matrix = None
         # Phase 27 — Security Layer
         self._security_manager = None
         # Phase 28 — Failure Recovery System
@@ -1286,6 +1288,15 @@ class UncleFrappeAI:
             register_kimi_k3_capability_graph(self._capability_graph)
         return self._capability_graph
 
+
+    @property
+    def compatibility_matrix(self):
+        """Model x Runtime x Hardware compatibility lookup table."""
+        if self._compatibility_matrix is None:
+            from .compatibility_matrix import CompatibilityMatrix
+            self._compatibility_matrix = CompatibilityMatrix()
+        return self._compatibility_matrix
+
     @property
     def regression_detector(self):
         if self._regression_detector is None:
@@ -1794,6 +1805,46 @@ class UncleFrappeAI:
             event_log=True,
         )
         return report
+
+
+    # ── Phase 37 — Compatibility Matrix (COMPATIBILITY_MATRIX.md) ──
+
+    def compat_lookup(self, model_id: str, runtime_id: str,
+                      hardware_id: str = "all") -> dict:
+        """Look up a model x runtime x hardware combination."""
+        return self.compatibility_matrix.lookup(model_id, runtime_id, hardware_id)
+
+    def compat_find_runtimes(self, model_id: str, hardware_id: str = "",
+                             min_score: float = 0.0) -> list:
+        """Best-scoring compatible runtimes for a model."""
+        return self.compatibility_matrix.find_runtimes(
+            model_id, hardware_id or None, min_score)
+
+    def compat_find_models(self, category: str = "", hardware_id: str = "",
+                           min_score: float = 0.0) -> list:
+        """Best-scoring models for a runtime category and hardware."""
+        return self.compatibility_matrix.find_models(
+            category or None, hardware_id or None, min_score)
+
+    def compat_validate_path(self, model_id: str, runtime_id: str,
+                             hardware_id: str = "all") -> dict:
+        """Validate an execution path against the compatibility matrix."""
+        return self.compatibility_matrix.validate_path(
+            model_id, runtime_id, hardware_id)
+
+    def compat_update_score(self, model_id: str, runtime_id: str,
+                            hardware_id: str, score: float) -> dict:
+        """Feed a benchmark result back into the matrix."""
+        return self.compatibility_matrix.update_score(
+            model_id, runtime_id, hardware_id, score)
+
+    def compat_get_stats(self) -> dict:
+        """Compatibility matrix statistics."""
+        return self.compatibility_matrix.get_stats()
+
+    def compat_list_runtimes(self, category: str = "") -> list:
+        """List catalogued runtimes (optionally by category)."""
+        return self.compatibility_matrix.list_runtimes(category or None)
 
     def dynamic_graph_add_node(self, node_id: str, node_type: str = "capability",
                                  name: str = "", attributes: dict = None) -> dict:
