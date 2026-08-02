@@ -234,7 +234,7 @@ ai_generation/          # Single canonical platform package
   research_integration.py # Research <-> implementation traceability
   providers/            # Provider implementations
   agents/               # Autonomous agent system
-  tests/                # 1,437 tests
+  tests/                # 1,440 tests
 configs/                # Canonical configuration (env template, MCP server registry)
 data/                   # Runtime registries and benchmarks
 knowledge-vault/        # Obsidian knowledge system (37 sections)
@@ -383,6 +383,13 @@ reason (e.g. `AudioCraft server not reachable at http://localhost:9876`), and
 the harness writes `output/verification/verify_generation.json` plus any
 produced artifacts.
 
+The harness currently passes all 19 modality checks: real media is produced
+for Image, Text, Speech (Piper local), Embeddings, Translation, OCR, STT
+(piper -> faster-whisper round-trip), Upscaling (Real-ESRGAN 4x), Background
+removal, Storage, Event sourcing, Capability graph and Compatibility matrix;
+credential/local-gated modalities (Video, Music, SFX, 3D) return truthful,
+structured reasons instead of crashes.
+
 ## Development
 
 ```bash
@@ -400,7 +407,7 @@ docker build -t uncle-frappe-ai-generation-platform .
 docker run --rm uncle-frappe-ai-generation-platform
 ```
 
-CI runs the full `ai_generation/tests/` suite (1,437 tests), verifies every
+CI runs the full `ai_generation/tests/` suite (1,440 tests), verifies every
 module imports cleanly, smoke-tests the unified SDK, and builds the Docker
 image on every push to `main` (`.github/workflows/ci.yml`).
 
