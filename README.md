@@ -234,7 +234,7 @@ ai_generation/          # Single canonical platform package
   research_integration.py # Research <-> implementation traceability
   providers/            # Provider implementations
   agents/               # Autonomous agent system
-  tests/                # 1,432 tests
+  tests/                # 1,437 tests
 configs/                # Canonical configuration (env template, MCP server registry)
 data/                   # Runtime registries and benchmarks
 knowledge-vault/        # Obsidian knowledge system (37 sections)
@@ -323,6 +323,7 @@ python scripts/verify_generation.py
 | Event sourcing | ✅ works | Durable event log (SQLite): ACOS taxonomy, per-class delivery guarantees, replay, dead-letter queue, retention |
 | Capability graph | ✅ works | Auto-sync from provider/storage/event-log registries; 52 nodes / 48 edges; pathfinding for chat, embeddings, translation, upscaling, bg-removal, storage, events |
 | Compatibility matrix | ✅ works | Model × Runtime × Hardware lookup: 161 entries / 44 models / 40 runtimes; path validation (CGR-07), benchmark feedback, 90-day refresh tracking |
+| Research traceability | ✅ works | Every VERIFIED capability linked to implementation modules; BLOCKED capabilities truthfully unlinked; auto-linking + curated aliases |
 
 The local backends are exposed through the unified SDK, CLI, and MCP:
 
@@ -399,7 +400,7 @@ docker build -t uncle-frappe-ai-generation-platform .
 docker run --rm uncle-frappe-ai-generation-platform
 ```
 
-CI runs the full `ai_generation/tests/` suite (1,432 tests), verifies every
+CI runs the full `ai_generation/tests/` suite (1,437 tests), verifies every
 module imports cleanly, smoke-tests the unified SDK, and builds the Docker
 image on every push to `main` (`.github/workflows/ci.yml`).
 
