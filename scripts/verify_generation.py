@@ -23,6 +23,7 @@ import struct
 import sys
 import time
 from pathlib import Path
+from typing import Optional
 
 
 def jpeg_ok(data: bytes) -> bool:
@@ -57,6 +58,31 @@ def image_dims(data: bytes) -> dict:
                 return {"width": w, "height": h}
             i += 2 + struct.unpack(">H", data[i + 2:i + 4])[0]
     return {}
+
+
+def tiny_png_bytes() -> bytes:
+    """Build a valid 1x1 PNG with only stdlib (zlib + struct)."""
+    import struct as _s
+    import zlib as _z
+
+    def chunk(tag, data):
+        c = tag + data
+        return _s.pack(">I", len(data)) + c + _s.pack(">I", _z.crc32(c) & 0xFFFFFFFF)
+
+    ihdr = _s.pack(">IIBBBBB", 1, 1, 8, 2, 0, 0, 0)
+    raw = b"\x00\x80\x00\x00"
+    return (b"\x89PNG\r\n\x1a\n"
+            + chunk(b"IHDR", ihdr)
+            + chunk(b"IDAT", _z.compress(raw))
+            + chunk(b"IEND", b""))
+
+
+def read_artifact(out_dir, name) -> Optional[bytes]:
+    """Read a produced artifact, or None."""
+    path = Path(out_dir) / name
+    if path.exists():
+        return path.read_bytes()
+    return None
 
 
 async def main() -> int:
@@ -127,12 +153,17 @@ async def main() -> int:
         crashed = True
         record("sfx", False, f"CRASH {type(e).__name__}: {e}")
 
-    # 5. SPEECH (TTS) — all providers credential/local-gated
+    # 5. SPEECH (TTS) — keyless piper_local default; clean failure also truthful
     try:
         r = await ai.generate_speech("Hello from the platform")
-        clean = getattr(r, "success", False) is False and bool(getattr(r, "error", None))
-        record("speech", clean, {"status": getattr(r, "status", None),
-                                 "error": getattr(r, "error", None)})
+        data = r.output_bytes or b""
+        status = getattr(r, "status", "")
+        real = status == "success" and bool(data) and wav_ok(data)
+        clean_fail = status not in ("success", "pending") and bool(r.error)
+        detail = {"status": status, "error": r.error, "provider": r.provider}
+        if real:
+            detail["bytes"] = len(data)
+        record("speech", real or clean_fail, detail)
     except Exception as e:
         crashed = True
         record("speech", False, f"CRASH {type(e).__name__}: {e}")
@@ -214,19 +245,30 @@ async def main() -> int:
         crashed = True
         record("ocr", False, f"CRASH {type(e).__name__}: {e}")
 
-    # STT — local faster-whisper
+    # STT — local faster-whisper; TTS->STT round trip on the produced WAV
     try:
-        r = await ai.transcribe_audio(audio_bytes=struct.pack(">II", 1, 1) + b"\x00")
-        detail = {"status": r.status, "error": r.error, "provider": r.provider}
-        ok = r.success or (r.error and "no module" in r.error.lower())
-        record("stt_local", ok, detail)
+        wav = read_artifact(out_dir, "speech_local.wav")
+        if wav is None:
+            synth = await ai.generate_speech_local("Hello from the platform")
+            wav = synth.output_bytes if synth.success else None
+        if not wav:
+            record("stt_local", False, "no speech artifact to transcribe")
+        else:
+            r = await ai.transcribe_audio(audio_bytes=wav)
+            detail = {"status": r.status, "error": r.error, "provider": r.provider}
+            text = (r.metadata or {}).get("text", "") if r.success else ""
+            if r.success:
+                detail["text"] = text[:80]
+            ok = r.success and bool(text.strip())
+            record("stt_local", ok, detail)
     except Exception as e:
         crashed = True
         record("stt_local", False, f"CRASH {type(e).__name__}: {e}")
 
-    # Upscaling — Real-ESRGAN
+    # Upscaling — Real-ESRGAN (real image artifact in, 4x out)
     try:
-        r = await ai.upscale_image_local(struct.pack(">II", 1, 1) + b"\x00")
+        img = read_artifact(out_dir, "image.jpg") or tiny_png_bytes()
+        r = await ai.upscale_image_local(img)
         detail = {"status": r.status, "error": r.error, "provider": r.provider}
         data = r.output_bytes or b""
         ok = r.success and png_ok(data)
@@ -243,9 +285,10 @@ async def main() -> int:
         crashed = True
         record("upscale", False, f"CRASH {type(e).__name__}: {e}")
 
-    # Background removal — rembg
+    # Background removal — rembg (real image artifact in, cutout out)
     try:
-        r = await ai.remove_background_local(struct.pack(">II", 1, 1) + b"\x00")
+        img = read_artifact(out_dir, "image.jpg") or tiny_png_bytes()
+        r = await ai.remove_background_local(img)
         detail = {"status": r.status, "error": r.error, "provider": r.provider}
         data = r.output_bytes or b""
         ok = r.success and png_ok(data)
@@ -318,7 +361,7 @@ async def main() -> int:
         stats = ai.get_capability_graph_stats()
         path_caps = {"chat", "text_embedding", "translation", "upscale",
                      "background_removal", "storage", "event_sourcing"}
-        found = {c: bool(graph.find_capability_path(c)) for c in path_caps}
+        found = {c: bool(ai.find_capability_path(c)) for c in path_caps}
         ok = (stats["node_count"] >= 50 and stats["edge_count"] >= 40
               and all(found.values()))
         record("capability_graph", ok, {
